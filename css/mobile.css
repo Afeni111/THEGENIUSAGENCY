@@ -1,0 +1,340 @@
+/* =====================================================
+   THE GENIUS AGENCY — MOBILE RESPONSIVE OVERRIDES
+   ALL RULES ARE INSIDE @media (max-width: 768px)
+   Desktop layout: COMPLETELY UNTOUCHED
+   ===================================================== */
+
+@media (max-width: 768px) {
+
+    /* ── GLOBAL ─────────────────────────────────────── */
+    body {
+        overflow-x: hidden;
+    }
+
+    .container {
+        padding: 0 16px !important;
+    }
+
+    /* ── HERO SECTION ───────────────────────────────── */
+    header.hero {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+        min-height: 100svh !important;
+    }
+
+    /* Overrides the hardcoded inline width:50% */
+    .hero-main-content,
+    #hero-main-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        grid-template-columns: 1fr !important;
+        padding: 100px 0 30px !important;
+        gap: 0 !important;
+        overflow: visible !important;
+    }
+
+    .hero-title {
+        font-size: 2.2rem !important;
+        line-height: 1.1 !important;
+        margin-bottom: 12px !important;
+        word-break: break-word !important;
+    }
+
+    .hero-subtitle {
+        font-size: 0.9rem !important;
+        line-height: 1.6 !important;
+        margin-bottom: 20px !important;
+    }
+
+    .hero-badge {
+        font-size: 0.6rem !important;
+        padding: 6px 12px !important;
+        letter-spacing: 1px !important;
+        margin-bottom: 14px !important;
+    }
+
+    .hero-btns {
+        flex-direction: column !important;
+        gap: 10px !important;
+        width: 100% !important;
+    }
+
+    .hero-btns .btn {
+        width: 100% !important;
+        text-align: center !important;
+        justify-content: center !important;
+        padding: 13px 20px !important;
+        font-size: 0.82rem !important;
+    }
+
+    .trust-bar {
+        margin-top: 18px !important;
+    }
+
+    .trust-label {
+        font-size: 0.6rem !important;
+    }
+
+    .trust-logos {
+        gap: 12px !important;
+        flex-wrap: wrap !important;
+    }
+
+    /* Hide the bottom motto bar — clips on small screens */
+    header.hero > div[style*="bottom:30px"],
+    header.hero > div[style*="bottom: 30px"] {
+        display: none !important;
+    }
+
+    /* Hide hero right-side expert card slider on mobile */
+    .hero-visuals,
+    .slider-container,
+    .hero-indicators {
+        display: none !important;
+    }
+
+    /* ── SERVICES SECTION ───────────────────────────── */
+
+    /* Dual header: 1.2fr 1.5fr → single column */
+    #services .container > div[style*="grid-template-columns: 1.2fr 1.5fr"] {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+        margin-bottom: 40px !important;
+    }
+
+    /* Section title */
+    #services h2 {
+        font-size: 1.9rem !important;
+        line-height: 1.15 !important;
+    }
+
+    /* 4 mini-feature columns → 2×2 */
+    #services div[style*="grid-template-columns: repeat(4, 1fr)"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+        border-left: none !important;
+        padding-left: 0 !important;
+    }
+
+    /* Service cards grid: 3-col → 1-col */
+    .services-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    .svc-card {
+        padding: 24px 18px !important;
+    }
+
+    /* CTA banner floating */
+    .cta-banner-floating {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 16px !important;
+        padding: 24px 16px !important;
+    }
+
+    .cta-banner-content {
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    /* ── WHY CHOOSE US SECTION ──────────────────────── */
+
+    /* Outer flex → vertical stack */
+    #why-choose-us .container > div[style*="display: flex; gap: 40px"] {
+        flex-direction: column !important;
+        gap: 24px !important;
+    }
+
+    /* Left panel: remove right border */
+    #why-choose-us div[style*="flex: 1.2;"] {
+        border-right: none !important;
+        padding-right: 0 !important;
+        min-width: 0 !important;
+    }
+
+    #why-choose-us h2 {
+        font-size: 1.7rem !important;
+    }
+
+    /* 5-column reasons → 2-col */
+    #why-choose-us div[style*="grid-template-columns: repeat(5, 1fr)"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px !important;
+    }
+
+    .reason {
+        border-right: none !important;
+        padding: 14px 8px !important;
+    }
+
+    /* 20% offer banner: horizontal flex → vertical */
+    #why-choose-us div[style*="flex-wrap: nowrap"] {
+        flex-wrap: wrap !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+        padding: 28px 16px !important;
+    }
+
+    #why-choose-us div[style*="flex: 1; border-left: 1px solid rgba(255,255,255,0.07); border-right"] {
+        border-left: none !important;
+        border-right: none !important;
+        padding: 20px 0 !important;
+        border-top: 1px solid rgba(255,255,255,0.08) !important;
+        border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+    }
+
+    #why-choose-us div[style*="flex: 1; padding-left: 30px"] {
+        padding-left: 0 !important;
+    }
+
+    /* Big "20%" number */
+    #why-choose-us h2[style*="font-size: 6.5rem"] {
+        font-size: 4.5rem !important;
+    }
+
+    #why-choose-us h2[style*="font-size: 2.6rem"] {
+        font-size: 1.7rem !important;
+    }
+
+    /* ── PROCESS SECTION ────────────────────────────── */
+
+    #process h2 {
+        font-size: 1.8rem !important;
+    }
+
+    /* Horizontal 5-step timeline → vertical list */
+    .process-timeline {
+        flex-direction: column !important;
+        gap: 28px !important;
+        align-items: flex-start !important;
+    }
+
+    .process-timeline > div {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        text-align: left !important;
+    }
+
+    .process-timeline > div > div:first-child {
+        margin: 0 0 16px 0 !important;
+    }
+
+    /* Testimonial + consultation: side-by-side → stacked */
+    #process > .container > div[style*="display: flex; gap: 30px; margin-top: 100px"] {
+        flex-direction: column !important;
+        margin-top: 40px !important;
+        gap: 20px !important;
+    }
+
+    #process .glass-card {
+        min-width: 0 !important;
+        padding: 28px 20px !important;
+    }
+
+    #process h2[style*="font-size: 2rem"] {
+        font-size: 1.5rem !important;
+    }
+
+    /* ── PROJECT CTA BANNER ─────────────────────────── */
+
+    section.lux-richblack .container .reveal > div:first-child {
+        min-width: 0 !important;
+    }
+
+    /* Yellow CTA box: side-by-side → stacked */
+    section.lux-richblack div[style*="background: var(--primary-yellow); border-radius: 16px"] {
+        flex-direction: column !important;
+        gap: 24px !important;
+        padding: 28px 20px !important;
+    }
+
+    section.lux-richblack h2[style*="font-size: 2.2rem"] {
+        font-size: 1.5rem !important;
+        line-height: 1.2 !important;
+    }
+
+    section.lux-richblack div[style*="flex: 1; min-width: 320px; background: var(--primary-black)"] {
+        min-width: 0 !important;
+        padding: 24px 20px !important;
+    }
+
+    /* ── EXPERTS SWIPER ─────────────────────────────── */
+
+    #experts h2 {
+        font-size: 1.9rem !important;
+        margin-bottom: 36px !important;
+    }
+
+    .experts-swiper {
+        padding-bottom: 40px !important;
+    }
+
+    /* ── PORTFOLIO SECTION ──────────────────────────── */
+
+    #portfolio h2 {
+        font-size: 1.9rem !important;
+    }
+
+    #homepage-portfolio,
+    .grid-3#homepage-portfolio {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+
+    /* ── FOOTER ─────────────────────────────────────── */
+
+    footer#contact {
+        padding: 50px 0 20px !important;
+    }
+
+    /* Footer grid → 2-col on mobile (brand + links), 1-col on very small */
+    footer#contact > div > div[style*="grid-template-columns: repeat(auto-fit"] {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 30px !important;
+    }
+
+    footer#contact h4[style*="font-size: 1.8rem"] {
+        font-size: 1.3rem !important;
+    }
+
+    /* Bottom bar */
+    footer#contact div[style*="border-top: 1px solid"] {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 10px !important;
+    }
+}
+
+/* Extra small screens (< 480px) */
+@media (max-width: 480px) {
+
+    .hero-title {
+        font-size: 1.9rem !important;
+    }
+
+    .hero-btns .btn {
+        font-size: 0.78rem !important;
+        padding: 12px 16px !important;
+    }
+
+    /* Footer → single column */
+    footer#contact > div > div[style*="grid-template-columns: repeat(auto-fit"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Why choose us 5-col → 1-col */
+    #why-choose-us div[style*="grid-template-columns: repeat(5, 1fr)"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    #why-choose-us h2[style*="font-size: 6.5rem"] {
+        font-size: 3.5rem !important;
+    }
+
+    .process-timeline > div > div:first-child {
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 1.4rem !important;
+    }
+}
