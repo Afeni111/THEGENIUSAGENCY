@@ -15,35 +15,60 @@
         padding: 0 16px !important;
     }
 
-    /* ── HERO SECTION ───────────────────────────────── */
+    /* ══════════════════════════════════════════════════
+       HERO SECTION
+    ══════════════════════════════════════════════════ */
+
     header.hero {
         padding-left: 16px !important;
         padding-right: 16px !important;
-        min-height: 100svh !important;
+        /* Limit height so the video doesn't dominate the screen */
+        min-height: 0 !important;
+        height: auto !important;
+        max-height: 520px !important;
+        overflow: hidden !important;
     }
 
-    /* Overrides the hardcoded inline width:50% */
+    /* The background video — crop it tightly on mobile */
+    #hero-bg-video {
+        object-position: center top !important;
+        height: 100% !important;
+    }
+
+    /* Override the hardcoded inline width:50% and centering */
     .hero-main-content,
-    #hero-main-content {
+    #hero-main-content,
+    header.hero .hero-main-content {
         width: 100% !important;
         max-width: 100% !important;
         grid-template-columns: 1fr !important;
-        padding: 100px 0 30px !important;
+        padding: 90px 0 24px !important;
         gap: 0 !important;
         overflow: visible !important;
+        text-align: center !important;
+    }
+
+    .hero-content {
+        min-height: auto !important;
+        padding: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
     }
 
     .hero-title {
         font-size: 2.2rem !important;
         line-height: 1.1 !important;
-        margin-bottom: 12px !important;
+        margin-bottom: 10px !important;
         word-break: break-word !important;
+        text-align: center !important;
     }
 
     .hero-subtitle {
         font-size: 0.9rem !important;
         line-height: 1.6 !important;
-        margin-bottom: 20px !important;
+        margin-bottom: 18px !important;
+        text-align: center !important;
     }
 
     .hero-badge {
@@ -51,16 +76,18 @@
         padding: 6px 12px !important;
         letter-spacing: 1px !important;
         margin-bottom: 14px !important;
+        justify-content: center !important;
     }
 
     .hero-btns {
         flex-direction: column !important;
         gap: 10px !important;
         width: 100% !important;
+        align-items: center !important;
     }
 
     .hero-btns .btn {
-        width: 100% !important;
+        width: 90% !important;
         text-align: center !important;
         justify-content: center !important;
         padding: 13px 20px !important;
@@ -68,54 +95,90 @@
     }
 
     .trust-bar {
-        margin-top: 18px !important;
+        margin-top: 16px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
     }
 
     .trust-label {
         font-size: 0.6rem !important;
+        text-align: center !important;
     }
 
     .trust-logos {
         gap: 12px !important;
         flex-wrap: wrap !important;
+        justify-content: center !important;
     }
 
-    /* Hide the bottom motto bar — clips on small screens */
+    /* Hide the bottom motto pill — clips on mobile */
     header.hero > div[style*="bottom:30px"],
     header.hero > div[style*="bottom: 30px"] {
         display: none !important;
     }
 
-    /* Hide hero right-side expert card slider on mobile */
+    /* Hide hero right-side expert card slider */
     .hero-visuals,
     .slider-container,
     .hero-indicators {
         display: none !important;
     }
 
-    /* ── SERVICES SECTION ───────────────────────────── */
+    /* ══════════════════════════════════════════════════
+       SERVICES SECTION — "WHAT WE DO"
+       CENTER: heading, description, 4-icon grid
+    ══════════════════════════════════════════════════ */
 
-    /* Dual header: 1.2fr 1.5fr → single column */
+    /* Dual header: 2-col → 1-col, centered */
     #services .container > div[style*="grid-template-columns: 1.2fr 1.5fr"] {
         grid-template-columns: 1fr !important;
-        gap: 24px !important;
+        gap: 32px !important;
         margin-bottom: 40px !important;
+        text-align: center !important;
     }
 
-    /* Section title */
+    /* Left side (heading + text): center everything */
+    #services .container > div[style*="grid-template-columns: 1.2fr 1.5fr"] > div:first-child {
+        align-items: center !important;
+        text-align: center !important;
+    }
+
+    /* "WHAT WE DO" label — center */
+    #services h4.text-yellow {
+        justify-content: center !important;
+    }
+
+    /* Section heading and paragraph */
     #services h2 {
-        font-size: 1.9rem !important;
+        font-size: 2rem !important;
         line-height: 1.15 !important;
+        text-align: center !important;
+        max-width: 100% !important;
     }
 
-    /* 4 mini-feature columns → 2×2 */
+    #services p[style*="max-width: 450px"] {
+        max-width: 100% !important;
+        text-align: center !important;
+    }
+
+    /* 4 mini-feature columns → 2×2 centered grid */
     #services div[style*="grid-template-columns: repeat(4, 1fr)"] {
         grid-template-columns: repeat(2, 1fr) !important;
         border-left: none !important;
         padding-left: 0 !important;
+        gap: 20px !important;
     }
 
-    /* Service cards grid: 3-col → 1-col */
+    /* Each feature item: center icon + text */
+    #services div[style*="grid-template-columns: repeat(4, 1fr)"] > div {
+        align-items: center !important;
+        text-align: center !important;
+        border-right: none !important;
+        padding: 16px 8px !important;
+    }
+
+    /* Service cards grid → 1-col */
     .services-grid {
         grid-template-columns: 1fr !important;
         gap: 16px !important;
@@ -125,12 +188,13 @@
         padding: 24px 18px !important;
     }
 
-    /* CTA banner floating */
+    /* CTA banner → stack vertically, center */
     .cta-banner-floating {
         flex-direction: column !important;
         text-align: center !important;
         gap: 16px !important;
         padding: 24px 16px !important;
+        align-items: center !important;
     }
 
     .cta-banner-content {
@@ -138,54 +202,101 @@
         align-items: center !important;
     }
 
-    /* ── WHY CHOOSE US SECTION ──────────────────────── */
+    /* ══════════════════════════════════════════════════
+       WHY CHOOSE US SECTION
+       CENTER: label, heading, description, all reason cards
+    ══════════════════════════════════════════════════ */
 
-    /* Outer flex → vertical stack */
+    /* Outer flex → vertical stack, centered */
     #why-choose-us .container > div[style*="display: flex; gap: 40px"] {
         flex-direction: column !important;
-        gap: 24px !important;
+        gap: 32px !important;
+        align-items: center !important;
+        text-align: center !important;
     }
 
-    /* Left panel: remove right border */
-    #why-choose-us div[style*="flex: 1.2;"] {
+    /* Left panel: remove right border, center */
+    #why-choose-us div[style*="flex: 1.2"] {
         border-right: none !important;
         padding-right: 0 !important;
         min-width: 0 !important;
+        width: 100% !important;
+        align-items: center !important;
+        text-align: center !important;
     }
 
+    /* "WHY CHOOSE US" label */
+    #why-choose-us div[style*="WHY CHOOSE US"],
+    #why-choose-us div[style*="font-size: 0.75rem; letter-spacing: 1px"] {
+        text-align: center !important;
+        width: 100% !important;
+    }
+
+    /* Gold underline bar — center it */
+    #why-choose-us div[style*="height: 2px; width: 35px; background: var(--primary-yellow); margin-bottom: 25px"] {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* Section heading */
     #why-choose-us h2 {
-        font-size: 1.7rem !important;
+        font-size: 1.9rem !important;
+        text-align: center !important;
     }
 
-    /* 5-column reasons → 2-col */
+    /* Description paragraph */
+    #why-choose-us p[style*="max-width: 90%"] {
+        max-width: 100% !important;
+        text-align: center !important;
+    }
+
+    /* 5-column reasons grid → 2-col */
     #why-choose-us div[style*="grid-template-columns: repeat(5, 1fr)"] {
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 16px !important;
+        gap: 24px 16px !important;
+        width: 100% !important;
     }
 
+    /* Each reason card: center the icon and text */
     .reason {
         border-right: none !important;
-        padding: 14px 8px !important;
+        padding: 16px 8px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
     }
 
-    /* 20% offer banner: horizontal flex → vertical */
+    /* 20% Offer banner: side-by-side → vertical stack, centered */
     #why-choose-us div[style*="flex-wrap: nowrap"] {
         flex-wrap: wrap !important;
         flex-direction: column !important;
         gap: 20px !important;
-        padding: 28px 16px !important;
+        padding: 28px 20px !important;
+        align-items: center !important;
+        text-align: center !important;
     }
 
-    #why-choose-us div[style*="flex: 1; border-left: 1px solid rgba(255,255,255,0.07); border-right"] {
+    #why-choose-us div[style*="flex: 1; border-left:"],
+    #why-choose-us div[style*="flex: 1; border-left: 1px solid rgba(255,255,255,0.07)"] {
         border-left: none !important;
         border-right: none !important;
         padding: 20px 0 !important;
         border-top: 1px solid rgba(255,255,255,0.08) !important;
         border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+        width: 100% !important;
+        text-align: center !important;
     }
 
     #why-choose-us div[style*="flex: 1; padding-left: 30px"] {
         padding-left: 0 !important;
+        text-align: center !important;
+        width: 100% !important;
+    }
+
+    /* Checklist items in 20% section — center */
+    #why-choose-us div[style*="display: flex; align-items: center; gap: 10px"] {
+        justify-content: center !important;
     }
 
     /* Big "20%" number */
@@ -194,33 +305,66 @@
     }
 
     #why-choose-us h2[style*="font-size: 2.6rem"] {
-        font-size: 1.7rem !important;
+        font-size: 1.8rem !important;
+        text-align: center !important;
     }
 
-    /* ── PROCESS SECTION ────────────────────────────── */
+    /* "View Coupon" button — center */
+    #why-choose-us a[href*="coupon"],
+    #why-choose-us button[onclick*="coupon"] {
+        display: block !important;
+        text-align: center !important;
+    }
+
+    /* ══════════════════════════════════════════════════
+       PROCESS SECTION
+       CENTER: label, heading, step icons + text
+    ══════════════════════════════════════════════════ */
+
+    #process .container > div:first-child {
+        text-align: center !important;
+    }
+
+    /* "OUR PROCESS" label */
+    #process div[style*="OUR PROCESS"],
+    #process div[style*="font-size: 0.75rem"][style*="letter-spacing"] {
+        text-align: center !important;
+        width: 100% !important;
+    }
+
+    /* Gold line under label */
+    #process div[style*="height: 2px; width: 35px"] {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
 
     #process h2 {
         font-size: 1.8rem !important;
+        text-align: center !important;
     }
 
-    /* Horizontal 5-step timeline → vertical list */
+    /* Horizontal 5-step timeline → vertical, centered */
     .process-timeline {
         flex-direction: column !important;
-        gap: 28px !important;
-        align-items: flex-start !important;
+        gap: 32px !important;
+        align-items: center !important;
     }
 
     .process-timeline > div {
         flex: 0 0 auto !important;
         width: 100% !important;
-        text-align: left !important;
+        text-align: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
     }
 
+    /* Each step icon circle — center */
     .process-timeline > div > div:first-child {
-        margin: 0 0 16px 0 !important;
+        margin: 0 auto 16px auto !important;
     }
 
-    /* Testimonial + consultation: side-by-side → stacked */
+    /* Testimonial + consultation section — stack vertically */
     #process > .container > div[style*="display: flex; gap: 30px; margin-top: 100px"] {
         flex-direction: column !important;
         margin-top: 40px !important;
@@ -234,15 +378,13 @@
 
     #process h2[style*="font-size: 2rem"] {
         font-size: 1.5rem !important;
+        text-align: center !important;
     }
 
-    /* ── PROJECT CTA BANNER ─────────────────────────── */
+    /* ══════════════════════════════════════════════════
+       PROJECT CTA BANNER
+    ══════════════════════════════════════════════════ */
 
-    section.lux-richblack .container .reveal > div:first-child {
-        min-width: 0 !important;
-    }
-
-    /* Yellow CTA box: side-by-side → stacked */
     section.lux-richblack div[style*="background: var(--primary-yellow); border-radius: 16px"] {
         flex-direction: column !important;
         gap: 24px !important;
@@ -259,21 +401,27 @@
         padding: 24px 20px !important;
     }
 
-    /* ── EXPERTS SWIPER ─────────────────────────────── */
+    /* ══════════════════════════════════════════════════
+       EXPERTS SWIPER
+    ══════════════════════════════════════════════════ */
 
     #experts h2 {
         font-size: 1.9rem !important;
-        margin-bottom: 36px !important;
+        text-align: center !important;
+        margin-bottom: 32px !important;
     }
 
-    .experts-swiper {
-        padding-bottom: 40px !important;
+    #experts .container > p {
+        text-align: center !important;
     }
 
-    /* ── PORTFOLIO SECTION ──────────────────────────── */
+    /* ══════════════════════════════════════════════════
+       PORTFOLIO SECTION
+    ══════════════════════════════════════════════════ */
 
     #portfolio h2 {
         font-size: 1.9rem !important;
+        text-align: center !important;
     }
 
     #homepage-portfolio,
@@ -282,23 +430,19 @@
         gap: 20px !important;
     }
 
-    /* ── FOOTER ─────────────────────────────────────── */
+    /* ══════════════════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════════════════ */
 
     footer#contact {
         padding: 50px 0 20px !important;
     }
 
-    /* Footer grid → 2-col on mobile (brand + links), 1-col on very small */
     footer#contact > div > div[style*="grid-template-columns: repeat(auto-fit"] {
         grid-template-columns: 1fr 1fr !important;
         gap: 30px !important;
     }
 
-    footer#contact h4[style*="font-size: 1.8rem"] {
-        font-size: 1.3rem !important;
-    }
-
-    /* Bottom bar */
     footer#contact div[style*="border-top: 1px solid"] {
         flex-direction: column !important;
         text-align: center !important;
@@ -306,8 +450,14 @@
     }
 }
 
-/* Extra small screens (< 480px) */
+/* ══════════════════════════════════════════════════
+   EXTRA SMALL SCREENS (< 480px)
+══════════════════════════════════════════════════ */
 @media (max-width: 480px) {
+
+    header.hero {
+        max-height: 460px !important;
+    }
 
     .hero-title {
         font-size: 1.9rem !important;
@@ -323,7 +473,7 @@
         grid-template-columns: 1fr !important;
     }
 
-    /* Why choose us 5-col → 1-col */
+    /* Why choose us 5-col → 1-col on tiny screens */
     #why-choose-us div[style*="grid-template-columns: repeat(5, 1fr)"] {
         grid-template-columns: 1fr !important;
     }
