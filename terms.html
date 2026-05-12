@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service | THE GENIUS AGENCY</title>
+    <link rel="icon" type="image/png" href="Logo/thegeniusagency.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #1a1500 !important;
+            background-image: radial-gradient(ellipse at 50% 0%, rgba(184,149,14,0.18) 0%, rgba(184,149,14,0.06) 45%, transparent 75%) !important;
+            background-attachment: fixed !important;
+        }
+        .glass {
+            background: rgba(184,149,14,0.05) !important;
+            border: 1px solid rgba(184,149,14,0.15) !important;
+            backdrop-filter: none !important;
+        }
+
+        /* Mobile Menu Styles */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 1001;
+        }
+
+        .mobile-nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 22, 40, 0.98);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-overlay.active {
+            display: flex;
+        }
+
+        .mobile-nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: color 0.3s;
+        }
+
+        .mobile-nav-link:hover {
+            color: var(--primary-yellow);
+        }
+
+        .mobile-nav-link.active {
+            color: var(--primary-yellow);
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu { display: none !important; }
+            .mobile-menu-btn { display: block !important; }
+            #user-nav-section { display: none !important; }
+            
+            .nav-pill {
+                padding: 10px 20px !important;
+                width: 92% !important;
+                top: 15px !important;
+            }
+
+            .logo-text { font-size: 0.9rem !important; }
+            .logo-divider { height: 20px !important; margin: 0 8px !important; }
+            
+            header.container { padding-top: 100px !important; }
+            header.container h1 { font-size: 2.2rem !important; }
+        }
+    </style>
+    <script src="js/analytics.js"></script>
+</head>
+<body>
+
+            <!-- Navigation -->
+    <nav class="nav-pill" style="display: flex; justify-content: space-between; align-items: center;">
+        <a href="index.html" style="display: flex; align-items: center; text-decoration: none;">
+            <img src="Logo/thegeniusagency.png" alt="Logo" style="height: 38px;">
+            <div class="logo-divider"></div>
+            <div class="logo-text">
+                <span style="color: white; display: block; margin-bottom: 2px; font-size: 0.9em;">THE GENIUS</span>
+                <span style="color: var(--primary-yellow); display: block; font-size: 0.9em;">AGENCY</span>
+            </div>
+        </a>
+
+        <!-- Desktop Menu -->
+        <div class="nav-menu">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="team.html" class="nav-link">Experts</a>
+            <a href="services.html" class="nav-link">Services</a>
+            <a href="portfolio.html" class="nav-link">Portfolios</a>
+            <a href="about.html" class="nav-link">About Us</a>
+            <a href="contact.html" class="nav-link">Contact Us</a>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-btn" id="mobile-menu-toggle">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </nav>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav">
+        <button style="position: absolute; top: 30px; right: 30px; background: none; border: none; color: white; font-size: 2.5rem; cursor: pointer;" id="close-mobile-menu">&times;</button>
+        <a href="index.html" class="mobile-nav-link">Home</a>
+        <a href="team.html" class="mobile-nav-link">Experts</a>
+        <a href="services.html" class="mobile-nav-link">Services</a>
+        <a href="portfolio.html" class="mobile-nav-link">Portfolios</a>
+        <a href="about.html" class="mobile-nav-link">About Us</a>
+        <a href="contact.html" class="mobile-nav-link">Contact Us</a>
+        <a href="login.html" class="btn btn-primary" style="margin-top: 20px; width: 80%;">Client Log In</a>
+    </div>
+
+    <header class="container" style="padding: 160px 40px 50px; text-align: center; background: transparent;">
+        <h1 class="reveal">TERMS OF <span class="text-yellow">SERVICE.</span></h1>
+    </header>
+
+    <section class="container" style="padding-bottom: 100px; color: var(--text-gray);">
+        <div class="glass reveal" style="padding: 40px; line-height: 1.8;">
+
+            <h2 class="text-yellow" style="font-size: 1.5rem; margin-bottom: 20px;">1. Service Model</h2>
+            <p>The Genius Agency operates through a hybrid service model designed to provide flexibility, trust, and convenience for clients.</p>
+            <p style="margin-top: 16px;">Clients may choose to work with us through any of the following channels:</p>
+            <div style="margin: 24px 0; display: flex; flex-direction: column; gap: 16px;">
+                <div style="padding: 18px 22px; background: transparent; border: 1px solid rgba(245,197,66,0.3); border-left: 3px solid #f5c542; border-radius: 8px;">
+                    <strong style="color: #f5c542; display: block; margin-bottom: 6px;">Agency Direct</strong>
+                    Projects are managed, billed, and delivered directly through The Genius Agency platform.
+                </div>
+                <div style="padding: 18px 22px; background: transparent; border: 1px solid rgba(245,197,66,0.3); border-left: 3px solid #f5c542; border-radius: 8px;">
+                    <strong style="color: #f5c542; display: block; margin-bottom: 6px;">Fiverr</strong>
+                    Projects may be executed through selected Fiverr expert profiles where applicable.
+                </div>
+                <div style="padding: 18px 22px; background: transparent; border: 1px solid rgba(245,197,66,0.3); border-left: 3px solid #f5c542; border-radius: 8px;">
+                    <strong style="color: #f5c542; display: block; margin-bottom: 6px;">Upwork</strong>
+                    Projects may be executed through selected Upwork expert profiles where applicable.
+                </div>
+            </div>
+            <p>The chosen service channel determines the payment structure, communication process, and dispute resolution framework.</p>
+
+            <h2 class="text-yellow" style="font-size: 1.5rem; margin: 40px 0 20px;">2. Payment Structure</h2>
+            <p><strong style="color: #f5c542;">For Agency Direct:</strong></p>
+            <ul style="margin: 10px 0 18px 20px; display: flex; flex-direction: column; gap: 8px;">
+                <li>Payments are securely processed through our approved payment partners.</li>
+                <li>Projects begin after payment confirmation.</li>
+            </ul>
+            <p><strong style="color: #f5c542;">For Fiverr or Upwork:</strong></p>
+            <ul style="margin: 10px 0 0 20px; display: flex; flex-direction: column; gap: 8px;">
+                <li>Payments must follow the official payment systems of those platforms.</li>
+                <li>The Genius Agency does not process or control payments made on Fiverr or Upwork.</li>
+                <li>Platform rules apply.</li>
+            </ul>
+
+            <h2 class="text-yellow" style="font-size: 1.5rem; margin: 40px 0 20px;">3. Platform-Based Protection</h2>
+            <p>Where Fiverr or Upwork is selected, the transaction is governed by the respective platform's policies, protections, dispute systems, and terms of service. Clients are responsible for reviewing those platform policies.</p>
+
+            <h2 class="text-yellow" style="font-size: 1.5rem; margin: 40px 0 20px;">4. Custom Offers</h2>
+            <p>Custom Offers may be issued through The Genius Agency platform, Fiverr, or Upwork — depending on the selected service channel. All project scope, timelines, and pricing will be defined before execution.</p>
+
+            <h2 class="text-yellow" style="font-size: 1.5rem; margin: 40px 0 20px;">5. Communication Policy</h2>
+            <p><strong style="color: #f5c542;">For Agency Direct:</strong> Official communication should remain inside our internal messaging system.</p>
+            <p style="margin-top: 12px;"><strong style="color: #f5c542;">For Fiverr or Upwork:</strong> Communication should remain within those platforms to maintain platform protection.</p>
+
+            <h2 class="text-yellow" style="font-size: 1.5rem; margin: 40px 0 20px;">6. Refunds</h2>
+            <ul style="margin: 0 0 0 20px; display: flex; flex-direction: column; gap: 8px;">
+                <li><strong style="color: #f5c542;">Agency Direct</strong> — Refunds are reviewed internally by The Genius Agency.</li>
+                <li><strong style="color: #f5c542;">Fiverr</strong> — Refunds follow Fiverr's policies.</li>
+                <li><strong style="color: #f5c542;">Upwork</strong> — Refunds follow Upwork's policies.</li>
+            </ul>
+
+            <h2 class="text-yellow" style="font-size: 1.5rem; margin: 40px 0 20px;">7. Disputes</h2>
+            <ul style="margin: 0 0 0 20px; display: flex; flex-direction: column; gap: 8px;">
+                <li><strong style="color: #f5c542;">Agency Direct</strong> — Disputes are handled by The Genius Agency.</li>
+                <li><strong style="color: #f5c542;">Fiverr</strong> — Disputes are handled by Fiverr.</li>
+                <li><strong style="color: #f5c542;">Upwork</strong> — Disputes are handled by Upwork.</li>
+            </ul>
+
+        </div>
+    </section>
+
+            <!-- Footer -->
+        <!-- Footer -->
+        <!-- Footer -->
+        <!-- Footer -->
+    <footer id="contact" class="lux-ivory" style="padding: 80px 0 30px; border-top: 1px solid rgba(0,0,0,0.05); overflow: hidden; background: #fff;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 5%;">
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 50px; margin-bottom: 60px;">
+                
+                <!-- Brand Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+                        <img src="Logo/thegeniusagency.png" alt="Logo" style="height: 64px;" onerror="this.src='../Logo/thegeniusagency.png'">
+                        <div style="color: #111; font-weight: 900; line-height: 1.1; font-size: 1.8rem; letter-spacing: -0.02em;">
+                            THE GENIUS<br><span class="text-yellow" style="color: #F5C542;">AGENCY</span>
+                        </div>
+                    </div>
+                    <p style="color: #555; font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px; max-width: 280px;">We help businesses grow with innovative digital solutions. Your success is our mission.</p>
+                    <div style="display: flex; gap: 12px;">
+                        <!-- Instagram -->
+                        <a href="https://www.instagram.com/thegeniusagencyteamhq" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        </a>
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/TheGeniusAgency" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        </a>
+                        <!-- TikTok -->
+                        <a href="https://www.tiktok.com/@thegeniusagencytm?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+                        </a>
+                        <!-- YouTube -->
+                        <a href="https://www.youtube.com/@The_Genius_Agency" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Quick Links</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="index.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Home</a></li>
+                        <li><a href="team.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Experts</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Services</a></li>
+                        <li><a href="portfolio.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Portfolios</a></li>
+                        <li><a href="index.html#about" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">About Us</a></li>
+                        <li><a href="contact.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Services</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Website Design</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">eCommerce & Shopify</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Mobile App Development</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">UI/UX Design</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Marketing & SEO</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Content & eBooks</a></li>
+                    </ul>
+                </div>
+
+                <!-- For Clients & Contact Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <!-- For Clients -->
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">For Clients</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px;">
+                        <li><a href="privacy.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Privacy Policy</a></li>
+                        <li><a href="terms.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Terms & Conditions</a></li>
+                    </ul>
+
+                    <!-- Contact Us -->
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Contact Us</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 20px;">
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            </div>
+                            <a href="mailto:info@thegeniusagency.com" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#555'">info@thegeniusagency.com</a>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            </div>
+                            <span style="color: #555; font-size: 0.95rem;">Always Available 24/7</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Bottom Bar -->
+            <div style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 35px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 20px;">
+                <p style="color: #666; font-size: 0.85rem; margin: 0; font-weight: 500; text-align: center;">© <span id="year">2026</span> THE GENIUS AGENCY. ALL RIGHTS RESERVED.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Logic
+        const menuToggle = document.getElementById('mobile-menu-toggle');
+        const closeMenu = document.getElementById('close-mobile-menu');
+        const navOverlay = document.getElementById('mobile-nav');
+        
+        menuToggle.addEventListener('click', () => {
+            navOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        closeMenu.addEventListener('click', () => {
+            navOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="main.js"></script>
+
+    <!-- Google Translate Auto-Detect -->
+    <div id="google_translate_element" style="display:none;"></div>
+    <style>
+        .goog-te-banner-frame, .goog-te-balloon-frame { display: none !important; }
+        body { top: 0 !important; }
+        .goog-te-gadget { font-size: 0 !important; }
+        #gt-float-btn {
+            position: fixed; bottom: 24px; right: 24px; z-index: 99999;
+            background: #b8950e; color: #000; border: none; border-radius: 50px;
+            padding: 10px 18px; font-size: 0.82rem; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 20px rgba(184,149,14,0.4);
+            transition: all 0.25s ease; letter-spacing: 0.3px;
+        }
+        #gt-float-btn:hover { background: #f5c542; transform: translateY(-2px); }
+        #gt-float-btn svg { width: 16px; height: 16px; }
+    </style>
+    <button id="gt-float-btn" onclick="document.getElementById('gt-lang-select').style.display = document.getElementById('gt-lang-select').style.display === 'none' ? 'block' : 'none';">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        Translate
+    </button>
+    <div id="gt-lang-select" style="display:none; position:fixed; bottom:70px; right:24px; z-index:99999; background:#fff; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.15); padding:8px; min-width:160px; border:1px solid rgba(184,149,14,0.2);">
+        <div id="google_translate_element2"></div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false, layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element2');
+        }
+        (function() {
+            var lang = (navigator.language || navigator.userLanguage || 'en').split('-')[0];
+            if (lang !== 'en') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(function() { var sel = document.querySelector('.goog-te-combo'); if (sel) { sel.value = lang; sel.dispatchEvent(new Event('change')); } }, 1500);
+                });
+            }
+        })();
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

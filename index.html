@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE GENIUS AGENCY | Elite Freelance Solutions</title>
+    <link rel="icon" type="image/png" href="Logo/thegeniusagency.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <style>
+        /* Mobile Menu Styles */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 1001;
+        }
+
+        .mobile-nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 22, 40, 0.98);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-overlay.active {
+            display: flex;
+        }
+
+        .mobile-nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: color 0.3s;
+        }
+
+        .mobile-nav-link:hover {
+            color: var(--primary-yellow);
+        }
+
+        .mobile-nav-link.active {
+            color: var(--primary-yellow);
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu { display: none !important; }
+            .mobile-menu-btn { display: block !important; }
+            #user-nav-section { display: none !important; }
+            
+            .nav-pill {
+                padding: 10px 20px !important;
+                width: 92% !important;
+                top: 15px !important;
+            }
+
+            .logo-text { font-size: 0.9rem !important; }
+            .logo-divider { height: 20px !important; margin: 0 8px !important; }
+
+            header.hero {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+                min-height: 550px !important;
+            }
+
+            header.hero .hero-main-content {
+                width: 100% !important;
+                padding: 100px 0 40px !important;
+            }
+
+            .hero-title {
+                font-size: 2.2rem !important;
+                margin-bottom: 1rem !important;
+            }
+
+            .hero-subtitle {
+                font-size: 0.9rem !important;
+                line-height: 1.5 !important;
+            }
+
+            .hero-badge {
+                font-size: 0.65rem !important;
+                padding: 6px 12px !important;
+            }
+
+            .hero-btns {
+                flex-direction: column;
+                gap: 12px !important;
+            }
+
+            .hero-btns .btn {
+                width: 100%;
+                padding: 14px 20px !important;
+                font-size: 0.75rem !important;
+            }
+
+            .trust-bar {
+                margin-top: 25px !important;
+            }
+
+            .trust-logos {
+                gap: 15px !important;
+                justify-content: space-between !important;
+            }
+
+            .trust-logos div {
+                font-size: 0.9rem !important;
+            }
+
+            /* Motto Overlay Mobile */
+            header.hero > div[style*="bottom:30px"] {
+                position: relative !important;
+                bottom: 0 !important;
+                right: 0 !important;
+                width: 100% !important;
+                margin-top: 30px !important;
+                text-align: left !important;
+            }
+
+            header.hero > div[style*="bottom:30px"] > div {
+                padding: 10px 15px !important;
+                border-radius: 15px !important;
+                gap: 8px !important;
+                flex-wrap: wrap !important;
+                justify-content: center !important;
+            }
+
+            header.hero span[style*="font-size:1.1rem"] {
+                font-size: 0.75rem !important;
+            }
+        }
+
+        header.hero {
+            background: #0a0a0a !important;
+            position: relative !important;
+            overflow: hidden !important;
+        }
+        /* Full-cover background video */
+        #hero-bg-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            z-index: 0;
+            pointer-events: none;
+            filter: contrast(1.15) saturate(1.2) brightness(1.1);
+            image-rendering: crisp-edges;
+        }
+        /* Dark overlay so text stays readable */
+        #hero-video-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                105deg,
+                rgba(0,0,0,0.45) 0%,
+                rgba(0,0,0,0.20) 45%,
+                rgba(0,0,0,0.05) 100%
+            );
+            z-index: 1;
+            pointer-events: none;
+        }
+        /* Remove all overlays and backgrounds */
+        .hero-main-content::before,
+        .hero-main-content::after {
+            display: none !important;
+            content: none !important;
+            background: none !important;
+        }
+        header.hero .hero-main-content { display: block !important; }
+        header.hero .hero-badge,
+        header.hero .hero-btns,
+        header.hero .trust-bar { background: transparent !important; box-shadow: none !important; }
+        header.hero .hero-content,
+        header.hero .hero-content::before,
+        header.hero .hero-content::after,
+        header.hero .reveal,
+        header.hero .reveal::before,
+        header.hero .reveal::after { background: transparent !important; }
+        /* Fix button backgrounds */
+        header.hero .btn-primary { background-color: #F5C542 !important; color: #000 !important; }
+        header.hero .btn-outline { background: transparent !important; border: 1.5px solid #F5C542 !important; color: #F5C542 !important; }
+    </style>
+    <link rel="stylesheet" href="css/ai-support-styles.css">
+    <script src="js/analytics.js"></script>
+</head>
+<body>
+
+            <!-- Navigation -->
+    <nav class="nav-pill" style="display: flex; justify-content: space-between; align-items: center;">
+        <a href="index.html" style="display: flex; align-items: center; text-decoration: none;">
+            <img src="Logo/thegeniusagency.png" alt="Logo" style="height: 38px;">
+            <div class="logo-divider"></div>
+            <div class="logo-text">
+                <span style="color: white; display: block; margin-bottom: 2px; font-size: 0.9em;">THE GENIUS</span>
+                <span style="color: var(--primary-yellow); display: block; font-size: 0.9em;">AGENCY</span>
+            </div>
+        </a>
+
+        <!-- Desktop Menu -->
+        <div class="nav-menu">
+            <a href="index.html" class="nav-link active">Home</a>
+            <a href="team.html" class="nav-link">Experts</a>
+            <a href="services.html" class="nav-link">Services</a>
+            <a href="portfolio.html" class="nav-link">Portfolios</a>
+            <a href="about.html" class="nav-link">About Us</a>
+            <a href="contact.html" class="nav-link">Contact Us</a>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:15px;" id="user-nav-section">
+            <a href="login.html" class="btn-msg" id="nav-auth-link" style="background: var(--primary-yellow); color: #000; font-weight: 700; padding: 10px 20px; border-radius: 50px; text-decoration: none;">
+                Client Log in / Sign up
+            </a>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-btn" id="mobile-menu-toggle">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </nav>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav">
+        <button style="position: absolute; top: 30px; right: 30px; background: none; border: none; color: white; font-size: 2.5rem; cursor: pointer;" id="close-mobile-menu">&times;</button>
+        <a href="index.html" class="mobile-nav-link active">Home</a>
+        <a href="team.html" class="mobile-nav-link">Experts</a>
+        <a href="services.html" class="mobile-nav-link">Services</a>
+        <a href="portfolio.html" class="mobile-nav-link">Portfolios</a>
+        <a href="about.html" class="mobile-nav-link">About Us</a>
+        <a href="contact.html" class="mobile-nav-link">Contact Us</a>
+        <a href="login.html" class="btn btn-primary" style="margin-top: 20px; width: 80%;">Client Log In</a>
+    </div>
+
+    <!-- Hero Section -->
+    <header class="hero container" style="position:relative;overflow:hidden;padding-left:40px;padding-right:40px;min-height:480px;">
+        <!-- Background Video -->
+        <video id="hero-bg-video" autoplay muted loop playsinline preload="auto">
+            <source src="thegeniushero.mp4?v=2" type="video/mp4">
+        </video>
+        <!-- Overlay for text readability -->
+        <div id="hero-video-overlay"></div>
+        <div class="hero-main-content" style="grid-template-columns:1fr;position:relative;z-index:3;width:50%;max-width:560px;padding:120px 0 30px !important;">
+            <div class="hero-content" style="min-height:auto !important;padding:0 !important;opacity:1 !important;transform:none !important;visibility:visible !important;">
+                <div class="hero-badge" style="opacity:1 !important;transform:none !important;display:inline-flex !important;visibility:visible !important;">
+                    <span class="dot"></span> DIGITAL SOLUTIONS THAT DRIVE RESULTS
+                </div>
+                <h1 class="hero-title">GENIUS<br><span>SOLUTIONS.</span></h1>
+                <p class="hero-subtitle">
+                    Elevate your business with elite freelance talent.<br>
+                    One platform, <span class="text-yellow">infinite possibilities.</span>
+                </p>
+                
+                <div class="hero-btns" style="margin-bottom:15px !important;">
+                    <a href="team.html" class="btn btn-primary btn-round">
+                        Meet The Squad <span class="icon-circle">→</span>
+                    </a>
+                    <a href="contact.html" class="btn btn-outline btn-round">
+                        Start Project <span class="icon-circle">→</span>
+                    </a>
+                </div>
+
+                <!-- Trust Bar -->
+                <div class="trust-bar" style="border: none; padding-top: 0; margin-top:5px; opacity:1 !important; transform:none !important;">
+                    <p class="trust-label" style="font-size: 0.65rem; color: #888; margin-bottom: 0.5rem;">TRUSTED BY BUSINESSES WORLDWIDE</p>
+                    <div class="trust-logos" style="display: flex; gap: 20px; align-items: center; opacity: 0.9;">
+                        <!-- Upwork -->
+                        <div style="font-family: Arial, sans-serif; font-weight: bold; font-size: 1.2rem; letter-spacing: -1px;">Upwork</div>
+                        <!-- Fiverr -->
+                        <div style="font-family: Arial, sans-serif; font-weight: 900; font-size: 1.4rem; letter-spacing: -2px; display: flex; align-items: baseline;">fiverr<div style="width:5px; height:5px; border-radius:50%; background:#00b22d; margin-left:2px;"></div></div>
+                        <!-- Google -->
+                        <div style="font-family: 'Outfit', sans-serif; font-weight: 500; font-size: 1.2rem; letter-spacing: -1px;">Google</div>
+                        <!-- Clutch -->
+                        <div style="font-family: Arial, sans-serif; font-weight: bold; font-size: 1.2rem; letter-spacing: -1px;">Clutch</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Motto Overlay -->
+        <div style="position:absolute;bottom:30px;right:40px;width:58%;z-index:3;text-align:center;">
+            <div style="display:inline-flex;align-items:center;gap:15px;background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);padding:15px 30px;border-radius:50px;border:1px solid rgba(212,175,55,0.3);">
+                <div style="width:8px;height:8px;background:#F5C542;border-radius:50%;"></div>
+                <span style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;color:#fff;letter-spacing:0.5px;">Built on Transparency.</span>
+                <div style="width:1px;height:20px;background:rgba(212,175,55,0.4);"></div>
+                <span style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;color:#F5C542;letter-spacing:0.5px;">Driven by Results.</span>
+                <div style="width:8px;height:8px;background:#F5C542;border-radius:50%;"></div>
+            </div>
+        </div>
+    </header>
+
+        <!-- Services Section -->
+    <section id="services" class="lux-section lux-light" style="padding: 100px 0; position: relative; overflow: hidden;">
+        <div class="container" style="position: relative; z-index: 2;">
+            
+            <!-- Dual Header Layout -->
+            <div style="display: grid; grid-template-columns: 1.2fr 1.5fr; gap: 40px; align-items: stretch; margin-bottom: 80px;">
+                
+                <!-- Left Side: Titles -->
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <h4 class="text-yellow reveal" style="font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px;">
+                        <span style="font-size: 1.2rem;">✦</span> WHAT WE DO <span style="height: 1px; width: 60px; background: var(--primary-yellow); display: inline-block;"></span>
+                    </h4>
+                    <h2 class="reveal" style="font-size: 3.5rem; line-height: 1.1; margin-bottom: 20px; text-transform: none;">Digital Services<br>That <span class="text-yellow">Drive Growth</span></h2>
+                    <p class="reveal" style="color: #666; font-size: 1.05rem; max-width: 450px;">From powerful websites to marketing that converts, we provide end-to-end digital solutions to help your business grow.</p>
+                </div>
+
+                <!-- Right Side: 4 Mini Features -->
+                <div class="reveal" style="height: 100%; display: grid; grid-template-columns: repeat(4, 1fr); border-left: 1px dashed #e0e0e0; padding-left: 20px;">
+                    <!-- Col 1 -->
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border-right: 1px dashed #e0e0e0; padding: 0 15px;">
+                        <div style="width: 55px; height: 55px; background: #fff6da; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; color: var(--primary-black);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2l.5-.5a5.4 5.4 0 0 0 1 1l.5.5c1.5 1.5 5.25 2 5.25 2s-.5-3.75-2-5.25l-.5-.5a5.4 5.4 0 0 0-1-1l-.5-.5C11.5 8 13.5 6 15 4c1-1-1-3-2-2-2 1.5-4 3.5-5 5.5l-.5-.5a5.4 5.4 0 0 0-1-1l-.5-.5c-1.5-1.5-5.25-2-5.25-2s.5 3.75 2 5.25l.5.5a5.4 5.4 0 0 0 1 1l.5.5z"></path></svg>
+                        </div>
+                        <h5 style="font-size: 0.8rem; font-weight: 800; margin-bottom: 8px;">Result Driven</h5>
+                        <p style="font-size: 0.65rem; color: #777; line-height: 1.5;">Strategies focused on real growth and impact.</p>
+                    </div>
+                    <!-- Col 2 -->
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border-right: 1px dashed #e0e0e0; padding: 0 15px;">
+                        <div style="width: 55px; height: 55px; background: #fff6da; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; color: var(--primary-black);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                        </div>
+                        <h5 style="font-size: 0.8rem; font-weight: 800; margin-bottom: 8px;">Quality Focused</h5>
+                        <p style="font-size: 0.65rem; color: #777; line-height: 1.5;">Top-quality solutions built to last.</p>
+                    </div>
+                    <!-- Col 3 -->
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border-right: 1px dashed #e0e0e0; padding: 0 15px;">
+                        <div style="width: 55px; height: 55px; background: #fff6da; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; color: var(--primary-black);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        </div>
+                        <h5 style="font-size: 0.8rem; font-weight: 800; margin-bottom: 8px;">On-Time Delivery</h5>
+                        <p style="font-size: 0.65rem; color: #777; line-height: 1.5;">We respect your time and deliver on it.</p>
+                    </div>
+                    <!-- Col 4 -->
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 15px;">
+                        <div style="width: 55px; height: 55px; background: #fff6da; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; color: var(--primary-black);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path><path d="M7 21v-2a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </div>
+                        <h5 style="font-size: 0.8rem; font-weight: 800; margin-bottom: 8px;">Ongoing Support</h5>
+                        <p style="font-size: 0.65rem; color: #777; line-height: 1.5;">We're here even after your project is done.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3x2 Grid Cards -->
+            <div class="services-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-bottom: 60px;">
+                <!-- Card 1 -->
+                <div class="svc-card reveal">
+                    <div class="svc-card-header">
+                        <div class="svc-icon-box">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                        </div>
+                        <div class="svc-num-badge">01</div>
+                    </div>
+                    <h3>Website Design</h3>
+                    <p>Beautiful, responsive websites that create lasting impressions and represent your brand.</p>
+                    <a href="team.html" class="learn-more">Learn More →</a>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="svc-card reveal">
+                    <div class="svc-card-header">
+                        <div class="svc-icon-box">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                        </div>
+                        <div class="svc-num-badge">02</div>
+                    </div>
+                    <h3>Web Development</h3>
+                    <p>Custom web applications built for performance, scalability, and seamless user experiences.</p>
+                    <a href="team.html" class="learn-more">Learn More →</a>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="svc-card reveal">
+                    <div class="svc-card-header">
+                        <div class="svc-icon-box">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                        </div>
+                        <div class="svc-num-badge">03</div>
+                    </div>
+                    <h3>Mobile App Development</h3>
+                    <p>High-performance mobile apps for iOS & Android designed to engage users and grow your business.</p>
+                    <a href="team.html" class="learn-more">Learn More →</a>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="svc-card reveal">
+                    <div class="svc-card-header">
+                        <div class="svc-icon-box">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+                        </div>
+                        <div class="svc-num-badge">04</div>
+                    </div>
+                    <h3>UI/UX Design</h3>
+                    <p>User-centered designs that enhance experiences and drive higher engagement.</p>
+                    <a href="team.html" class="learn-more">Learn More →</a>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="svc-card reveal">
+                    <div class="svc-card-header">
+                        <div class="svc-icon-box">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                        </div>
+                        <div class="svc-num-badge">05</div>
+                    </div>
+                    <h3>Digital Marketing</h3>
+                    <p>Data-driven strategies that grow your brand and boost sales.</p>
+                    <a href="team.html" class="learn-more">Learn More →</a>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="svc-card reveal">
+                    <div class="svc-card-header">
+                        <div class="svc-icon-box">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+                        </div>
+                        <div class="svc-num-badge">06</div>
+                    </div>
+                    <h3>Graphics Design</h3>
+                    <p>Creative visual designs that communicate your brand and capture attention.</p>
+                    <a href="team.html" class="learn-more">Learn More →</a>
+                </div>
+            </div>
+
+            <!-- CTA Banner Floating Over Wavy Bottom -->
+            <div class="cta-banner-floating reveal">
+                <div class="cta-banner-content">
+                    <div class="cta-banner-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    </div>
+                    <div class="cta-banner-text">
+                        Ready to take your business<br>to the <span class="text-yellow">next level?</span>
+                    </div>
+                </div>
+                <a href="contact.html" class="cta-btn">
+                    Start Your Project
+                    <div class="cta-btn-arrow">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
+                    </div>
+                </a>
+            </div>
+            
+        </div>
+        
+        <!-- Wavy background accent for the bottom (recreated via SVG shape) -->
+        <svg style="position: absolute; bottom: 0; left: 0; width: 100%; height: auto; z-index: 1; transform: translateY(10px);" viewBox="0 0 1440 320" preserveAspectRatio="none">
+            <path fill="#fffef9" fill-opacity="1" d="M0,192L48,208C96,224,192,256,288,261.3C384,267,480,245,576,213.3C672,181,768,139,864,138.7C960,139,1056,181,1152,197.3C1248,213,1344,203,1392,197.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
+    </section>
+
+        <!-- Why Choose Us -->
+    <section id="why-choose-us" class="lux-section lux-charcoal" style="padding: 50px 0; border-top: 1px solid var(--glass-border);">
+        <div class="container">
+            <div style="display: flex; gap: 40px; align-items: stretch; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 60px; flex-wrap: wrap;">
+                
+                <!-- Left Titles -->
+                <div style="flex: 1.2; min-width: 300px; border-right: 1px solid rgba(255,255,255,0.05); padding-right: 40px; display: flex; flex-direction: column; justify-content: center;">
+                    <div style="font-size: 0.75rem; letter-spacing: 1px; color: var(--primary-yellow); font-weight: 800; margin-bottom: 15px; text-transform: uppercase;">WHY CHOOSE US</div>
+                    <div style="height: 2px; width: 35px; background: var(--primary-yellow); margin-bottom: 25px;"></div>
+                    <h2 class="reveal" style="font-size: 2rem; line-height: 1.15; margin: 0 0 20px 0; text-transform: none; font-weight: 800; color: white;">We Build Solutions<br>That <span class="text-yellow">Deliver Results</span></h2>
+                    <p class="reveal" style="font-size: 0.95rem; color: #a0a0a0; line-height: 1.6; max-width: 90%;">We focus on what matters most — delivering high-quality solutions that drive real growth for your business.</p>
+                </div>
+                
+                <!-- Right Grid of 5 Features -->
+                <div style="flex: 3; display: grid; grid-template-columns: repeat(5, 1fr);">
+                    
+                    <!-- Reason 1 -->
+                    <div class="reason text-center reveal" style="padding: 0 15px; border-right: 1px solid rgba(255,255,255,0.07); display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+                        <div style="width: 75px; height: 75px; border-radius: 50%; border: 1.5px solid var(--primary-yellow); display: flex; align-items: center; justify-content: center; margin-bottom: 25px; color: var(--primary-yellow);">
+                            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle><line x1="22" y1="2" x2="15.8" y2="8.2"></line><line x1="22" y1="2" x2="19" y2="3"></line><line x1="22" y1="2" x2="21" y2="5"></line></svg>
+                        </div>
+                        <h4 style="font-size: 0.95rem; font-weight: 700; color: white; margin-bottom: 12px; white-space: nowrap;">Results Driven</h4>
+                        <div style="height: 2px; width: 25px; background: var(--primary-yellow); margin-bottom: 15px;"></div>
+                        <p style="font-size: 0.8rem; color: #a0a0a0; line-height: 1.6; text-align: center;">Focused on measurable outcomes that grow your business.</p>
+                    </div>
+
+                    <!-- Reason 2 -->
+                    <div class="reason text-center reveal" style="padding: 0 15px; border-right: 1px solid rgba(255,255,255,0.07); display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+                        <div style="width: 75px; height: 75px; border-radius: 50%; border: 1.5px solid var(--primary-yellow); display: flex; align-items: center; justify-content: center; margin-bottom: 25px; color: var(--primary-yellow);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9Z"></path><path d="M12 22 8 9"></path><path d="M12 22 16 9"></path><path d="M2 9h20"></path><path d="M6 3 8 9"></path><path d="M18 3 16 9"></path></svg>
+                        </div>
+                        <h4 style="font-size: 0.95rem; font-weight: 700; color: white; margin-bottom: 12px; white-space: nowrap;">Premium Quality</h4>
+                        <div style="height: 2px; width: 25px; background: var(--primary-yellow); margin-bottom: 15px;"></div>
+                        <p style="font-size: 0.8rem; color: #a0a0a0; line-height: 1.6; text-align: center;">Top-tier designs and clean code with high performance.</p>
+                    </div>
+
+                    <!-- Reason 3 -->
+                    <div class="reason text-center reveal" style="padding: 0 15px; border-right: 1px solid rgba(255,255,255,0.07); display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+                        <div style="width: 75px; height: 75px; border-radius: 50%; border: 1.5px solid var(--primary-yellow); display: flex; align-items: center; justify-content: center; margin-bottom: 25px; color: var(--primary-yellow);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="9" y1="10" x2="15" y2="10"></line><line x1="12" y1="10" x2="12" y2="10"></line></svg>
+                        </div>
+                        <h4 style="font-size: 0.9rem; font-weight: 700; color: white; margin-bottom: 12px; white-space: nowrap;">Clear Communication</h4>
+                        <div style="height: 2px; width: 25px; background: var(--primary-yellow); margin-bottom: 15px;"></div>
+                        <p style="font-size: 0.8rem; color: #a0a0a0; line-height: 1.6; text-align: center;">We keep you informed at every step of the way.</p>
+                    </div>
+
+                    <!-- Reason 4 -->
+                    <div class="reason text-center reveal" style="padding: 0 15px; border-right: 1px solid rgba(255,255,255,0.07); display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+                        <div style="width: 75px; height: 75px; border-radius: 50%; border: 1.5px solid var(--primary-yellow); display: flex; align-items: center; justify-content: center; margin-bottom: 25px; color: var(--primary-yellow);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        </div>
+                        <h4 style="font-size: 0.95rem; font-weight: 700; color: white; margin-bottom: 12px; white-space: nowrap;">On-Time Delivery</h4>
+                        <div style="height: 2px; width: 25px; background: var(--primary-yellow); margin-bottom: 15px;"></div>
+                        <p style="font-size: 0.8rem; color: #a0a0a0; line-height: 1.6; text-align: center;">We respect your time and deliver on schedule.</p>
+                    </div>
+
+                    <!-- Reason 5 -->
+                    <div class="reason text-center reveal" style="padding: 0 15px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+                        <div style="width: 75px; height: 75px; border-radius: 50%; border: 1.5px solid var(--primary-yellow); display: flex; align-items: center; justify-content: center; margin-bottom: 25px; color: var(--primary-yellow);">
+                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                        </div>
+                        <h4 style="font-size: 0.95rem; font-weight: 700; color: white; margin-bottom: 12px; white-space: nowrap;">Secure & Reliable</h4>
+                        <div style="height: 2px; width: 25px; background: var(--primary-yellow); margin-bottom: 15px;"></div>
+                        <p style="font-size: 0.8rem; color: #a0a0a0; line-height: 1.6; text-align: center;">We build secure, reliable solutions you can trust.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 20% Offer Banner -->
+            <div class="reveal" style="margin-top: 60px; background: radial-gradient(circle at center, rgba(247,197,46,0.03) 0%, rgba(10,10,10,1) 100%); border: 1px solid rgba(247, 197, 46, 0.3); border-radius: 16px; padding: 50px; display: flex; justify-content: space-between; align-items: stretch; flex-wrap: nowrap; gap: 30px;">
+                
+                <!-- Left -->
+                <div style="flex: 1.2; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="display: inline-block; align-self: flex-start; padding: 8px 20px; border: 1px solid var(--primary-yellow); color: var(--primary-yellow); font-size: 0.75rem; font-weight: 800; border-radius: 100px; margin-bottom: 25px;">LIMITED TIME OFFER</div>
+                    <h2 style="font-size: 2.6rem; font-weight: 800; margin: 0 0 15px 0; line-height: 1.15; color: white; text-transform: uppercase;">EXCLUSIVE <span class="text-yellow">20%</span><br><span class="text-yellow">LAUNCH</span> OFFER</h2>
+                    <p style="color: #a0a0a0; font-size: 0.95rem; line-height: 1.6; max-width: 90%; margin: 0;">Get 20% off on any service when you start your project through our website.<br>This offer is for new clients only.</p>
+                </div>
+                
+                <!-- Center -->
+                <div style="flex: 1; border-left: 1px solid rgba(255,255,255,0.07); border-right: 1px solid rgba(255,255,255,0.07); padding: 0 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <h2 class="text-yellow" style="font-size: 6.5rem; font-weight: 900; margin: 0; line-height: 1; letter-spacing: -2px;">20%</h2>
+                    <h3 style="margin: 10px 0; color: white; font-size: 1.5rem; font-weight: 800; letter-spacing: 1px;">OFF</h3>
+                    <p style="font-size: 0.8rem; color: #888; letter-spacing: 3px; margin: 0; font-weight: 700;">ON SERVICE CHARGE</p>
+                </div>
+                
+                <!-- Right -->
+                <div style="flex: 1; padding-left: 30px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.95rem; color: white;">
+                        <li style="margin-bottom: 18px; display: flex; align-items: center; gap: 15px;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary-yellow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 11 15 16 9"></polyline></svg>
+                            For new projects only
+                        </li>
+                        <li style="margin-bottom: 18px; display: flex; align-items: center; gap: 15px;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary-yellow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 11 15 16 9"></polyline></svg>
+                            Limited time offer
+                        </li>
+                        <li style="margin-bottom: 25px; display: flex; align-items: center; gap: 15px;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary-yellow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 11 15 16 9"></polyline></svg>
+                            Start your project today
+                        </li>
+                    </ul>
+                    <button id="view-coupon-btn" style="background: var(--primary-yellow); color: var(--primary-black); border: none; font-weight: 800; font-size: 1.1rem; padding: 15px 30px; border-radius: 100px; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: auto; transition: transform 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
+                        View Coupon &rarr;
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experts Section -->
+    <section id="experts" class="lux-section lux-ivory" style="padding: 60px 0; overflow: hidden;">
+        <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 0 20px;">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 60px; font-size: 2.8rem; font-weight: 800; text-transform: uppercase;">THE GENIUS <span class="text-yellow">EXPERTS</span></h2>
+            
+            <div class="swiper experts-swiper reveal">
+                <div class="swiper-wrapper" id="experts-track">
+                    <!-- Dynamic swiper slides will go here via JS -->
+                </div>
+                <!-- Controls -->
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="lux-section lux-bronze" style="padding: 50px 0 50px 0;">
+        <div class="container">
+            <h2 class="reveal">OUR EXCELLENCE <span class="text-yellow">PORTFOLIO</span></h2>
+            <div class="grid grid-3" id="homepage-portfolio">
+                <!-- Handpicked portfolio items injected here via JS -->
+            </div>
+            <div style="text-align: center; margin-top: 50px;">
+                <a href="portfolio.html" class="btn btn-outline">VIEW FULL PORTFOLIO</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Process Section -->
+    <section id="process" class="lux-section lux-ivory" style="padding: 100px 0; position: relative; overflow: hidden;">
+        <div class="container">
+            <h4 class="text-yellow reveal" style="font-size: 0.8rem; letter-spacing: 2px; margin-bottom: 15px; font-weight: 800;">OUR PROCESS</h4>
+            <h2 class="reveal" style="font-size: 2.8rem; line-height: 1.1; margin-bottom: 80px; font-weight: 900; letter-spacing: -0.02em; color: #111;">A Simple Process for <span class="text-yellow">Maximum Impact</span></h2>
+
+            <div class="process-timeline reveal" style="display: flex; justify-content: space-between; position: relative; gap: 20px;">
+                <!-- Step 1 -->
+                <div style="text-align: center; position: relative; z-index: 2; flex: 1;">
+                    <div style="width: 80px; height: 80px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">🔍</div>
+                    <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+                        <span class="text-yellow" style="font-weight: 900; font-size: 0.9rem; letter-spacing: 1px;">STEP 01</span> 
+                        <h4 style="margin: 0; font-size: 1.2rem; color: #111; font-weight: 800;">Discovery</h4>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #555; margin-top: 15px; line-height: 1.6;">Understanding your business goals and requirements.</p>
+                </div>
+                <!-- Step 2 -->
+                <div style="text-align: center; position: relative; z-index: 2; flex: 1;">
+                    <div style="width: 80px; height: 80px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">📋</div>
+                    <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+                        <span class="text-yellow" style="font-weight: 900; font-size: 0.9rem; letter-spacing: 1px;">STEP 02</span> 
+                        <h4 style="margin: 0; font-size: 1.2rem; color: #111; font-weight: 800;">Plan</h4>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #555; margin-top: 15px; line-height: 1.6;">Creating a strategic roadmap for your success.</p>
+                </div>
+                <!-- Step 3 -->
+                <div style="text-align: center; position: relative; z-index: 2; flex: 1;">
+                    <div style="width: 80px; height: 80px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">🖌️</div>
+                    <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+                        <span class="text-yellow" style="font-weight: 900; font-size: 0.9rem; letter-spacing: 1px;">STEP 03</span> 
+                        <h4 style="margin: 0; font-size: 1.2rem; color: #111; font-weight: 800;">Design</h4>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #555; margin-top: 15px; line-height: 1.6;">Designing stunning and intuitive user interfaces.</p>
+                </div>
+                <!-- Step 4 -->
+                <div style="text-align: center; position: relative; z-index: 2; flex: 1;">
+                    <div style="width: 80px; height: 80px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">⚙️</div>
+                    <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+                        <span class="text-yellow" style="font-weight: 900; font-size: 0.9rem; letter-spacing: 1px;">STEP 04</span> 
+                        <h4 style="margin: 0; font-size: 1.2rem; color: #111; font-weight: 800;">Develop</h4>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #555; margin-top: 15px; line-height: 1.6;">Building high-performance solutions with clean code.</p>
+                </div>
+                <!-- Step 5 -->
+                <div style="text-align: center; position: relative; z-index: 2; flex: 1;">
+                    <div style="width: 80px; height: 80px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">🚀</div>
+                    <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+                        <span class="text-yellow" style="font-weight: 900; font-size: 0.9rem; letter-spacing: 1px;">STEP 05</span> 
+                        <h4 style="margin: 0; font-size: 1.2rem; color: #111; font-weight: 800;">Launch</h4>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #555; margin-top: 15px; line-height: 1.6;">Thorough testing and a successful project launch.</p>
+                </div>
+            </div>
+
+            <!-- Testimonial and Free Consultation Split -->
+            <div style="display: flex; gap: 30px; margin-top: 100px; flex-wrap: wrap;">
+                <!-- Testimonial -->
+                <div class="reveal glass-card" style="flex: 1; min-width: 300px; padding: 50px; border-radius: 24px; border: 1px solid rgba(0,0,0,0.05); background: rgba(0,0,0,0.02);">
+                    <h4 class="text-yellow" style="font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 30px; font-weight: 800;">WHAT OUR CLIENTS SAY</h4>
+                    <div style="display: flex; gap: 20px;">
+                        <div class="text-yellow" style="font-size: 4rem; line-height: 1; font-family: serif; opacity: 0.3;">"</div>
+                        <div>
+                            <p style="font-size: 1rem; color: #444; line-height: 1.8; margin-bottom: 30px; font-style: italic;">TGA Experts were great to work with. They took the time to fully understand the project, handled all requested changes efficiently, and remained available throughout the entire process. Communication was clear, and their delivery was professional and reliable.</p>
+                            <div style="display: flex; gap: 20px; align-items: center;">
+                                <div style="width: 60px; height: 60px; border-radius: 50%; background: #eee; border: 1px solid var(--primary-yellow); display: flex; align-items: center; justify-content: center; font-size: 1.8rem;">👨🏻</div>
+                                <div>
+                                    <h4 style="margin: 0; font-size: 1rem; color: #111; font-weight: 800;">Gedeon C.T</h4>
+                                    <p style="margin: 0; font-size: 0.8rem; color: #666;">CEO, Routeza</p>
+                                    <div class="text-yellow" style="font-size: 0.9rem; letter-spacing: 2px; margin-top: 5px;">★★★★★</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Consultation Box -->
+                <div class="reveal glass-card" style="flex: 1; min-width: 320px; padding: 50px; border-radius: 30px; border: 1px solid rgba(184,149,14,0.3); background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(247,197,46,0.05)); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; box-shadow: 0 30px 60px rgba(184,149,14,0.1);">
+                    <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: var(--primary-yellow); border-radius: 50%; opacity: 0.08; filter: blur(50px);"></div>
+                    
+                    <div>
+                        <div style="width: 60px; height: 60px; background: rgba(184, 149, 14, 0.1); border-radius: 18px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; border: 1px solid rgba(184, 149, 14, 0.2);">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#B48712" stroke-width="2.5"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14v-4z"></path><rect x="3" y="6" width="12" height="12" rx="2" ry="2"></rect></svg>
+                        </div>
+                        <h2 style="font-size: 2rem; margin-bottom: 15px; color: #111; font-weight: 900; line-height: 1.1; letter-spacing: -0.03em;">Book a <span style="color: #B48712;">VIP</span> Strategy Call</h2>
+                        <p style="font-size: 1rem; color: #444; margin-bottom: 30px; line-height: 1.6; font-weight: 500;">Direct access to our lead architects. Map out your project scope, timeline, and tech stack in 30 minutes.</p>
+                        
+                        <ul style="list-style: none; padding: 0; margin: 0 0 35px 0; display: flex; flex-direction: column; gap: 12px;">
+                            <li style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: #555; font-weight: 600;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Expert Technical Advice
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: #555; font-weight: 600;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Accurate Cost Estimates
+                            </li>
+                        </ul>
+                    </div>
+
+                    <a href="contact.html#video-consultation" style="background: #111; color: #fff; padding: 20px 35px; font-size: 1rem; font-weight: 800; border-radius: 14px; text-decoration: none; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 15px 30px rgba(0,0,0,0.15);" onmouseover="this.style.background='var(--primary-yellow)'; this.style.color='#000'; this.style.transform='translateY(-3px)';" onmouseout="this.style.background='#111'; this.style.color='#fff'; this.style.transform='translateY(0)';">
+                        Schedule Call Now <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project CTA Banner -->
+    <section class="lux-section lux-richblack" style="padding: 60px 0;">
+        <div class="container">
+            <div class="reveal" style="background: var(--primary-yellow); border-radius: 16px; padding: 50px; display: flex; justify-content: space-between; align-items: stretch; flex-wrap: wrap; gap: 40px; box-shadow: 0 15px 40px rgba(247, 197, 46, 0.2);">
+                <div style="display: flex; flex-direction: column; justify-content: space-between; padding: 10px 20px 10px 0; min-height: 100%; gap: 20px; flex: 2; min-width: 300px;">
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <span style="background: white; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 6px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; color: var(--secondary-black); display: flex; align-items: center; gap: 8px;">
+                            <span class="pulse-dot" style="display: inline-block; width: 6px; height: 6px; background: #00c853; border-radius: 50%; box-shadow: 0 0 8px #00c853; position: static;"></span>
+                            ACCEPTING NEW PROJECTS
+                        </span>
+                        <span style="background: white; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 6px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; color: var(--secondary-black); display: flex; align-items: center; gap: 8px;">
+                            ⚡ FAST EXECUTION
+                        </span>
+                    </div>
+                    <h2 style="font-size: 2.2rem; margin: 0; color: var(--secondary-black); line-height: 1.2; font-weight: 900; letter-spacing: -0.02em;">Ready to Take Your Business<br>to the <span style="background: var(--secondary-black); color: var(--primary-yellow); padding: 4px 12px; border-radius: 8px; display: inline-block; transform: rotate(-2deg); margin-left: 5px; box-shadow: 0 10px 20px rgba(0,0,0,0.15);">Next Level?</span></h2>
+                    
+                    <div style="display: flex; align-items: center; gap: 15px; margin-top: 5px;">
+                        <div style="display: flex;">
+                            <img src="Logo/thegeniusagency.png" style="width: 45px; height: 45px; border-radius: 50%; border: 3px solid var(--primary-yellow); background: var(--secondary-black); object-fit: contain; padding: 5px; margin-right: -15px; position: relative; z-index: 3; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                            <div style="width: 45px; height: 45px; border-radius: 50%; border: 3px solid var(--primary-yellow); background: white; color: var(--secondary-black); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-right: -15px; position: relative; z-index: 2; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">👔</div>
+                            <div style="width: 45px; height: 45px; border-radius: 50%; border: 3px solid var(--primary-yellow); background: var(--secondary-black); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; position: relative; z-index: 1; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">+100</div>
+                        </div>
+                        <div style="font-size: 0.9rem; color: var(--secondary-black); font-weight: 800; line-height: 1.4;">
+                            Trusted by 100+<br><span style="font-weight: 600; opacity: 0.8;">Growing Brands Globally</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Infographic Group CTA Box -->
+                <div style="flex: 1; min-width: 320px; background: var(--primary-black); padding: 35px; border-radius: 20px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+                    <!-- Decorative blur -->
+                    <div style="position: absolute; top: -30px; right: -30px; width: 150px; height: 150px; background: var(--primary-yellow); border-radius: 50%; opacity: 0.15; filter: blur(30px);"></div>
+                    <div style="position: absolute; bottom: -20px; left: -20px; width: 100px; height: 100px; background: white; border-radius: 50%; opacity: 0.05; filter: blur(20px);"></div>
+                    
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 20px;">
+                        <div style="display: flex; gap: 4px; color: var(--primary-yellow); font-size: 1.1rem;">
+                            <!-- SVG Stars -->
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        </div>
+                        <span style="color: white; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.5px;">5.0 / 5 RATED AGENCY</span>
+                    </div>
+
+                    <p style="color: #ddd; font-weight: 500; margin-bottom: 30px; font-size: 1rem; line-height: 1.6; position: relative; z-index: 2;">Let's build something amazing together.<br><span style="color: white; font-weight: 700;">We're just one message away!</span></p>
+                    
+                    <a href="contact.html" class="btn" style="background: var(--primary-yellow); color: var(--primary-black); border: none; padding: 16px 30px; border-radius: 12px; font-weight: 800; font-size: 0.95rem; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s; position: relative; z-index: 2; box-shadow: 0 8px 25px rgba(247, 197, 46, 0.3);" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">
+                        START YOUR PROJECT 
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- Footer -->
+            <!-- Footer -->
+        <!-- Footer -->
+        <!-- Footer -->
+        <!-- Footer -->
+    <footer id="contact" class="lux-ivory" style="padding: 80px 0 30px; border-top: 1px solid rgba(0,0,0,0.05); overflow: hidden; background: #fff;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 5%;">
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 50px; margin-bottom: 60px;">
+                
+                <!-- Brand Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+                        <img src="Logo/thegeniusagency.png" alt="Logo" style="height: 64px;" onerror="this.src='../Logo/thegeniusagency.png'">
+                        <div style="color: #111; font-weight: 900; line-height: 1.1; font-size: 1.8rem; letter-spacing: -0.02em;">
+                            THE GENIUS<br><span class="text-yellow" style="color: #F5C542;">AGENCY</span>
+                        </div>
+                    </div>
+                    <p style="color: #555; font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px; max-width: 280px;">We help businesses grow with innovative digital solutions. Your success is our mission.</p>
+                    <div style="display: flex; gap: 12px;">
+                        <!-- Instagram -->
+                        <a href="https://www.instagram.com/thegeniusagencyteamhq" target="_blank" rel="noopener" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        </a>
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/TheGeniusAgency" target="_blank" rel="noopener" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        </a>
+                        <!-- TikTok -->
+                        <a href="https://www.tiktok.com/@thegeniusagencytm?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+                        </a>
+                        <!-- YouTube -->
+                        <a href="https://www.youtube.com/@The_Genius_Agency" target="_blank" rel="noopener" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Quick Links</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="index.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Home</a></li>
+                        <li><a href="team.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Experts</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Services</a></li>
+                        <li><a href="portfolio.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Portfolios</a></li>
+                        <li><a href="index.html#about" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">About Us</a></li>
+                        <li><a href="contact.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Services</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Website Design</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">eCommerce & Shopify</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Mobile App Development</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">UI/UX Design</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Marketing & SEO</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Content & eBooks</a></li>
+                    </ul>
+                </div>
+
+                <!-- For Clients & Contact Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <!-- For Clients -->
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">For Clients</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px;">
+                        <li><a href="privacy.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Privacy Policy</a></li>
+                        <li><a href="terms.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Terms & Conditions</a></li>
+                    </ul>
+
+                    <!-- Contact Us -->
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Contact Us</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 20px;">
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            </div>
+                            <a href="mailto:info@thegeniusagency.com" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#555'">info@thegeniusagency.com</a>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            </div>
+                            <span style="color: #555; font-size: 0.95rem;">Always Available 24/7</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Bottom Bar -->
+            <div style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 35px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 20px;">
+                <p style="color: #666; font-size: 0.85rem; margin: 0; font-weight: 500; text-align: center;">© <span id="year">2026</span> THE GENIUS AGENCY. ALL RIGHTS RESERVED.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Video Lightbox Modal -->
+    <div id="video-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
+        <button id="close-video" style="position: absolute; top: 30px; right: 30px; background: none; border: none; color: white; font-size: 3rem; cursor: pointer; z-index: 10001;">&times;</button>
+        <div style="width: 100%; max-width: 1100px; position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 0 50px rgba(0,0,0,0.5);">
+            <video id="modal-video-player" controls style="width: 100%; display: block;"></video>
+        </div>
+    </div>
+
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Mobile Menu Logic
+        const menuToggle = document.getElementById('mobile-menu-toggle');
+        const closeMenu = document.getElementById('close-mobile-menu');
+        const navOverlay = document.getElementById('mobile-nav');
+        
+        menuToggle.addEventListener('click', () => {
+            navOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        });
+        
+        closeMenu.addEventListener('click', () => {
+            navOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close menu on link click
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+    </script>
+    <script src="js/analytics.js"></script>
+
+    <!-- Google Translate Auto-Detect -->
+    <div id="google_translate_element" style="display:none;"></div>
+    <style>
+        .goog-te-banner-frame, .goog-te-balloon-frame { display: none !important; }
+        body { top: 0 !important; }
+        .goog-te-gadget { font-size: 0 !important; }
+        .goog-te-gadget .goog-te-combo { display: none !important; }
+        #gt-float-btn {
+            position: fixed; bottom: 24px; left: 24px; z-index: 99999;
+            background: #b8950e; color: #000; border: none; border-radius: 50px;
+            padding: 10px 18px; font-size: 0.82rem; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 20px rgba(184,149,14,0.4);
+            transition: all 0.25s ease; letter-spacing: 0.3px;
+        }
+        #gt-float-btn:hover { background: #f5c542; transform: translateY(-2px); box-shadow: 0 6px 25px rgba(245,197,66,0.5); }
+        #gt-float-btn svg { width: 16px; height: 16px; }
+        .goog-te-menu-frame { box-shadow: 0 8px 30px rgba(0,0,0,0.2) !important; border-radius: 12px !important; }
+    </style>
+    <button id="gt-float-btn" onclick="document.getElementById('gt-lang-select').style.display = document.getElementById('gt-lang-select').style.display === 'none' ? 'block' : 'none';">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        Translate
+    </button>
+    <div id="gt-lang-select" style="display:none; position:fixed; bottom:70px; left:24px; z-index:99999; background:#fff; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.15); padding:8px; min-width:160px; border:1px solid rgba(184,149,14,0.2);">
+        <div id="google_translate_element2"></div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false,
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element2');
+        }
+        // Auto-detect browser language and translate
+        (function() {
+            var lang = (navigator.language || navigator.userLanguage || 'en').split('-')[0];
+            if (lang !== 'en') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(function() {
+                        var sel = document.querySelector('.goog-te-combo');
+                        if (sel) { sel.value = lang; sel.dispatchEvent(new Event('change')); }
+                    }, 1500);
+                });
+            }
+        })();
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <!-- Coupon Modal -->
+    <div id="coupon-modal" style="display:none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: #fff; width: 100%; max-width: 500px; border-radius: 24px; overflow: hidden; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+            <button id="close-coupon" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; cursor: pointer; color: #888;">&times;</button>
+            <div style="padding: 40px; text-align: center;">
+                <div style="width: 70px; height: 70px; background: rgba(245,197,66,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="#b8950e" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                </div>
+                <h2 style="font-size: 1.8rem; font-weight: 800; color: #111; margin-bottom: 10px;">Your 20% Discount Code</h2>
+                <p style="color: #666; font-size: 0.95rem; margin-bottom: 25px;">Use this code to get 20% off your next project!</p>
+                
+                <div style="background: #f8f8f8; border: 2px dashed #b8950e; padding: 15px; border-radius: 12px; margin-bottom: 30px; position: relative;">
+                    <span id="coupon-code" style="font-family: monospace; font-size: 2rem; font-weight: 900; color: #111; letter-spacing: 5px;">DEGE01</span>
+                    <button onclick="navigator.clipboard.writeText('DEGE01'); alert('Code copied!')" style="display: block; margin: 10px auto 0; background: none; border: none; color: #b8950e; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: underline;">Copy Code</button>
+                </div>
+
+                <div style="text-align: left; background: rgba(245,197,66,0.05); padding: 20px; border-radius: 12px;">
+                    <h4 style="font-size: 0.9rem; font-weight: 800; color: #111; margin-bottom: 10px;">How to use:</h4>
+                    <ul style="padding-left: 20px; font-size: 0.85rem; color: #555; line-height: 1.6;">
+                        <li><strong>On Agency Website:</strong> Paste the code when submitting a custom project inquiry.</li>
+                        <li><strong>On Fiverr/Upwork:</strong> Send the code to our experts in a direct message before ordering.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/ai-support.js" defer></script>
+</body>
+</html>

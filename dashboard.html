@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | The Genius Agency</title>
+    <link rel="icon" type="image/png" href="Logo/thegeniusagency.png">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { margin: 0; background-color: #0B0B0B; color: #fff; font-family: 'Inter', sans-serif; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar: Conversation List */
+        .sidebar { width: 320px; background: #0F1115; border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-header h2 { margin: 0; font-size: 1.2rem; color: var(--primary-yellow); }
+        .conv-list { flex: 1; overflow-y: auto; }
+        .conv-item { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.02); cursor: pointer; transition: 0.2s; }
+        .conv-item:hover, .conv-item.active { background: rgba(255,255,255,0.03); }
+        .conv-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 5px; }
+        .conv-preview { font-size: 0.8rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Main Chat Area */
+        .chat-area { flex: 1; display: flex; flex-direction: column; background: #14171C; }
+        .chat-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; background: #0F1115; }
+        .chat-header-info h3 { margin: 0 0 5px 0; font-size: 1.2rem; }
+        .chat-header-info p { margin: 0; font-size: 0.85rem; color: #aaa; }
+        
+        .messages-container { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .msg { max-width: 70%; padding: 12px 18px; border-radius: 12px; font-size: 0.95rem; line-height: 1.5; }
+        .msg.client { align-self: flex-start; background: #1f2229; border-bottom-left-radius: 2px; }
+        .msg.agency { align-self: flex-end; background: linear-gradient(135deg, rgba(245,197,66,0.1), rgba(212,175,55,0.1)); border: 1px solid rgba(212,175,55,0.2); border-bottom-right-radius: 2px; }
+        .msg-time { font-size: 0.7rem; color: #666; margin-top: 8px; display: block; text-align: right; }
+
+        /* Input Area */
+        .chat-input-area { padding: 20px; background: #0F1115; border-top: 1px solid rgba(255,255,255,0.05); display: flex; gap: 15px; }
+        .chat-input { flex: 1; background: #1a1d24; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 15px; color: white; resize: none; font-family: inherit; }
+        .chat-input:focus { outline: none; border-color: var(--primary-yellow); }
+        .send-btn { background: linear-gradient(90deg, #F5C542, #D4AF37, #B8962E); color: black; border: none; border-radius: 8px; padding: 0 25px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        
+        /* Offer Block */
+        .offer-block { width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--primary-yellow); border-radius: 8px; padding: 20px; margin-top: 10px; }
+        .offer-title { font-size: 1.1rem; font-weight: 700; color: var(--primary-yellow); margin: 0 0 10px 0; }
+        .offer-price { font-size: 1.5rem; font-weight: 800; margin: 10px 0; }
+    </style>
+    <script src="js/analytics.js"></script>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Inbox</h2>
+            <button class="btn btn-outline" style="padding: 5px 10px; font-size: 0.75rem;" onclick="logout()">Logout</button>
+        </div>
+        <div class="conv-list" id="conversation-list">
+            <div style="padding: 20px; color: #666; font-size: 0.85rem; text-align: center;">Loading conversations...</div>
+        </div>
+    </div>
+
+    <!-- Main Chat Area -->
+    <div class="chat-area">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <h3 id="active-chat-title">Select a Conversation</h3>
+                <p id="active-chat-status">Project Status: <span style="color: var(--primary-yellow)">Pending</span></p>
+            </div>
+            <div style="display: flex; gap: 10px;" id="chat-actions">
+                <button class="btn btn-outline" style="padding: 8px 15px; font-size: 0.85rem; display: none;" id="admin-offer-btn">Send Custom Offer</button>
+                <button class="btn btn-outline" style="padding: 8px 15px; font-size: 0.85rem; display: none; color: #fff; background: var(--primary-yellow);" id="admin-deliver-btn">Deliver Project</button>
+                <button class="btn btn-outline" style="padding: 8px 15px; font-size: 0.85rem; display: none; border-color: red; color: red;" id="client-revision-btn">Request Revision</button>
+                <button class="btn btn-outline" style="padding: 8px 15px; font-size: 0.85rem; display: none; border-color: lime; color: lime;" id="client-complete-btn">Mark Complete</button>
+            </div>
+        </div>
+
+        <div class="messages-container" id="messages-list">
+            <div style="margin: auto; color: #666; font-size: 0.9rem;">No conversation selected.</div>
+        </div>
+
+        <div class="chat-input-area">
+            <textarea class="chat-input" id="message-input" rows="1" placeholder="Type a message..."></textarea>
+            <button class="send-btn" id="send-msg-btn">Send</button>
+        </div>
+    </div>
+
+    <!-- Offer Modal (Admin Only) -->
+    <div class="modal-overlay" id="offer-modal" style="display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 2000;">
+        <div style="background: #111; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 12px; width: 90%; max-width: 400px; padding: 30px; position: relative;">
+            <button id="close-offer-btn" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            <h2 style="margin-top: 0; color: var(--primary-yellow); font-size: 1.5rem; margin-bottom: 20px;">Send Custom Offer</h2>
+            
+            <form id="offer-form" style="display: flex; flex-direction: column; gap: 15px;">
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #ccc; font-size: 0.85rem;">Offer Title</label>
+                    <input type="text" id="offer-title" required style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #ccc; font-size: 0.85rem;">Description</label>
+                    <textarea id="offer-desc" rows="3" required style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white;"></textarea>
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #ccc; font-size: 0.85rem;">Price ($)</label>
+                    <input type="number" id="offer-price" required min="1" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #ccc; font-size: 0.85rem;">Delivery Days</label>
+                    <input type="number" id="offer-days" required min="1" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white;">
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="margin-top: 10px; width: 100%; padding: 15px; font-size: 1rem; font-weight: 600; background: linear-gradient(90deg, #F5C542, #D4AF37, #B8962E); color: #000; border: none;">Generate & Send Offer</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

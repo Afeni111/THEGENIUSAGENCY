@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile | The Genius Agency</title>
+<link rel="icon" type="image/png" href="../Logo/thegeniusagency.png">
+<link rel="stylesheet" href="../style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/nav-auth.js"></script>
+<style>
+:root{--gold:#F5C542;--gold-dark:#b8950e;}
+body{display:block!important;}
+.nav-pill{position:fixed!important;top:16px!important;}
+.content{max-width:760px;margin:0 auto;padding:40px 40px 60px;}
+.db-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#b8950e,var(--gold-warm,#F5C542));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.75rem;color:#000;flex-shrink:0;overflow:hidden;}
+.db-avatar img{width:100%;height:100%;object-fit:cover;}
+.umenu-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:0.82rem;font-weight:500;color:rgba(255,255,255,0.75);text-decoration:none;transition:all 0.15s;white-space:nowrap;background:none;border:none;width:100%;text-align:left;cursor:pointer;}
+.umenu-item:hover{background:rgba(245,197,66,0.07);color:#fff;}
+.umenu-item svg{flex-shrink:0;color:rgba(255,255,255,0.35);}
+.umenu-item:hover svg{color:var(--gold-warm,#F5C542);}
+.notif-wrap{position:relative;}
+.notif-btn{width:38px;height:38px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.6);transition:all 0.2s;}
+.notif-btn:hover{color:#fff;border-color:rgba(245,197,66,0.4);}
+
+.page-title{font-size:1.5rem;font-weight:800;color:#fff;margin-bottom:6px;font-family:'Playfair Display',serif;}
+.page-sub{font-size:0.87rem;color:rgba(255,255,255,0.45);margin-bottom:32px;}
+.avatar-section{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:28px;display:flex;align-items:center;gap:24px;margin-bottom:20px;}
+.avatar-large{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#b8950e,#F5C542);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.8rem;color:#000;flex-shrink:0;overflow:hidden;}
+.avatar-large img{width:100%;height:100%;object-fit:cover;}
+.avatar-info h3{font-size:1rem;font-weight:700;color:#fff;margin-bottom:4px;}
+.avatar-info p{font-size:0.8rem;color:rgba(255,255,255,0.4);margin-bottom:12px;}
+.btn-upload{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);padding:8px 16px;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.btn-upload:hover{border-color:#F5C542;color:#F5C542;}
+.form-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:28px;margin-bottom:20px;}
+.form-card-title{font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-group.full{grid-column:1/-1;}
+.form-group label{font-size:0.72rem;font-weight:600;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px;}
+.form-group input,.form-group select{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#fff;padding:11px 14px;border-radius:8px;font-size:0.87rem;font-family:inherit;outline:none;transition:border-color 0.2s;}
+.form-group input:focus,.form-group select:focus{border-color:rgba(245,197,66,0.5);}
+.form-group input::placeholder{color:rgba(255,255,255,0.2);}
+.form-group select option{background:#0d1e36;}
+.form-group input:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-save{background:linear-gradient(135deg,#b8950e,#F5C542);color:#000;border:none;padding:12px 28px;border-radius:8px;font-weight:700;font-size:0.87rem;cursor:pointer;transition:all 0.2s;margin-top:4px;}
+.btn-save:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(245,197,66,0.3);}
+.btn-save:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+.toast{position:fixed;bottom:28px;right:28px;background:#0d1e36;border:1px solid rgba(245,197,66,0.3);border-radius:12px;padding:14px 20px;font-size:0.85rem;font-weight:600;color:#fff;z-index:9999;transform:translateY(80px);opacity:0;transition:all 0.3s;display:flex;align-items:center;gap:10px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{border-color:rgba(34,197,94,0.4);}
+.toast.error{border-color:rgba(239,68,68,0.4);}
+.loading-screen{position:fixed;inset:0;background:#0a1628;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;}
+.loading-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:800;color:#F5C542;margin-bottom:20px;}
+.loading-spinner{width:36px;height:36px;border:3px solid rgba(245,197,66,0.15);border-top-color:#F5C542;border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:768px){.content{padding:28px 20px 48px;}.form-grid{grid-template-columns:1fr;}}
+</style>
+    <script src="../js/analytics.js"></script>
+</head>
+<body>
+
+<div class="loading-screen" id="loading-screen">
+  <div class="loading-logo">THE GENIUS AGENCY</div>
+  <div class="loading-spinner"></div>
+</div>
+
+<!-- MAIN SITE NAV -->
+<nav class="nav-pill" style="display:flex;justify-content:space-between;align-items:center;">
+  <a href="../index.html" style="display:flex;align-items:center;text-decoration:none;">
+    <img src="../Logo/thegeniusagency.png" alt="Logo" style="height:42px;" onerror="this.style.display='none'">
+    <div class="logo-divider"></div>
+    <div class="logo-text">
+      <span style="color:white;display:block;margin-bottom:2px;">THE GENIUS</span>
+      <span style="color:var(--primary-yellow);display:block;">AGENCY</span>
+    </div>
+  </a>
+  <div class="nav-menu">
+    <a href="../index.html" class="nav-link">Home</a>
+    <a href="../team.html" class="nav-link">Experts</a>
+    <a href="../services.html" class="nav-link">Services</a>
+    <a href="../portfolio.html" class="nav-link">Portfolios</a>
+    <a href="../about.html" class="nav-link">About Us</a>
+    <a href="../contact.html" class="nav-link">Contact Us</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;position:relative;" id="user-nav-section">
+    <a href="../login.html" class="nav-link" id="nav-auth-link" style="color: var(--primary-yellow); font-weight: 600;">Client Login</a>
+    <a href="chat.html" class="btn-msg" id="nav-msg-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Message Us
+    </a>
+  </div>
+</nav>
+
+<section class="lux-section lux-charcoal" style="min-height:100vh;padding-top:100px;">
+  <div class="content">
+    <div class="page-title">Account Settings</div>
+    <div class="page-sub">Manage your personal information and security settings.</div>
+
+    <!-- Avatar -->
+    <div class="avatar-section">
+      <div class="avatar-large" id="avatar-display"><span id="avatar-initials">?</span></div>
+      <div class="avatar-info">
+        <h3 id="avatar-name">Loading...</h3>
+        <p id="avatar-email">loading@example.com</p>
+        <input type="file" id="avatar-file-input" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
+        <button class="btn-upload" onclick="document.getElementById('avatar-file-input').click()">Change Photo</button>
+      </div>
+    </div>
+
+    <!-- Personal Info -->
+    <div class="form-card">
+      <div class="form-card-title">Personal Information</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="field-name" placeholder="Your full name">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="field-email" placeholder="your@email.com" disabled style="opacity:0.5;cursor:not-allowed;">
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" id="field-phone" placeholder="+1 234 567 8900">
+        </div>
+        <div class="form-group">
+          <label>Country</label>
+          <select id="field-country">
+            <option value="">Select country</option>
+            <option>Nigeria</option><option>United States</option><option>United Kingdom</option>
+            <option>Canada</option><option>Australia</option><option>Ghana</option>
+            <option>South Africa</option><option>Kenya</option><option>UAE</option>
+            <option>Germany</option><option>France</option><option>India</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:20px;">
+        <button class="btn-save" id="btn-save-profile" onclick="saveProfile()">Save Changes</button>
+      </div>
+    </div>
+
+    <!-- Change Password -->
+    <div class="form-card">
+      <div class="form-card-title">Change Password</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" id="field-new-password" placeholder="Min. 8 characters">
+        </div>
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input type="password" id="field-confirm-password" placeholder="Repeat new password">
+        </div>
+      </div>
+      <div style="margin-top:20px;">
+        <button class="btn-save" id="btn-save-password" onclick="savePassword()">Update Password</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SB_URL = 'https://tjxyxasorunhrtvstwpa.supabase.co';
+const SB_KEY = 'sb_publishable_d3YtyYkTynAVyTEVIN19dQ_-4wZkGHV';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+let currentUser = null;
+let currentProfile = null;
+
+function av(n){return(n||'').split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2)||'?';}
+
+function showToast(msg, type='success'){
+  const t = document.getElementById('toast');
+  t.textContent = (type === 'success' ? '✓ ' : '✗ ') + msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+async function init(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='../login.html';return;}
+  currentUser = session.user;
+  const{data:p}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
+  if(!p){window.location.href='../login.html';return;}
+  currentProfile = p;
+
+  if(p.avatar_url){
+    document.getElementById('avatar-display').innerHTML = `<img src="${p.avatar_url}" alt="Avatar">`;
+  } else {
+    document.getElementById('avatar-initials').textContent = av(p.full_name);
+  }
+  document.getElementById('avatar-name').textContent = p.full_name || 'No name set';
+  document.getElementById('avatar-email').textContent = p.email;
+
+  document.getElementById('field-name').value = p.full_name || '';
+  document.getElementById('field-email').value = p.email || '';
+  document.getElementById('field-phone').value = p.phone || '';
+  document.getElementById('field-country').value = p.country || '';
+
+  document.getElementById('loading-screen').style.display = 'none';
+}
+
+async function saveProfile(){
+  const btn = document.getElementById('btn-save-profile');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  const name = document.getElementById('field-name').value.trim();
+  const phone = document.getElementById('field-phone').value.trim();
+  const country = document.getElementById('field-country').value;
+
+  if(!name){showToast('Name cannot be empty', 'error');btn.disabled=false;btn.textContent='Save Changes';return;}
+
+  const{error} = await sb.from('profiles').update({full_name:name, phone, country, updated_at: new Date().toISOString()}).eq('id', currentUser.id);
+
+  if(error){
+    showToast('Failed to save: ' + error.message, 'error');
+  } else {
+    showToast('Profile saved successfully!');
+    document.getElementById('avatar-initials').textContent = av(name);
+    document.getElementById('avatar-name').textContent = name;
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Save Changes';
+}
+
+async function savePassword(){
+  const btn = document.getElementById('btn-save-password');
+  const newPass = document.getElementById('field-new-password').value;
+  const confirmPass = document.getElementById('field-confirm-password').value;
+
+  if(!newPass || newPass.length < 8){showToast('Password must be at least 8 characters', 'error');return;}
+  if(newPass !== confirmPass){showToast('Passwords do not match', 'error');return;}
+
+  btn.disabled = true;
+  btn.textContent = 'Updating...';
+
+  const{error} = await sb.auth.updateUser({password: newPass});
+
+  if(error){
+    showToast('Failed: ' + error.message, 'error');
+  } else {
+    showToast('Password updated successfully!');
+    document.getElementById('field-new-password').value = '';
+    document.getElementById('field-confirm-password').value = '';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Update Password';
+}
+
+async function uploadAvatar(input){
+  const file = input.files[0];
+  if(!file) return;
+  if(file.size > 2 * 1024 * 1024){showToast('Image must be under 2MB', 'error');return;}
+
+  showToast('Uploading...');
+  const ext = file.name.split('.').pop();
+  const path = `avatars/${currentUser.id}.${ext}`;
+
+  const{error: upErr} = await sb.storage.from('avatars').upload(path, file, {upsert: true});
+  if(upErr){showToast('Upload failed: ' + upErr.message, 'error');return;}
+
+  const{data:{publicUrl}} = sb.storage.from('avatars').getPublicUrl(path);
+  await sb.from('profiles').update({avatar_url: publicUrl}).eq('id', currentUser.id);
+
+  document.getElementById('avatar-display').innerHTML = `<img src="${publicUrl}?t=${Date.now()}" alt="Avatar">`;
+  showToast('Avatar updated!');
+}
+
+init();
+</script>
+    <!-- Footer -->
+        <!-- Footer -->
+        <!-- Footer -->
+        <!-- Footer -->
+    <footer id="contact" class="lux-ivory" style="padding: 80px 0 30px; border-top: 1px solid rgba(0,0,0,0.05); overflow: hidden; background: #fff;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 5%;">
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 50px; margin-bottom: 60px;">
+                
+                <!-- Brand Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+                        <img src="../Logo/thegeniusagency.png" alt="Logo" style="height: 64px;" onerror="this.src='../Logo/thegeniusagency.png'">
+                        <div style="color: #111; font-weight: 900; line-height: 1.1; font-size: 1.8rem; letter-spacing: -0.02em;">
+                            THE GENIUS<br><span class="text-yellow" style="color: #F5C542;">AGENCY</span>
+                        </div>
+                    </div>
+                    <p style="color: #555; font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px; max-width: 280px;">We help businesses grow with innovative digital solutions. Your success is our mission.</p>
+                    <div style="display: flex; gap: 12px;">
+                        <!-- Instagram -->
+                        <a href="https://www.instagram.com/thegeniusagencyteamhq" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        </a>
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/TheGeniusAgency" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        </a>
+                        <!-- TikTok -->
+                        <a href="https://www.tiktok.com/@thegeniusagencytm?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+                        </a>
+                        <!-- YouTube -->
+                        <a href="https://www.youtube.com/@The_Genius_Agency" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Quick Links</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="../index.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Home</a></li>
+                        <li><a href="../team.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Experts</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Services</a></li>
+                        <li><a href="../portfolio.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Portfolios</a></li>
+                        <li><a href="../index.html#about" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">About Us</a></li>
+                        <li><a href="../contact.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Services</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Website Design</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">eCommerce & Shopify</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Mobile App Development</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">UI/UX Design</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Marketing & SEO</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Content & eBooks</a></li>
+                    </ul>
+                </div>
+
+                <!-- For Clients & Contact Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <!-- For Clients -->
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">For Clients</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px;">
+                        <li><a href="../privacy.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Privacy Policy</a></li>
+                        <li><a href="../terms.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Terms & Conditions</a></li>
+                    </ul>
+
+                    <!-- Contact Us -->
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Contact Us</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 20px;">
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            </div>
+                            <a href="mailto:info@thegeniusagency.com" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#555'">info@thegeniusagency.com</a>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            </div>
+                            <span style="color: #555; font-size: 0.95rem;">Always Available 24/7</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Bottom Bar -->
+            <div style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 35px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 20px;">
+                <p style="color: #666; font-size: 0.85rem; margin: 0; font-weight: 500; text-align: center;">© <span id="year">2026</span> THE GENIUS AGENCY. ALL RIGHTS RESERVED.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

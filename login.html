@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Login | The Genius Agency</title>
+    <link rel="icon" type="image/png" href="Logo/thegeniusagency.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f1efe9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .login-topbar {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .login-topbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .login-topbar-logo img {
+            width: 34px; height: 34px;
+            object-fit: contain; border-radius: 8px;
+        }
+        .login-topbar-logo span {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem; font-weight: 700; color: #1a1a1a;
+        }
+        .login-topbar-back {
+            font-size: 0.82rem; color: #666;
+            text-decoration: none;
+            display: flex; align-items: center; gap: 6px;
+            transition: color 0.2s;
+        }
+        .login-topbar-back:hover { color: #b8950e; }
+        .login-topbar-back svg { width: 14px; height: 14px; stroke: currentColor; }
+
+        .login-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            width: 100%;
+            max-width: 980px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 48px rgba(0,0,0,0.15);
+            align-items: stretch;
+        }
+        
+        /* LEFT SIDE - Full bleed photo */
+        .login-left {
+            background: #060d1a;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            min-height: 100%;
+        }
+
+        /* Photo fills the entire left half — positioned top so watermark is cropped out */
+        .login-left::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('LOGINHERO.png') center top / cover no-repeat;
+            z-index: 0;
+        }
+
+        /* Solid black bottom strip to hard-cut any overflow watermark */
+        .login-left::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom,
+                rgba(6,13,26,0.72) 0%,
+                rgba(6,13,26,0.30) 40%,
+                rgba(6,13,26,0.30) 65%,
+                #060d1a 85%,
+                #060d1a 100%);
+            z-index: 0;
+        }
+
+        .left-inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+            padding: 40px 40px;
+        }
+
+        .left-top { flex: 0 0 auto; }
+        .left-middle { flex: 0 0 auto; margin-top: 28px; }
+        .left-bottom { flex: 1; }
+
+        /* Logo area */
+        .left-logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 0;
+        }
+        .left-logo-img {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+            border-radius: 10px;
+            border: 1px solid rgba(245,197,66,0.25);
+            background: rgba(245,197,66,0.06);
+            padding: 4px;
+        }
+        .left-logo-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+        .left-logo-name span { color: #F5C542; }
+
+        /* Badge */
+        .left-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #F5C542;
+            background: rgba(245,197,66,0.08);
+            border: 1px solid rgba(245,197,66,0.25);
+            padding: 6px 14px;
+            border-radius: 30px;
+            margin-bottom: 28px;
+        }
+        .left-badge-dot {
+            width: 6px; height: 6px;
+            background: #F5C542;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(245,197,66,0.8);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.6); }
+        }
+
+        /* Big headline */
+        .left-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            line-height: 1.15;
+            color: #fff;
+            font-weight: 700;
+        }
+        .left-headline span {
+            display: block;
+            color: #F5C542;
+        }
+
+        /* Gold accent line */
+        .left-accent-line {
+            width: 52px;
+            height: 3px;
+            background: linear-gradient(90deg, #F5C542, transparent);
+            border-radius: 2px;
+            margin-bottom: 22px;
+        }
+
+        .left-description {
+            font-size: 0.92rem;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.7;
+            max-width: 400px;
+            margin-bottom: 36px;
+        }
+
+        /* Feature list — clean vertical */
+        .left-features {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 36px;
+        }
+        .left-feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+        .left-feature-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(245,197,66,0.08);
+            border: 1px solid rgba(245,197,66,0.2);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .left-feature-icon svg { width: 16px; height: 16px; stroke: #F5C542; }
+        .left-feature-text strong {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+        .left-feature-text span {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.4);
+            line-height: 1.4;
+        }
+
+        /* Testimonial card */
+        .left-testimonial {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(245,197,66,0.15);
+            border-radius: 16px;
+            padding: 20px 22px;
+            margin-bottom: 28px;
+            position: relative;
+        }
+        .left-testimonial::before {
+            content: '\201C';
+            position: absolute;
+            top: -8px;
+            left: 18px;
+            font-size: 3.5rem;
+            color: #F5C542;
+            font-family: Georgia, serif;
+            line-height: 1;
+            opacity: 0.6;
+        }
+        .left-testimonial p {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.6;
+            margin-bottom: 14px;
+            padding-top: 10px;
+        }
+        .left-testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .left-testimonial-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #b8950e, #F5C542);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #000;
+            flex-shrink: 0;
+        }
+        .left-testimonial-name {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        .left-testimonial-role {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.35);
+        }
+        .left-stars {
+            display: flex;
+            gap: 3px;
+            margin-left: auto;
+        }
+        .left-stars svg { width: 12px; height: 12px; fill: #F5C542; stroke: none; }
+
+        /* Stats row */
+        .left-stats {
+            display: flex;
+            gap: 0;
+            border: 1px solid rgba(245,197,66,0.12);
+            border-radius: 14px;
+            overflow: hidden;
+            background: rgba(0,0,0,0.3);
+        }
+        .left-stat {
+            flex: 1;
+            padding: 16px 12px;
+            text-align: center;
+            position: relative;
+        }
+        .left-stat:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0; top: 20%; bottom: 20%;
+            width: 1px;
+            background: rgba(245,197,66,0.12);
+        }
+        .left-stat-num {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #F5C542;
+            line-height: 1;
+            margin-bottom: 4px;
+            font-family: 'Playfair Display', serif;
+        }
+        .left-stat-label {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.35);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* keep old names alive so nothing breaks */
+        .left-content { position: relative; z-index: 1; }
+        .stats-bar { display: none; }
+        .feature-cards { display: none; }
+        .trust-row { display: none; }
+        .gold-line { display: none; }
+        
+        /* RIGHT SIDE */
+        .login-right {
+            background: #ffffff;
+            padding: 40px 52px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            overflow-y: auto;
+        }
+        
+        .login-form-container {
+            width: 100%;
+            max-width: 420px;
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .form-logo {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            background: rgba(184,149,14,0.1);
+            border: 2px solid rgba(184,149,14,0.3);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .form-logo img { width: 40px; height: 40px; object-fit: contain; }
+        
+        .form-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .form-header p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .form-group { margin-bottom: 20px; }
+        
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #444;
+            margin-bottom: 8px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-wrapper svg {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            stroke: #999;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 14px 14px 14px 44px;
+            background: #fff;
+            border: 1.5px solid #e0ddd8;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            color: #1a1a1a;
+            transition: 0.2s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #b8950e;
+            box-shadow: 0 0 0 3px rgba(184,149,14,0.1);
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+        }
+        
+        .password-toggle svg {
+            position: static;
+            transform: none;
+            width: 18px;
+            height: 18px;
+            stroke: #999;
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #555;
+            cursor: pointer;
+        }
+        
+        .remember-me input {
+            width: 16px;
+            height: 16px;
+            accent-color: #b8950e;
+        }
+        
+        .forgot-password {
+            font-size: 0.85rem;
+            color: #b8950e;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .forgot-password:hover { text-decoration: underline; }
+        
+        .btn-signin {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #b8950e 0%, #d4af37 50%, #f5c542 100%);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.3s;
+            margin-bottom: 24px;
+        }
+        
+        .btn-signin:hover {
+            box-shadow: 0 8px 25px rgba(184,149,14,0.4);
+            transform: translateY(-2px);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            color: #999;
+            font-size: 0.85rem;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0ddd8;
+        }
+        
+        .btn-google {
+            width: 100%;
+            padding: 14px;
+            background: #fff;
+            border: 1.5px solid #e0ddd8;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #444;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.2s;
+            margin-bottom: 24px;
+        }
+        
+        .btn-google:hover {
+            border-color: #b8950e;
+            background: rgba(184,149,14,0.05);
+        }
+        
+        .btn-google img { width: 20px; height: 20px; }
+        
+        .signup-prompt {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 24px;
+        }
+        
+        .signup-prompt a {
+            color: #b8950e;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        .signup-prompt a:hover { text-decoration: underline; }
+        
+        .security-badges {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            color: #888;
+        }
+        
+        .security-badge svg {
+            width: 14px;
+            height: 14px;
+            stroke: #b8950e;
+        }
+        
+        .support-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            background: linear-gradient(135deg, #fff 0%, #faf8f5 100%);
+            border: 1.5px solid rgba(184,149,14,0.15);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+            width: 100%;
+            gap: 20px;
+        }
+        
+        .support-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .support-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, rgba(184,149,14,0.15) 0%, rgba(245,197,66,0.1) 100%);
+            border: 1.5px solid rgba(184,149,14,0.25);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .support-icon svg { width: 22px; height: 22px; stroke: #b8950e; }
+        
+        .support-text strong {
+            display: block;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        
+        .support-text span {
+            font-size: 0.85rem;
+            color: #777;
+            line-height: 1.4;
+            white-space: nowrap;
+        }
+        
+        .btn-chat {
+            padding: 12px 20px;
+            background: #fff;
+            border: 1.5px solid #e0ddd8;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #444;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .btn-chat:hover {
+            background: rgba(184,149,14,0.05);
+            border-color: #b8950e;
+            color: #b8950e;
+            box-shadow: 0 2px 8px rgba(184,149,14,0.15);
+        }
+        
+        .btn-chat svg { width: 18px; height: 18px; }
+        
+        .language-selector {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #fff;
+            border: 1px solid #e0ddd8;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #555;
+            cursor: pointer;
+        }
+        
+        .language-selector img { width: 20px; height: 14px; }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #e0e0e0;
+            text-decoration: none;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 8px 16px;
+            border-radius: 30px;
+            transition: all 0.25s ease;
+            backdrop-filter: blur(6px);
+            letter-spacing: 0.3px;
+        }
+        
+        .back-link:hover {
+            color: #F5C542;
+            background: rgba(184,149,14,0.15);
+            border-color: rgba(184,149,14,0.5);
+            box-shadow: 0 0 16px rgba(184,149,14,0.2);
+            transform: translateX(-2px);
+        }
+        
+        .back-link svg { width: 16px; height: 16px; stroke: currentColor; }
+        
+        /* Responsive */
+        @media (max-width: 700px) {
+            .login-wrapper { grid-template-columns: 1fr; }
+            .login-left { display: none; }
+            .login-right { padding: 40px 28px; border-radius: 16px; }
+            .login-topbar { display: none; }
+        }
+    </style>
+    <script src="js/analytics.js"></script>
+</head>
+<body>
+    <!-- Top bar above the card -->
+    <div class="login-topbar">
+        <a href="index.html" class="login-topbar-logo">
+            <img src="Logo/thegeniusagency.png" alt="Logo">
+            <span>The Genius Agency</span>
+        </a>
+        <a href="index.html" class="login-topbar-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>
+            Back to Home
+        </a>
+    </div>
+
+    <div class="login-wrapper">
+        <!-- LEFT SIDE: photo background, text at top -->
+        <div class="login-left">
+            <div class="left-inner">
+
+                <div class="left-middle">
+                    <h1 class="left-headline">
+                        Your work starts<br>here.
+                    </h1>
+
+                    <ul style="list-style:none; margin-top:20px; display:flex; flex-direction:column; gap:12px;">
+                        <li style="display:flex; align-items:center; gap:10px; color:rgba(255,255,255,0.9); font-size:0.9rem; font-weight:500;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Track every project in real time
+                        </li>
+                        <li style="display:flex; align-items:center; gap:10px; color:rgba(255,255,255,0.9); font-size:0.9rem; font-weight:500;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Chat directly with your expert team
+                        </li>
+                        <li style="display:flex; align-items:center; gap:10px; color:rgba(255,255,255,0.9); font-size:0.9rem; font-weight:500;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Secure payments &amp; milestone delivery
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="left-bottom"></div>
+
+            </div>
+        </div>
+        
+        <!-- RIGHT SIDE -->
+        <div class="login-right">
+            
+            <div class="language-selector">
+                <span>🌐</span>
+                <span>English</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+            
+            <div class="login-form-container" id="login-form-wrapper" style="opacity: 0; transition: opacity 0.3s ease;">
+                <div class="form-header">
+                    <div class="form-logo">
+                        <img src="Logo/thegeniusagency.png" alt="Logo">
+                    </div>
+                    <h1 id="auth-title">Welcome Back</h1>
+                    <p id="auth-subtitle">Sign in to access your client dashboard.</p>
+                </div>
+                
+                <form id="auth-form">
+                    <div class="form-group" id="name-group" style="display: none;">
+                        <label>Full Name</label>
+                        <div class="input-wrapper">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            <input type="text" id="auth-name" placeholder="John Doe">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <div class="input-wrapper">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            <input type="email" id="auth-email" required placeholder="you@example.com">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-wrapper">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            <input type="password" id="auth-password" required placeholder="••••••••">
+                            <button type="button" class="password-toggle" onclick="togglePassword()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn-signin" id="auth-submit">
+                        Sign In
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </button>
+                </form>
+                
+                <div class="divider">or continue with</div>
+                
+                <button class="btn-google">
+                    <img src="https://www.google.com/favicon.ico" alt="Google">
+                    Continue with Google
+                </button>
+                
+                <div class="signup-prompt">
+                    <span id="auth-prompt">Don't have an account?</span>
+                    <a id="auth-toggle">Create Account</a>
+                </div>
+                
+                <div class="security-badges">
+                    <div class="security-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        SSL Protected
+                    </div>
+                    <div class="security-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        Secure Login
+                    </div>
+                    <div class="security-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        Protected Data
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="login.js"></script>
+    <script>
+        function togglePassword() {
+            const input = document.getElementById('auth-password');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+    </script>
+
+        <!-- Footer -->
+        <!-- Footer -->
+        <!-- Footer -->
+        <!-- Footer -->
+    <footer id="contact" class="lux-ivory" style="padding: 80px 0 30px; border-top: 1px solid rgba(0,0,0,0.05); overflow: hidden; background: #fff;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 5%;">
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 50px; margin-bottom: 60px;">
+                
+                <!-- Brand Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+                        <img src="Logo/thegeniusagency.png" alt="Logo" style="height: 64px;" onerror="this.src='../Logo/thegeniusagency.png'">
+                        <div style="color: #111; font-weight: 900; line-height: 1.1; font-size: 1.8rem; letter-spacing: -0.02em;">
+                            THE GENIUS<br><span class="text-yellow" style="color: #F5C542;">AGENCY</span>
+                        </div>
+                    </div>
+                    <p style="color: #555; font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px; max-width: 280px;">We help businesses grow with innovative digital solutions. Your success is our mission.</p>
+                    <div style="display: flex; gap: 12px;">
+                        <!-- Instagram -->
+                        <a href="https://www.instagram.com/thegeniusagencyteamhq" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        </a>
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/TheGeniusAgency" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        </a>
+                        <!-- TikTok -->
+                        <a href="https://www.tiktok.com/@thegeniusagencytm?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+                        </a>
+                        <!-- YouTube -->
+                        <a href="https://www.youtube.com/@The_Genius_Agency" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Quick Links</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="index.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Home</a></li>
+                        <li><a href="team.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Experts</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Services</a></li>
+                        <li><a href="portfolio.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Portfolios</a></li>
+                        <li><a href="index.html#about" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">About Us</a></li>
+                        <li><a href="contact.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Services</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Website Design</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">eCommerce & Shopify</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Mobile App Development</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">UI/UX Design</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Marketing & SEO</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Content & eBooks</a></li>
+                    </ul>
+                </div>
+
+                <!-- For Clients & Contact Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <!-- For Clients -->
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">For Clients</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px;">
+                        <li><a href="privacy.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Privacy Policy</a></li>
+                        <li><a href="terms.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Terms & Conditions</a></li>
+                    </ul>
+
+                    <!-- Contact Us -->
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Contact Us</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 20px;">
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            </div>
+                            <a href="mailto:info@thegeniusagency.com" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#555'">info@thegeniusagency.com</a>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            </div>
+                            <span style="color: #555; font-size: 0.95rem;">Always Available 24/7</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Bottom Bar -->
+            <div style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 35px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 20px;">
+                <p style="color: #666; font-size: 0.85rem; margin: 0; font-weight: 500; text-align: center;">© <span id="year">2026</span> THE GENIUS AGENCY. ALL RIGHTS RESERVED.</p>
+            </div>
+        </div>
+    </footer>
+
+<!-- Google Translate Auto-Detect -->
+    <div id="google_translate_element" style="display:none;"></div>
+    <style>
+        .goog-te-banner-frame, .goog-te-balloon-frame { display: none !important; }
+        body { top: 0 !important; }
+        .goog-te-gadget { font-size: 0 !important; }
+        #gt-float-btn {
+            position: fixed; bottom: 24px; right: 24px; z-index: 99999;
+            background: #b8950e; color: #000; border: none; border-radius: 50px;
+            padding: 10px 18px; font-size: 0.82rem; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 20px rgba(184,149,14,0.4);
+            transition: all 0.25s ease; letter-spacing: 0.3px;
+        }
+        #gt-float-btn:hover { background: #F5C542; transform: translateY(-2px); }
+        #gt-float-btn svg { width: 16px; height: 16px; }
+    </style>
+    <button id="gt-float-btn" onclick="document.getElementById('gt-lang-select').style.display = document.getElementById('gt-lang-select').style.display === 'none' ? 'block' : 'none';">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        Translate
+    </button>
+    <div id="gt-lang-select" style="display:none; position:fixed; bottom:70px; right:24px; z-index:99999; background:#fff; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.15); padding:8px; min-width:160px; border:1px solid rgba(184,149,14,0.2);">
+        <div id="google_translate_element2"></div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false, layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element2');
+        }
+        (function() {
+            var lang = (navigator.language || navigator.userLanguage || 'en').split('-')[0];
+            if (lang !== 'en') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(function() { var sel = document.querySelector('.goog-te-combo'); if (sel) { sel.value = lang; sel.dispatchEvent(new Event('change')); } }, 1500);
+                });
+            }
+        })();
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

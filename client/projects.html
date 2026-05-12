@@ -1,0 +1,396 @@
+<!-- Orders Page - Shows all orders with different statuses -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Projects | The Genius Agency</title>
+<link rel="stylesheet" href="../style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--gold:#F5C542;--gold-dark:#b8950e;}
+body{display:block!important;}
+.nav-pill{position:fixed!important;top:16px!important;z-index:200!important;}
+.db-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#b8950e,#F5C542);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.75rem;color:#000;flex-shrink:0;overflow:hidden;}
+.db-avatar img{width:100%;height:100%;object-fit:cover;}
+.umenu-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:0.82rem;font-weight:500;color:rgba(255,255,255,0.75);text-decoration:none;transition:all 0.15s;white-space:nowrap;background:none;border:none;width:100%;text-align:left;cursor:pointer;}
+.umenu-item:hover{background:rgba(245,197,66,0.07);color:#fff;}
+.umenu-item svg{flex-shrink:0;color:rgba(255,255,255,0.35);}
+.umenu-item:hover svg{color:#F5C542;}
+.notif-wrap{position:relative;}
+.notif-btn{width:38px;height:38px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.6);transition:all 0.2s;}
+.notif-btn:hover{color:#fff;border-color:rgba(245,197,66,0.4);}
+
+/* PAGE */
+.page-wrap{max-width:900px;margin:0 auto;padding:110px 40px 60px;}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:14px;}
+.page-title{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;color:#fff;}
+.page-title span{color:#F5C542;}
+.new-proj-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#b8950e,#F5C542);color:#000;border:none;padding:11px 22px;border-radius:10px;font-weight:700;font-size:0.84rem;cursor:pointer;text-decoration:none;transition:opacity 0.2s;}
+.new-proj-btn:hover{opacity:0.88;}
+
+/* FILTER TABS */
+.filter-tabs{display:flex;gap:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:5px;margin-bottom:24px;width:fit-content;}
+.filter-tab{padding:8px 20px;border-radius:9px;font-size:0.82rem;font-weight:600;color:rgba(255,255,255,0.45);cursor:pointer;border:none;background:transparent;transition:all 0.2s;white-space:nowrap;}
+.filter-tab.active{background:rgba(245,197,66,0.12);color:#F5C542;border:1px solid rgba(245,197,66,0.25);}
+.filter-tab:hover:not(.active){color:rgba(255,255,255,0.75);}
+
+/* PROJECT CARDS */
+.proj-list{display:flex;flex-direction:column;gap:14px;}
+.proj-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px 22px;cursor:pointer;transition:all 0.2s;text-decoration:none;display:block;}
+.proj-card:hover{background:rgba(255,255,255,0.055);border-color:rgba(245,197,66,0.25);transform:translateY(-2px);}
+.proj-top{display:flex;align-items:flex-start;gap:14px;}
+.proj-icon{width:44px;height:44px;border-radius:12px;background:rgba(245,197,66,0.1);border:1px solid rgba(245,197,66,0.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.proj-body{flex:1;min-width:0;}
+.proj-name{font-size:0.97rem;font-weight:700;color:#fff;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.proj-last-msg{font-size:0.8rem;color:rgba(255,255,255,0.38);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.proj-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;}
+.proj-status-badge{padding:4px 10px;border-radius:20px;font-size:0.68rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;}
+.proj-time{font-size:0.68rem;color:rgba(255,255,255,0.3);}
+.proj-unread{background:#ef4444;color:#fff;font-size:0.6rem;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+
+/* PROGRESS */
+.prog-row{margin-top:14px;display:flex;align-items:center;gap:10px;}
+.prog-bar{flex:1;height:4px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,#b8950e,#F5C542);border-radius:2px;transition:width 0.6s ease;}
+.prog-pct{font-size:0.7rem;color:rgba(255,255,255,0.35);width:28px;text-align:right;flex-shrink:0;}
+
+/* EMPTY */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:14px;text-align:center;}
+.empty-icon{font-size:3.5rem;}
+.empty-title{font-size:1.1rem;font-weight:700;color:#fff;}
+.empty-text{font-size:0.87rem;color:rgba(255,255,255,0.38);max-width:320px;line-height:1.6;}
+
+/* LOADING */
+.loading-screen{position:fixed;inset:0;background:#0a1628;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;}
+.loading-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:800;color:#F5C542;margin-bottom:20px;}
+.loading-spinner{width:36px;height:36px;border:3px solid rgba(245,197,66,0.15);border-top-color:#F5C542;border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:768px){.page-wrap{padding:100px 20px 40px;}.filter-tabs{flex-wrap:wrap;}.proj-top{flex-wrap:wrap;}}
+</style>
+    <script src="../js/analytics.js"></script>
+</head>
+<body>
+
+<div class="loading-screen" id="loading-screen">
+  <div class="loading-logo">THE GENIUS AGENCY</div>
+  <div class="loading-spinner"></div>
+</div>
+
+<!-- MAIN SITE NAV -->
+<nav class="nav-pill" style="display:flex;justify-content:space-between;align-items:center;">
+  <a href="../index.html" style="display:flex;align-items:center;text-decoration:none;">
+    <img src="../Logo/thegeniusagency.png" alt="Logo" style="height:42px;" onerror="this.style.display='none'">
+    <div class="logo-divider"></div>
+    <div class="logo-text">
+      <span style="color:white;display:block;margin-bottom:2px;">THE GENIUS</span>
+      <span style="color:var(--primary-yellow,#F5C542);display:block;">AGENCY</span>
+    </div>
+  </a>
+  <div class="nav-menu">
+    <a href="../index.html" class="nav-link">Home</a>
+    <a href="../team.html" class="nav-link">Experts</a>
+    <a href="../services.html" class="nav-link">Services</a>
+    <a href="../portfolio.html" class="nav-link">Portfolios</a>
+    <a href="../contact.html" class="nav-link">Contact Us</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;position:relative;">
+    <div class="notif-wrap">
+      <div class="notif-btn" title="Notifications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+    </div>
+    <div style="position:relative;">
+      <div id="nav-avatar" class="db-avatar" onclick="toggleUserMenu()" title="Account" style="width:34px;height:34px;cursor:pointer;border:2px solid rgba(245,197,66,0.35);" onmouseover="this.style.borderColor='rgba(245,197,66,0.8)'" onmouseout="this.style.borderColor='rgba(245,197,66,0.35)'">?</div>
+      <div id="user-menu" style="display:none;position:absolute;top:44px;right:0;background:#0d1e36;border:1px solid rgba(255,255,255,0.1);border-radius:16px;min-width:220px;box-shadow:0 16px 48px rgba(0,0,0,0.6);padding:8px 0;z-index:300;">
+        <div style="padding:12px 16px 10px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:10px;">
+          <div id="menu-avatar" class="db-avatar" style="width:36px;height:36px;flex-shrink:0;">?</div>
+          <div>
+            <div id="menu-name" style="font-size:0.82rem;font-weight:700;color:#fff;">Loading...</div>
+            <div style="font-size:0.68rem;color:#F5C542;">Client</div>
+          </div>
+        </div>
+        <a href="dashboard.html" class="umenu-item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a href="projects.html" class="umenu-item" style="color:#F5C542;font-weight:600;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          My Orders
+        </a>
+        <a href="chat.html" class="umenu-item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Messages
+        </a>
+        <a href="profile.html" class="umenu-item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          My Profile
+        </a>
+        <div style="margin:6px 0;border-top:1px solid rgba(255,255,255,0.07);"></div>
+        <button onclick="doSignOut()" class="umenu-item" style="width:100%;background:none;border:none;text-align:left;cursor:pointer;color:#ef4444;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<section class="lux-section lux-charcoal" style="min-height:100vh;">
+  <div class="page-wrap">
+    <div class="page-header">
+      <div class="page-title">Orders <span>Placed</span></div>
+      <a href="../contact.html" class="new-proj-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Place New Order
+      </a>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-filter="all" onclick="setFilter('all',this)">All Orders</button>
+      <button class="filter-tab" data-filter="active" onclick="setFilter('active',this)">In Progress</button>
+      <button class="filter-tab" data-filter="delivered" onclick="setFilter('delivered',this)">Delivered</button>
+      <button class="filter-tab" data-filter="revision" onclick="setFilter('revision',this)">In Revision</button>
+      <button class="filter-tab" data-filter="late" onclick="setFilter('late',this)">Late</button>
+      <button class="filter-tab" data-filter="dispute" onclick="setFilter('dispute',this)">In Dispute</button>
+      <button class="filter-tab" data-filter="completed" onclick="setFilter('completed',this)">Completed</button>
+    </div>
+
+    <!-- Project list -->
+    <div class="proj-list" id="proj-list">
+      <div class="empty-state">
+        <div class="loading-spinner" style="margin:0 auto;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const SB_URL='https://tjxyxasorunhrtvstwpa.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqeHl4YXNvcnVuaHJ0dnN0d3BhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU3NTQsImV4cCI6MjA5MjY1MTc1NH0.YEZPhnJmFAk4IDxd-6LlhKAZfGTkODfGr1FJteA99vo';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+
+const urlFilter=new URLSearchParams(location.search).get('filter')||'all';
+let currentUser=null, allConvos=[], currentFilter=urlFilter;
+
+function av(n){return(n||'').split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2)||'?';}
+function ft(ts){if(!ts)return'';const d=new Date(ts),now=new Date(),diff=now-d;if(diff<60000)return'Just now';if(diff<3600000)return Math.floor(diff/60000)+'m ago';if(diff<86400000)return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});return d.toLocaleDateString([],{month:'short',day:'numeric'});}
+
+function statusColor(s){const m={new_lead:'#3b82f6',discussing:'#8b5cf6',offer_sent:'#f59e0b',payment_pending:'#ef4444',in_progress:'#10b981',under_review:'#f97316',delivered:'#06b6d4',revision:'#f97316',late:'#ef4444',dispute:'#a78bfa',completed:'#22c55e',auto_completed:'#22c55e',cancelled:'#6b7280'};return m[s]||'#888';}
+function statusLabel(s){const m={new_lead:'New Request',discussing:'Discussing',offer_sent:'Offer Sent',payment_pending:'Payment Due',in_progress:'In Progress',under_review:'Under Review',delivered:'Delivered',revision:'In Revision',late:'Late',dispute:'In Dispute',completed:'Completed',auto_completed:'Completed',cancelled:'Cancelled'};return m[s]||s;}
+function progressForStatus(s){const m={new_lead:5,discussing:20,offer_sent:30,payment_pending:35,in_progress:55,under_review:75,delivered:85,revision:65,dispute:50,completed:100,auto_completed:100,cancelled:0};return m[s]||10;}
+const icons={new_lead:'💬',discussing:'💬',offer_sent:'💰',payment_pending:'💳',in_progress:'⚡',under_review:'🔍',delivered:'📦',revision:'✏️',dispute:'⚠️',completed:'✅',auto_completed:'✅',cancelled:'❌'};
+
+const activeStatuses=['in_progress','discussing','under_review','offer_sent','payment_pending','new_lead','delivered','revision'];
+const completedStatuses=['completed','auto_completed'];
+const lateStatuses=['late'];
+
+// Check if order is late based on deadline
+function isLate(c) {
+  if (!c.projects?.deadline) return false;
+  const deadline = new Date(c.projects.deadline);
+  const now = new Date();
+  return deadline < now && !completedStatuses.includes(c.status);
+}
+
+function matchFilter(s, c){
+  if(currentFilter==='all') return true;
+  if(currentFilter==='active') return activeStatuses.includes(s) || isLate(c);
+  if(currentFilter==='completed') return completedStatuses.includes(s);
+  if(currentFilter==='delivered') return s==='delivered';
+  if(currentFilter==='revision') return s==='revision';
+  if(currentFilter==='late') return isLate(c);
+  if(currentFilter==='dispute') return s==='dispute';
+  return true;
+}
+
+function setFilter(f, btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderList();
+}
+
+function renderList(){
+  const list=document.getElementById('proj-list');
+  const filtered=allConvos.filter(c=>matchFilter(c.status, c));
+  if(!filtered.length){
+    list.innerHTML=`<div class="empty-state">
+      <div class="empty-icon">📂</div>
+      <div class="empty-title">${currentFilter==='all'?'No orders yet':'No '+currentFilter+' orders'}</div>
+      <div class="empty-text">${currentFilter==='all'?'Contact us to place your first order.':'Nothing here right now.'}</div>
+      ${currentFilter==='all'?`<a href="../contact.html" class="new-proj-btn" style="margin-top:6px;">+ Place New Order</a>`:''}
+    </div>`;
+    return;
+  }
+  list.innerHTML=filtered.map(c=>{
+    const proj=c.projects||{};
+    const s=c.status;
+    const col=statusColor(s);
+    const pct=proj.progress??progressForStatus(s);
+    return`<a class="proj-card" href="chat.html?cid=${c.id}">
+      <div class="proj-top">
+        <div class="proj-icon">${icons[s]||'📁'}</div>
+        <div class="proj-body">
+          <div class="proj-name">${proj.title||'New Project'}</div>
+          <div class="proj-last-msg">${c.last_message?c.last_message.substring(0,60)+'…':'No messages yet'}</div>
+        </div>
+        <div class="proj-right">
+          <span class="proj-status-badge" style="background:${col}22;color:${col};">${statusLabel(s)}</span>
+          <span class="proj-time">${ft(c.updated_at||c.last_message_at)}</span>
+          ${c.unread_client>0?`<span class="proj-unread">${c.unread_client}</span>`:''}
+        </div>
+      </div>
+      <div class="prog-row">
+        <div class="prog-bar"><div class="prog-fill" style="width:0%" data-pct="${pct}"></div></div>
+        <div class="prog-pct">${pct}%</div>
+      </div>
+    </a>`;
+  }).join('');
+  setTimeout(()=>document.querySelectorAll('.prog-fill').forEach(el=>el.style.width=el.dataset.pct+'%'),80);
+}
+
+async function init(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='../login.html';return;}
+  currentUser=session.user;
+  const{data:p}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
+  if(!p||p.role!=='client'){window.location.href='../login.html';return;}
+
+  const{data:convos}=await sb.from('conversations').select('*,projects(title,status,budget,deadline,progress)').eq('client_id',currentUser.id).order('updated_at',{ascending:false});
+  allConvos=convos||[];
+
+  // Update profile icons and dropdown info
+  const avatarInitials = av(p.full_name || p.email);
+  const avatarContent = p.avatar_url ? `<img src="${p.avatar_url}" alt="Avatar">` : avatarInitials;
+  const navAvatar = document.getElementById('nav-avatar');
+  const menuAvatar = document.getElementById('menu-avatar');
+  const menuName = document.getElementById('menu-name');
+  if(navAvatar) navAvatar.innerHTML = avatarContent;
+  if(menuAvatar) menuAvatar.innerHTML = avatarContent;
+  if(menuName) menuName.textContent = p.full_name || p.email;
+
+  // activate tab from URL param
+  document.querySelectorAll('.filter-tab').forEach(t=>{
+    t.classList.toggle('active', t.dataset.filter===currentFilter);
+  });
+  renderList();
+  document.getElementById('loading-screen').style.display='none';
+}
+
+function toggleUserMenu(){
+  const menu=document.getElementById('user-menu');
+  if(menu) menu.style.display=menu.style.display==='none'?'block':'none';
+}
+
+async function doSignOut() {
+  await sb.auth.signOut();
+  window.location.href = '../login.html';
+}
+
+init();
+</script>
+    <!-- Footer -->
+        <!-- Footer -->
+        <!-- Footer -->
+        <!-- Footer -->
+    <footer id="contact" class="lux-ivory" style="padding: 80px 0 30px; border-top: 1px solid rgba(0,0,0,0.05); overflow: hidden; background: #fff;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 5%;">
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 50px; margin-bottom: 60px;">
+                
+                <!-- Brand Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+                        <img src="../Logo/thegeniusagency.png" alt="Logo" style="height: 64px;" onerror="this.src='../Logo/thegeniusagency.png'">
+                        <div style="color: #111; font-weight: 900; line-height: 1.1; font-size: 1.8rem; letter-spacing: -0.02em;">
+                            THE GENIUS<br><span class="text-yellow" style="color: #F5C542;">AGENCY</span>
+                        </div>
+                    </div>
+                    <p style="color: #555; font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px; max-width: 280px;">We help businesses grow with innovative digital solutions. Your success is our mission.</p>
+                    <div style="display: flex; gap: 12px;">
+                        <!-- Instagram -->
+                        <a href="https://www.instagram.com/thegeniusagencyteamhq" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        </a>
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/TheGeniusAgency" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        </a>
+                        <!-- TikTok -->
+                        <a href="https://www.tiktok.com/@thegeniusagencytm?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+                        </a>
+                        <!-- YouTube -->
+                        <a href="https://www.youtube.com/@The_Genius_Agency" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Quick Links</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="../index.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Home</a></li>
+                        <li><a href="../team.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Experts</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Services</a></li>
+                        <li><a href="../portfolio.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Portfolios</a></li>
+                        <li><a href="../index.html#about" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">About Us</a></li>
+                        <li><a href="../contact.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Services</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Website Design</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">eCommerce & Shopify</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Mobile App Development</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">UI/UX Design</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Marketing & SEO</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Content & eBooks</a></li>
+                    </ul>
+                </div>
+
+                <!-- For Clients & Contact Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <!-- For Clients -->
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">For Clients</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px;">
+                        <li><a href="../privacy.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Privacy Policy</a></li>
+                        <li><a href="../terms.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Terms & Conditions</a></li>
+                    </ul>
+
+                    <!-- Contact Us -->
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Contact Us</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 20px;">
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            </div>
+                            <a href="mailto:info@thegeniusagency.com" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#555'">info@thegeniusagency.com</a>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            </div>
+                            <span style="color: #555; font-size: 0.95rem;">Always Available 24/7</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Bottom Bar -->
+            <div style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 35px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 20px;">
+                <p style="color: #666; font-size: 0.85rem; margin: 0; font-weight: 500; text-align: center;">© <span id="year">2026</span> THE GENIUS AGENCY. ALL RIGHTS RESERVED.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

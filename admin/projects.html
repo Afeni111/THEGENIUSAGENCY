@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects | Admin | The Genius Agency</title>
+<link rel="icon" type="image/png" href="../Logo/thegeniusagency.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--gold:#F5C542;--gold-dark:#b8950e;--navy:#0a1628;--bg:var(--navy);--bg2:#0d1e36;--bg3:#122848;--border:rgba(245,197,66,0.15);--text:#f0f0f0;--muted:#8a9bb8;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden;}
+
+/* SIDEBAR */
+.sidebar{width:220px;min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;overflow-y:auto;}
+.sidebar-logo{padding:20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.logo-badge{background:var(--gold);color:#000;font-size:0.6rem;font-weight:800;padding:2px 6px;border-radius:4px;letter-spacing:1px;}
+.logo-name{font-size:0.8rem;font-weight:700;color:#fff;line-height:1.2;}
+.logo-sub{font-size:0.65rem;color:var(--muted);}
+.sidebar-section{padding:12px 0;}
+.sidebar-section-label{font-size:0.62rem;font-weight:700;color:#444;letter-spacing:1.5px;padding:0 16px;margin-bottom:6px;text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--muted);font-size:0.82rem;font-weight:500;cursor:pointer;transition:all 0.2s;text-decoration:none;border-left:3px solid transparent;position:relative;}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,0.04);}
+.nav-item.active{color:var(--gold);background:rgba(245,197,66,0.08);border-left-color:var(--gold);}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;}
+.sidebar-bottom{padding:14px 16px;border-top:1px solid var(--border);margin-top:auto;}
+.admin-pill{display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg3);border-radius:10px;}
+.admin-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#b8950e,#F5C542);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.78rem;color:#000;flex-shrink:0;}
+.admin-info{flex:1;min-width:0;}
+.admin-name{font-size:0.75rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.admin-role{font-size:0.6rem;color:var(--gold);font-weight:600;}
+.btn-so{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;}
+.btn-so:hover{color:#ef4444;}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;padding:24px;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.topbar-title{font-size:1.1rem;font-weight:800;color:#fff;}
+.btn-primary{background:var(--gold);color:#000;border:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:0.82rem;cursor:pointer;}
+.btn-primary:hover{background:var(--gold-dark);color:#fff;}
+.filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.filter-btn{padding:8px 18px;border-radius:10px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.filter-btn.active{background:rgba(245,197,66,0.1);border-color:var(--gold);color:var(--gold);box-shadow: 0 0 15px rgba(245,197,66,0.1);}
+.search-wrap{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin-bottom:20px;max-width:360px;}
+.search-wrap input{background:none;border:none;outline:none;color:#fff;font-size:0.85rem;flex:1;}
+.search-wrap input::placeholder{color:#555;}
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
+.project-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;cursor:pointer;transition:all 0.2s;}
+.project-card:hover{border-color:rgba(245,197,66,0.25);transform:translateY(-2px);}
+.pc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.pc-title{font-size:0.9rem;font-weight:700;color:#fff;}
+.status-pill{padding:4px 10px;border-radius:20px;font-size:0.65rem;font-weight:700;}
+.pc-meta{font-size:0.75rem;color:var(--muted);margin-bottom:12px;display:flex;flex-direction:column;gap:4px;}
+.pc-meta span{display:flex;align-items:center;gap:6px;}
+.progress-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;margin-bottom:12px;}
+.progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold-dark),var(--gold));}
+.pc-footer{display:flex;justify-content:space-between;align-items:center;}
+.pc-budget{font-size:0.9rem;font-weight:700;color:var(--gold);}
+.pc-actions{display:flex;gap:6px;}
+.btn-sm{padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--muted);font-size:0.72rem;cursor:pointer;transition:all 0.2s;}
+.btn-sm:hover{border-color:rgba(245,197,66,0.35);color:var(--gold);}
+.spinner{width:30px;height:30px;border:3px solid rgba(245,197,66,0.15);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:60px auto;display:block;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:60px;color:var(--muted);}
+</style>
+    <script src="../js/analytics.js"></script>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div>
+      <div class="logo-name">THE GENIUS</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+        <div class="logo-sub">AGENCY</div>
+        <div class="logo-badge">ADMIN</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Overview</div>
+    <a href="dashboard.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Operations</div>
+    <a href="chat.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Messages
+    </a>
+    <a href="orders.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+      Orders
+    </a>
+    <a href="projects.html" class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Projects
+    </a>
+    <a href="offers.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Offers
+    </a>
+    <a href="payments.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Payments
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">People</div>
+    <a href="clients.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Clients
+    </a>
+    <a href="experts.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+      Experts
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Content</div>
+    <a href="content.html?tab=portfolio" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      Portfolio
+    </a>
+    <a href="content.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Site Content
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Website</div>
+    <a href="../index.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      View Website
+    </a>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="admin-pill">
+      <div class="admin-avatar" id="admin-avatar">A</div>
+      <div class="admin-info">
+        <div class="admin-name" id="admin-name">Admin</div>
+        <div class="admin-role">MASTER ADMIN</div>
+      </div>
+      <button class="btn-so" onclick="doSignOut()" title="Sign out">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+</aside>
+<div class="main">
+  <div class="topbar">
+    <span class="topbar-title">Projects</span>
+  </div>
+  <div class="search-wrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="search" placeholder="Search projects or clients..." oninput="render()">
+  </div>
+  <div class="filters" id="filters"></div>
+  <div id="grid"></div>
+</div>
+<script>
+const SB_URL='https://tjxyxasorunhrtvstwpa.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqeHl4YXNvcnVuaHJ0dnN0d3BhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU3NTQsImV4cCI6MjA5MjY1MTc1NH0.YEZPhnJmFAk4IDxd-6LlhKAZfGTkODfGr1FJteA99vo';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+let projects=[],filter='all';
+function sc(s){const m={new_lead:'#3b82f6',discussing:'#8b5cf6',offer_sent:'#f59e0b',payment_pending:'#ef4444',in_progress:'#10b981',under_review:'#f97316',delivered:'#06b6d4',revision:'#ec4899',late:'#f87171',dispute:'#ef4444',completed:'#22c55e',auto_completed:'#84cc16',cancelled:'#6b7280',refunded:'#f87171'};return m[s]||'#888';}
+function sl(s){const m={all:'All Orders',new_lead:'New Lead',discussing:'Discussing',offer_sent:'Offer Sent',payment_pending:'Payment Pending',in_progress:'In Progress',under_review:'Under Review',delivered:'Delivered',revision:'In Revision',late:'Late',dispute:'In Dispute',completed:'Completed',auto_completed:'Auto Completed',cancelled:'Cancelled',refunded:'Refunded'};return m[s]||s;}
+function fc(a){return a?'$'+Number(a).toLocaleString():'—';}
+async function init(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='../login.html';return;}
+  const{data:p}=await sb.from('profiles').select('*').eq('id',session.user.id).single();
+  if(!p||p.role!=='admin'){window.location.href='../login.html';return;}
+  document.getElementById('admin-name').textContent=p.full_name||'Admin';
+  document.getElementById('admin-avatar').textContent=(p.full_name||'A').split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);
+  
+  const{data}=await sb.from('projects').select('*,profiles!projects_client_id_fkey(full_name,email),experts(name,image_url)').order('updated_at',{ascending:false});
+  projects=data||[];
+  buildFilters();render();
+}
+async function doSignOut(){await sb.auth.signOut();window.location.href='../login.html';}
+function buildFilters(){
+  const statuses=['all','in_progress','delivered','revision','late','dispute','completed'];
+  document.getElementById('filters').innerHTML=statuses.map(s=>`<button class="filter-btn ${s===filter?'active':''}" onclick="setFilter('${s}',this)">${sl(s)}</button>`).join('');
+}
+function setFilter(f,el){filter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');render();}
+function render(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const filtered=projects.filter(p=>{
+    if(filter!=='all'&&p.status!==filter)return false;
+    if(q&&!(p.title||'').toLowerCase().includes(q)&&!(p.profiles?.full_name||'').toLowerCase().includes(q))return false;
+    return true;
+  });
+  const g=document.getElementById('grid');
+  if(!filtered.length){g.innerHTML='<div class="empty">No projects found</div>';return;}
+  g.innerHTML='<div class="projects-grid">'+filtered.map(p=>{
+    const col=sc(p.status);
+    return`<div class="project-card" onclick="window.location.href='chat.html?cid=${p.id}'">
+      <div class="pc-top">
+        <div class="pc-title">${p.title||'Untitled Project'}</div>
+        <span class="status-pill" style="background:${col}22;color:${col};">${sl(p.status)}</span>
+      </div>
+      <div class="pc-meta">
+        <span>👤 ${p.profiles?.full_name||'Unknown Client'}</span>
+        ${p.experts?`<span>🎯 ${p.experts.name}</span>`:'<span style="color:#555;">No expert assigned</span>'}
+        ${p.deadline?`<span>📅 Deadline: ${new Date(p.deadline).toLocaleDateString()}</span>`:''}
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${p.progress||0}%;"></div></div>
+      <div class="pc-footer">
+        <span class="pc-budget">${fc(p.budget)}</span>
+        <div class="pc-actions">
+          <button class="btn-sm" onclick="event.stopPropagation();window.location.href='chat.html?cid=${p.id}'">View Chat</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+}
+init();
+</script>
+</body>
+</html>

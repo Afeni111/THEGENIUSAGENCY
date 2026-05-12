@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | THE GENIUS AGENCY</title>
+    <link rel="icon" type="image/png" href="Logo/thegeniusagency.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        header.about-hero {
+            background: #0a1628 !important;
+            position: relative !important;
+            overflow: hidden !important;
+            height: 480px !important;
+            min-height: 480px !important;
+            padding: 0 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #about-bg-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            z-index: 0;
+            pointer-events: none;
+        }
+        #about-video-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(10,22,40,0.85) 0%, rgba(10,22,40,0.5) 50%, rgba(10,22,40,0.3) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .about-hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            padding-top: 60px;
+        }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(245,197,66,0.12); border: 1px solid rgba(245,197,66,0.3); padding: 8px 20px; border-radius: 30px; margin-bottom: 20px; backdrop-filter: blur(10px); }
+        .hero-badge-dot { width: 6px; height: 6px; background: #F5C542; border-radius: 50%; animation: pulse 2s infinite; }
+        .hero-badge-text { font-size: 0.75rem; font-weight: 600; color: #F5C542; letter-spacing: 2px; text-transform: uppercase; }
+        .about-hero-title { font-family: 'Playfair Display', serif; font-size: 3.2rem; font-weight: 700; color: #fff; margin: 0 0 16px 0; line-height: 1.1; text-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+        .about-hero-title span { color: #F5C542; font-weight: 800; }
+        .about-hero-subtitle { font-size: 1.1rem; color: rgba(255,255,255,0.8); font-weight: 400; letter-spacing: 3px; text-transform: uppercase; margin: 0; }
+        .hero-divider { width: 60px; height: 2px; background: linear-gradient(90deg, transparent, #F5C542, transparent); margin: 20px auto; }
+        .hero-stats { display: flex; gap: 40px; margin-top: 30px; justify-content: center; }
+        .hero-stat { text-align: center; }
+        .hero-stat-number { font-size: 1.8rem; font-weight: 800; color: #F5C542; line-height: 1; }
+        .hero-stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* Mobile Menu Styles */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 1001;
+        }
+
+        .mobile-nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 22, 40, 0.98);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-overlay.active {
+            display: flex;
+        }
+
+        .mobile-nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: color 0.3s;
+        }
+
+        .mobile-nav-link:hover {
+            color: var(--primary-yellow);
+        }
+
+        .mobile-nav-link.active {
+            color: var(--primary-yellow);
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu { display: none !important; }
+            .mobile-menu-btn { display: block !important; }
+            #user-nav-section { display: none !important; }
+            
+            .nav-pill {
+                padding: 10px 20px !important;
+                width: 92% !important;
+                top: 15px !important;
+            }
+
+            .logo-text { font-size: 0.9rem !important; }
+            .logo-divider { height: 20px !important; margin: 0 8px !important; }
+
+            header.about-hero { height: 400px !important; min-height: 400px !important; }
+            .about-hero-title { font-size: 2.2rem !important; }
+            .about-hero-subtitle { font-size: 0.8rem !important; letter-spacing: 1px !important; }
+            .hero-stats { gap: 20px !important; margin-top: 20px !important; }
+            .hero-stat-number { font-size: 1.4rem !important; }
+            .hero-stat-label { font-size: 0.65rem !important; }
+
+            .about-hero-content { padding-top: 40px !important; }
+            
+            div[style*="grid-template-columns: 1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+                gap: 40px !important;
+            }
+
+            .expert-card {
+                flex: 0 0 100% !important;
+            }
+        }
+    </style>
+    <script src="js/analytics.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-pill" style="display: flex; justify-content: space-between; align-items: center;">
+        <a href="index.html" style="display: flex; align-items: center; text-decoration: none;">
+            <img src="Logo/thegeniusagency.png" alt="Logo" style="height: 38px;">
+            <div class="logo-divider"></div>
+            <div class="logo-text">
+                <span style="color: white; display: block; margin-bottom: 2px; font-size: 0.9em;">THE GENIUS</span>
+                <span style="color: var(--primary-yellow); display: block; font-size: 0.9em;">AGENCY</span>
+            </div>
+        </a>
+
+        <!-- Desktop Menu -->
+        <div class="nav-menu">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="team.html" class="nav-link">Experts</a>
+            <a href="services.html" class="nav-link">Services</a>
+            <a href="portfolio.html" class="nav-link">Portfolios</a>
+            <a href="about.html" class="nav-link active">About Us</a>
+            <a href="contact.html" class="nav-link">Contact Us</a>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:15px;" id="user-nav-section">
+            <a href="login.html" class="btn-msg" id="nav-auth-link" style="background: var(--primary-yellow); color: #000; font-weight: 700; padding: 10px 20px; border-radius: 50px; text-decoration: none;">
+                Client Log in / Sign up
+            </a>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-btn" id="mobile-menu-toggle">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </nav>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav">
+        <button style="position: absolute; top: 30px; right: 30px; background: none; border: none; color: white; font-size: 2.5rem; cursor: pointer;" id="close-mobile-menu">&times;</button>
+        <a href="index.html" class="mobile-nav-link">Home</a>
+        <a href="team.html" class="mobile-nav-link">Experts</a>
+        <a href="services.html" class="mobile-nav-link">Services</a>
+        <a href="portfolio.html" class="mobile-nav-link">Portfolios</a>
+        <a href="about.html" class="mobile-nav-link active">About Us</a>
+        <a href="contact.html" class="mobile-nav-link">Contact Us</a>
+        <a href="login.html" class="btn btn-primary" style="margin-top: 20px; width: 80%;">Client Log In</a>
+    </div>
+
+    <!-- About Hero Section -->
+    <header class="about-hero container">
+        <!-- Background Video -->
+        <video id="about-bg-video" autoplay muted loop playsinline preload="auto">
+            <source src="thegeniushero.mp4" type="video/mp4">
+        </video>
+        <!-- Overlay -->
+        <div id="about-video-overlay"></div>
+        <!-- Content Area -->
+        <div class="about-hero-content">
+            <div class="hero-badge">
+                <div class="hero-badge-dot"></div>
+                <span class="hero-badge-text">About Us</span>
+            </div>
+            <h1 class="about-hero-title">Built on <span>Transparency</span></h1>
+            <div class="hero-divider"></div>
+            <p class="about-hero-subtitle">Driven by Results</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-number">10+</div>
+                    <div class="hero-stat-label">Experts</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-number">100+</div>
+                    <div class="hero-stat-label">Projects</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-number">80+</div>
+                    <div class="hero-stat-label">Clients</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- About Content Section -->
+    <section style="background: #f8f9fa; padding: 50px 0;">
+        <div class="container">
+            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <p style="font-size:1.2rem;color:#555;line-height:1.8;margin-bottom:30px;">
+                    The Genius Agency connects businesses with elite digital professionals to deliver premium solutions with structure, quality control, and measurable outcomes.
+                </p>
+                <div style="display:flex;gap:15px;justify-content:center;">
+                    <a href="contact.html" style="display:inline-flex;align-items:center;gap:10px;background:#F5C542;color:#000;padding:16px 30px;border-radius:50px;font-weight:700;font-size:0.95rem;text-decoration:none;transition:all 0.3s;box-shadow:0 4px 15px rgba(245,197,66,0.3);">
+                        Start a Project <span style="font-size:1.2rem;">→</span>
+                    </a>
+                    <a href="team.html" style="display:inline-flex;align-items:center;gap:10px;background:transparent;border:2px solid #0a1628;color:#0a1628;padding:16px 30px;border-radius:50px;font-weight:700;font-size:0.95rem;text-decoration:none;transition:all 0.3s;">
+                        Meet Our Experts
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Story Section - Light Background -->
+    <section style="padding: 40px 20px; background: #f8f5f0;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <span style="font-size: 0.75rem; color: #b8950e; letter-spacing: 2px; text-transform: uppercase; font-weight: 600;">CLIENT-INSPIRED GROWTH</span>
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #1a1a1a; margin: 15px 0 0 0;">
+                    Purpose is where it all <span style="color:#b8950e;">began</span>.
+                </h2>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;">
+                <!-- Left: Story Content -->
+                <div>
+                    <p style="font-size: 1.05rem; color: #555; line-height: 1.8; margin-bottom: 20px;">
+                        The Genius Agency was not built from an idea alone — it was built from <span style="color: #b8950e; font-weight: 600;">results</span>.
+                    </p>
+                    
+                    <p style="font-size: 0.95rem; color: #666; line-height: 1.8; margin-bottom: 18px;">
+                        Our journey began by helping businesses solve real digital challenges through expert execution, strategy, and measurable performance. Over time, our commitment to quality and consistency earned the trust of clients across different industries and locations.
+                    </p>
+                    
+                    <p style="font-size: 0.95rem; color: #666; line-height: 1.8; margin-bottom: 18px;">
+                        One of those relationships became a turning point. After experiencing the quality of our service firsthand, one of our valued clients in the United Kingdom saw the bigger vision behind what we were building.
+                    </p>
+                    
+                    <p style="font-size: 0.95rem; color: #666; line-height: 1.8; margin-bottom: 18px;">
+                        What started as a successful working relationship evolved into something greater. She believed in the idea of creating a structured platform where businesses could easily connect with trusted digital experts under one agency-managed system.
+                    </p>
+                    
+                    <p style="font-size: 0.95rem; color: #666; line-height: 1.8; margin-bottom: 18px;">
+                        That belief became action. Her support and confidence in our work contributed to the early development of this platform, helping bring The Genius Agency to life.
+                    </p>
+                    
+                    <p style="font-size: 0.95rem; color: #666; line-height: 1.8; margin-bottom: 20px;">
+                        Today, that same foundation of trust, performance, and excellence continues to shape everything we do.
+                    </p>
+                    
+                    <p style="font-size: 1rem; color: #555; line-height: 1.7; font-style: italic; border-left: 3px solid #b8950e; padding-left: 18px;">
+                        The Genius Agency stands as a premium digital solutions platform built not just on ambition — but on proven results, real client trust, and a vision for long-term growth.
+                    </p>
+                </div>
+                
+                <!-- Right: Timeline -->
+                <div>
+                    <div style="border-left: 2px solid rgba(184,149,14,0.4); padding-left: 35px;">
+                        <div style="margin-bottom: 35px; position: relative;">
+                            <div style="position: absolute; left: -41px; top: 0; width: 12px; height: 12px; background: #b8950e; border-radius: 50%; box-shadow: 0 0 10px rgba(184,149,14,0.5);"></div>
+                            <div style="font-size: 0.85rem; color: #b8950e; font-weight: 600; margin-bottom: 5px;">2020</div>
+                            <div style="font-size: 1.1rem; color: #1a1a1a; font-weight: 700; margin-bottom: 5px;">The Beginning</div>
+                            <div style="font-size: 0.9rem; color: #666; line-height: 1.6;">We started with a small team of passionate digital experts with a big mission.</div>
+                        </div>
+                        <div style="margin-bottom: 35px; position: relative;">
+                            <div style="position: absolute; left: -41px; top: 0; width: 12px; height: 12px; background: #b8950e; border-radius: 50%; box-shadow: 0 0 10px rgba(184,149,14,0.5);"></div>
+                            <div style="font-size: 0.85rem; color: #b8950e; font-weight: 600; margin-bottom: 5px;">2021</div>
+                            <div style="font-size: 1.1rem; color: #1a1a1a; font-weight: 700; margin-bottom: 5px;">Building Trust</div>
+                            <div style="font-size: 0.9rem; color: #666; line-height: 1.6;">Delivered outstanding results and earned the trust of amazing clients.</div>
+                        </div>
+                        <div style="margin-bottom: 35px; position: relative;">
+                            <div style="position: absolute; left: -41px; top: 0; width: 12px; height: 12px; background: #b8950e; border-radius: 50%; box-shadow: 0 0 10px rgba(184,149,14,0.5);"></div>
+                            <div style="font-size: 0.85rem; color: #b8950e; font-weight: 600; margin-bottom: 5px;">2022</div>
+                            <div style="font-size: 1.1rem; color: #1a1a1a; font-weight: 700; margin-bottom: 5px;">Expanding Impact</div>
+                            <div style="font-size: 0.9rem; color: #666; line-height: 1.6;">More clients, bigger projects, and stronger relationships built on performance.</div>
+                        </div>
+                        <div style="position: relative;">
+                            <div style="position: absolute; left: -41px; top: 0; width: 12px; height: 12px; background: #b8950e; border-radius: 50%; box-shadow: 0 0 10px rgba(184,149,14,0.5);"></div>
+                            <div style="font-size: 0.85rem; color: #b8950e; font-weight: 600; margin-bottom: 5px;">2023+</div>
+                            <div style="font-size: 1.1rem; color: #1a1a1a; font-weight: 700; margin-bottom: 5px;">Agency-First Platform</div>
+                            <div style="font-size: 0.9rem; color: #666; line-height: 1.6;">We built a structured platform to connect businesses with elite digital talent.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Trust Highlights Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; margin-top: 60px; margin-bottom: 40px;">
+                <div style="background: #fff; border: 1px solid rgba(184,149,14,0.2); border-radius: 15px; padding: 30px 25px; text-align: center;">
+                    <div style="width: 50px; height: 50px; background: rgba(184,149,14,0.1); border: 1px solid rgba(184,149,14,0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.5rem;">🤝</div>
+                    <h4 style="font-size: 1rem; color: #1a1a1a; font-weight: 700; margin: 0 0 8px 0;">Client-Inspired Growth</h4>
+                    <p style="font-size: 0.85rem; color: #777; margin: 0; line-height: 1.5;">Built from real client confidence.</p>
+                </div>
+                
+                <div style="background: #fff; border: 1px solid rgba(184,149,14,0.2); border-radius: 15px; padding: 30px 25px; text-align: center;">
+                    <div style="width: 50px; height: 50px; background: rgba(184,149,14,0.1); border: 1px solid rgba(184,149,14,0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.5rem;">🌍</div>
+                    <h4 style="font-size: 1rem; color: #1a1a1a; font-weight: 700; margin: 0 0 8px 0;">International Trust</h4>
+                    <p style="font-size: 0.85rem; color: #777; margin: 0; line-height: 1.5;">Trusted by clients beyond borders.</p>
+                </div>
+                
+                <div style="background: #fff; border: 1px solid rgba(184,149,14,0.2); border-radius: 15px; padding: 30px 25px; text-align: center;">
+                    <div style="width: 50px; height: 50px; background: rgba(184,149,14,0.1); border: 1px solid rgba(184,149,14,0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.5rem;">📈</div>
+                    <h4 style="font-size: 1rem; color: #1a1a1a; font-weight: 700; margin: 0 0 8px 0;">Results-Driven Foundation</h4>
+                    <p style="font-size: 0.85rem; color: #777; margin: 0; line-height: 1.5;">Growth powered by proven delivery.</p>
+                </div>
+                
+                <div style="background: #fff; border: 1px solid rgba(184,149,14,0.2); border-radius: 15px; padding: 30px 25px; text-align: center;">
+                    <div style="width: 50px; height: 50px; background: rgba(184,149,14,0.1); border: 1px solid rgba(184,149,14,0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.5rem;">🏗️</div>
+                    <h4 style="font-size: 1rem; color: #1a1a1a; font-weight: 700; margin: 0 0 8px 0;">Built for Scale</h4>
+                    <p style="font-size: 0.85rem; color: #777; margin: 0; line-height: 1.5;">Designed for long-term business success.</p>
+                </div>
+            </div>
+            
+            <!-- CTA Button -->
+            <div style="text-align: center;">
+                <a href="contact.html" style="display: inline-flex; align-items: center; gap: 10px; background: #b8950e; color: #000; padding: 16px 32px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: all 0.3s; box-shadow: 0 4px 15px rgba(184,149,14,0.3);">
+                    Start Your Project With Us
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Section - Light Background -->
+    <section style="padding: 40px 20px; background: #f8f5f0; border-top: 1px solid rgba(184,149,14,0.1);">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 60px;">
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: #b8950e; margin: 0;">
+                    WHY CHOOSE THE GENIUS AGENCY
+                </h2>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px;">
+                <div style="background: #fff; border: 1px solid rgba(184,149,14,0.2); padding: 35px 25px; border-radius: 15px; text-align: left;">
+                    <div style="width:55px;height:55px;background:#1a1a1a;border:2px solid #b8950e;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:1.5rem;">👥</div>
+                    <h3 style="font-size: 1.1rem; color: #1a1a1a; font-weight:700; margin-bottom: 10px;">Elite Experts</h3>
+                    <p style="font-size: 0.9rem; color: #666; line-height: 1.6;">Access pre-vetted digital professionals with proven experience and expertise.</p>
+                </div>
+                <div style="background: #fff; border: 1px solid rgba(184,149,14,0.2); padding: 35px 25px; border-radius: 15px; text-align: left;">
+                    <div style="width:55px;height:55px;background:#1a1a1a;border:2px solid #b8950e;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:1.5rem;">🛡️</div>
+                    <h3 style="font-size: 1.1rem; color: #1a1a1a; font-weight:700; margin-bottom: 10px;">Agency Quality Control</h3>
+                    <p style="font-size: 0.9rem; color: #666; line-height: 1.6;">Every project is managed with strict quality standards and performance tracking.</p>
+                </div>
+                <div style="background: #fff; border: 1px solid rgba(184,149,14,0.2); padding: 35px 25px; border-radius: 15px; text-align: left;">
+                    <div style="width:55px;height:55px;background:#1a1a1a;border:2px solid #b8950e;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:1.5rem;">🔒</div>
+                    <h3 style="font-size: 1.1rem; color: #1a1a1a; font-weight:700; margin-bottom: 10px;">Secure Payments</h3>
+                    <p style="font-size: 0.9rem; color: #666; line-height: 1.6;">Safe, secure, and transparent payment process for complete peace of mind.</p>
+                </div>
+                <div style="background: #fff; border: 1px solid rgba(184,149,14,0.2); padding: 35px 25px; border-radius: 15px; text-align: left;">
+                    <div style="width:55px;height:55px;background:#1a1a1a;border:2px solid #b8950e;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:1.5rem;">⚡</div>
+                    <h3 style="font-size: 1.1rem; color: #1a1a1a; font-weight:700; margin-bottom: 10px;">Fast Delivery</h3>
+                    <p style="font-size: 0.9rem; color: #666; line-height: 1.6;">We value your time and ensure timely delivery with regular updates.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How We Work Section - Dark Background -->
+    <section style="padding: 40px 20px; background: #0a0a0a;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 60px;">
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 1.2rem; color: #b8950e; letter-spacing: 3px; text-transform: uppercase; margin: 0;">
+                    HOW WE WORK
+                </h2>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
+                <!-- Connected Steps with dotted line -->
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="text-align: center;">
+                        <div style="width: 70px; height: 70px; background: #1a1a1a; border: 2px solid #b8950e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.6rem;">🔍</div>
+                        <div style="font-size: 1rem; color: #fff; font-weight: 600; margin-bottom: 5px;">Discovery</div>
+                        <div style="font-size: 0.8rem; color: #888; max-width: 140px; line-height: 1.4;">We understand your goals, challenges, and requirements.</div>
+                    </div>
+                    <div style="color: #b8950e; font-size: 1.5rem;">···</div>
+                    <div style="text-align: center;">
+                        <div style="width: 70px; height: 70px; background: #1a1a1a; border: 2px solid #b8950e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.6rem;">📋</div>
+                        <div style="font-size: 1rem; color: #fff; font-weight: 600; margin-bottom: 5px;">Planning</div>
+                        <div style="font-size: 0.8rem; color: #888; max-width: 140px; line-height: 1.4;">We create a strategic plan tailored to your needs.</div>
+                    </div>
+                    <div style="color: #b8950e; font-size: 1.5rem;">···</div>
+                    <div style="text-align: center;">
+                        <div style="width: 70px; height: 70px; background: #1a1a1a; border: 2px solid #b8950e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.6rem;">👥</div>
+                        <div style="font-size: 1rem; color: #fff; font-weight: 600; margin-bottom: 5px;">Expert Matching</div>
+                        <div style="font-size: 0.8rem; color: #888; max-width: 140px; line-height: 1.4;">We connect you with the right expert for your project.</div>
+                    </div>
+                    <div style="color: #b8950e; font-size: 1.5rem;">···</div>
+                    <div style="text-align: center;">
+                        <div style="width: 70px; height: 70px; background: #1a1a1a; border: 2px solid #b8950e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.6rem;">⚙️</div>
+                        <div style="font-size: 1rem; color: #fff; font-weight: 600; margin-bottom: 5px;">Execution</div>
+                        <div style="font-size: 0.8rem; color: #888; max-width: 140px; line-height: 1.4;">Work is executed under our agency supervision.</div>
+                    </div>
+                    <div style="color: #b8950e; font-size: 1.5rem;">···</div>
+                    <div style="text-align: center;">
+                        <div style="width: 70px; height: 70px; background: #1a1a1a; border: 2px solid #b8950e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.6rem;">✓</div>
+                        <div style="font-size: 1rem; color: #fff; font-weight: 600; margin-bottom: 5px;">Delivery</div>
+                        <div style="font-size: 0.8rem; color: #888; max-width: 140px; line-height: 1.4;">Quality check, final review, and on-time delivery.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meet Our Experts Section - Dark Background with Carousel -->
+    <section style="padding: 40px 20px; background: #0a0a0a; border-top: 1px solid rgba(245,197,66,0.1);">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <span style="font-size: 0.75rem; color: #b8950e; letter-spacing: 2px; text-transform: uppercase; font-weight: 600;">Meet Our Experts</span>
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: #fff; margin: 15px 0 10px 0;">
+                    The People Behind Your <span style="color:#b8950e;">Success</span>
+                </h2>
+                <p style="font-size: 1rem; color: #888;">Our experts are carefully selected to deliver excellence in every project.</p>
+            </div>
+            
+            <!-- Carousel Container -->
+            <div style="position: relative; max-width: 1000px; margin: 0 auto 40px;">
+                <!-- Left Arrow -->
+                <button onclick="slideExperts(-1)" style="position: absolute; left: -20px; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background: rgba(184,149,14,0.1); border: 1px solid rgba(184,149,14,0.3); border-radius: 50%; color: #b8950e; font-size: 1.5rem; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; transition: all 0.3s;" onmouseover="this.style.background='rgba(184,149,14,0.3)'" onmouseout="this.style.background='rgba(184,149,14,0.1)'">
+                    ‹
+                </button>
+                
+                <!-- Experts Track -->
+                <div style="overflow: hidden; padding: 10px 0;">
+                    <div id="expertsTrack" style="display: flex; gap: 25px; transition: transform 0.4s ease;">
+                        
+                        <!-- Expert 1: Jeremiah A. -->
+                        <div class="expert-card" style="flex: 0 0 calc(33.333% - 17px); background: #1a1a1a; border: 1px solid rgba(245,197,66,0.2); border-radius: 15px; padding: 30px 25px; text-align: center; min-width: 280px;">
+                            <div style="width: 90px; height: 90px; background: linear-gradient(145deg, #2a2a2a, #1a1a1a); border: 2px solid rgba(184,149,14,0.3); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; overflow: hidden;">
+                                <img src="Freelancer Photos/Jeremiah A.jpg" alt="Jeremiah A." style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <h3 style="font-size: 1.1rem; color: #fff; font-weight: 600; margin-bottom: 5px;">Jeremiah A.</h3>
+                            <p style="font-size: 0.85rem; color: #b8950e; margin-bottom: 10px;">Full-Stack Web & App Development</p>
+                            <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 15px;">
+                                <span style="color: #b8950e; font-size: 0.9rem;">★★★★★</span>
+                                <span style="font-size: 0.8rem; color: #888;">5.0</span>
+                            </div>
+                            <p style="font-size: 0.8rem; color: #777; line-height: 1.5; margin: 0;">MERN Stack, Next.js, TypeScript, scalable systems architect.</p>
+                        </div>
+                        
+                        <!-- Expert 2: Bukola A. -->
+                        <div class="expert-card" style="flex: 0 0 calc(33.333% - 17px); background: #1a1a1a; border: 1px solid rgba(245,197,66,0.2); border-radius: 15px; padding: 30px 25px; text-align: center; min-width: 280px;">
+                            <div style="width: 90px; height: 90px; background: linear-gradient(145deg, #2a2a2a, #1a1a1a); border: 2px solid rgba(184,149,14,0.3); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; overflow: hidden;">
+                                <img src="Freelancer Photos/Bukola A..png" alt="Bukola A." style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <h3 style="font-size: 1.1rem; color: #fff; font-weight: 600; margin-bottom: 5px;">Bukola A.</h3>
+                            <p style="font-size: 0.85rem; color: #b8950e; margin-bottom: 10px;">Content Writing & eBook Publishing</p>
+                            <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 15px;">
+                                <span style="color: #b8950e; font-size: 0.9rem;">★★★★★</span>
+                                <span style="font-size: 0.8rem; color: #888;">5.0</span>
+                            </div>
+                            <p style="font-size: 0.8rem; color: #777; line-height: 1.5; margin: 0;">SEO writing, eBooks, Amazon KDP, ghostwriting specialist.</p>
+                        </div>
+                        
+                        <!-- Expert 3: Cecilia A. -->
+                        <div class="expert-card" style="flex: 0 0 calc(33.333% - 17px); background: #1a1a1a; border: 1px solid rgba(245,197,66,0.2); border-radius: 15px; padding: 30px 25px; text-align: center; min-width: 280px;">
+                            <div style="width: 90px; height: 90px; background: linear-gradient(145deg, #2a2a2a, #1a1a1a); border: 2px solid rgba(184,149,14,0.3); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; overflow: hidden;">
+                                <img src="Freelancer Photos/Cecilia Abisola.png" alt="Cecilia A." style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <h3 style="font-size: 1.1rem; color: #fff; font-weight: 600; margin-bottom: 5px;">Cecilia A.</h3>
+                            <p style="font-size: 0.85rem; color: #b8950e; margin-bottom: 10px;">Website Design & Marketing</p>
+                            <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 15px;">
+                                <span style="color: #b8950e; font-size: 0.9rem;">★★★★★</span>
+                                <span style="font-size: 0.8rem; color: #888;">4.9</span>
+                            </div>
+                            <p style="font-size: 0.8rem; color: #777; line-height: 1.5; margin: 0;">Shopify, WordPress, Framer, Webflow, SEO expert.</p>
+                        </div>
+                        
+                        <!-- Expert 4: Marvel M. -->
+                        <div class="expert-card" style="flex: 0 0 calc(33.333% - 17px); background: #1a1a1a; border: 1px solid rgba(245,197,66,0.2); border-radius: 15px; padding: 30px 25px; text-align: center; min-width: 280px;">
+                            <div style="width: 90px; height: 90px; background: linear-gradient(145deg, #2a2a2a, #1a1a1a); border: 2px solid rgba(184,149,14,0.3); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; overflow: hidden;">
+                                <img src="Freelancer Photos/Marvelous M..png" alt="Marvel M." style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <h3 style="font-size: 1.1rem; color: #fff; font-weight: 600; margin-bottom: 5px;">Marvel M.</h3>
+                            <p style="font-size: 0.85rem; color: #b8950e; margin-bottom: 10px;">Presentation & Visual Design</p>
+                            <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 15px;">
+                                <span style="color: #b8950e; font-size: 0.9rem;">★★★★★</span>
+                                <span style="font-size: 0.8rem; color: #888;">5.0</span>
+                            </div>
+                            <p style="font-size: 0.8rem; color: #777; line-height: 1.5; margin: 0;">Pitch decks, menu design, video production, Figma expert.</p>
+                        </div>
+                        
+                        <!-- Expert 5: Timil O. -->
+                        <div class="expert-card" style="flex: 0 0 calc(33.333% - 17px); background: #1a1a1a; border: 1px solid rgba(245,197,66,0.2); border-radius: 15px; padding: 30px 25px; text-align: center; min-width: 280px;">
+                            <div style="width: 90px; height: 90px; background: linear-gradient(145deg, #2a2a2a, #1a1a1a); border: 2px solid rgba(184,149,14,0.3); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; overflow: hidden;">
+                                <img src="Freelancer Photos/Timil O.png" alt="Timil O." style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <h3 style="font-size: 1.1rem; color: #fff; font-weight: 600; margin-bottom: 5px;">Timil O.</h3>
+                            <p style="font-size: 0.85rem; color: #b8950e; margin-bottom: 10px;">Software Engineering</p>
+                            <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 15px;">
+                                <span style="color: #b8950e; font-size: 0.9rem;">★★★★★</span>
+                                <span style="font-size: 0.8rem; color: #888;">5.0</span>
+                            </div>
+                            <p style="font-size: 0.8rem; color: #777; line-height: 1.5; margin: 0;">Node.js, Python, React, PostgreSQL, AWS, API design.</p>
+                        </div>
+                        
+                        <!-- Expert 6: T. Dre -->
+                        <div class="expert-card" style="flex: 0 0 calc(33.333% - 17px); background: #1a1a1a; border: 1px solid rgba(245,197,66,0.2); border-radius: 15px; padding: 30px 25px; text-align: center; min-width: 280px;">
+                            <div style="width: 90px; height: 90px; background: linear-gradient(145deg, #2a2a2a, #1a1a1a); border: 2px solid rgba(184,149,14,0.3); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; overflow: hidden;">
+                                <img src="Freelancer Photos/T. Dre .png" alt="T. Dre" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <h3 style="font-size: 1.1rem; color: #fff; font-weight: 600; margin-bottom: 5px;">T. Dre</h3>
+                            <p style="font-size: 0.85rem; color: #b8950e; margin-bottom: 10px;">Mobile App Development</p>
+                            <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 15px;">
+                                <span style="color: #b8950e; font-size: 0.9rem;">★★★★★</span>
+                                <span style="font-size: 0.8rem; color: #888;">4.9</span>
+                            </div>
+                            <p style="font-size: 0.8rem; color: #777; line-height: 1.5; margin: 0;">React Native, Flutter, iOS, Android, Firebase expert.</p>
+                        </div>
+                        
+                        <!-- Expert 7: Beatrice H. -->
+                        <div class="expert-card" style="flex: 0 0 calc(33.333% - 17px); background: #1a1a1a; border: 1px solid rgba(245,197,66,0.2); border-radius: 15px; padding: 30px 25px; text-align: center; min-width: 280px;">
+                            <div style="width: 90px; height: 90px; background: linear-gradient(145deg, #2a2a2a, #1a1a1a); border: 2px solid rgba(184,149,14,0.3); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; overflow: hidden;">
+                                <img src="Freelancer Photos/Beatrice O..png" alt="Beatrice H." style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <h3 style="font-size: 1.1rem; color: #fff; font-weight: 600; margin-bottom: 5px;">Beatrice H.</h3>
+                            <p style="font-size: 0.85rem; color: #b8950e; margin-bottom: 10px;">eCommerce & Marketplace Specialist</p>
+                            <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 15px;">
+                                <span style="color: #b8950e; font-size: 0.9rem;">★★★★★</span>
+                                <span style="font-size: 0.8rem; color: #888;">4.8</span>
+                            </div>
+                            <p style="font-size: 0.8rem; color: #777; line-height: 1.5; margin: 0;">Etsy SEO, eBay listings, Amazon KDP, product research.</p>
+                        </div>
+
+                        <!-- Expert 8: Steve M. -->
+                        <div class="expert-card" style="flex: 0 0 calc(33.333% - 17px); background: #1a1a1a; border: 1px solid rgba(245,197,66,0.2); border-radius: 15px; padding: 30px 25px; text-align: center; min-width: 280px;">
+                            <div style="width: 90px; height: 90px; background: linear-gradient(145deg, #2a2a2a, #1a1a1a); border: 2px solid rgba(184,149,14,0.3); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; overflow: hidden;">
+                                <img src="Freelancer Photos/Steve M.png" alt="Steve M." style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <h3 style="font-size: 1.1rem; color: #fff; font-weight: 600; margin-bottom: 5px;">Steve M.</h3>
+                            <p style="font-size: 0.85rem; color: #b8950e; margin-bottom: 10px;">Software Development & Automation</p>
+                            <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 15px;">
+                                <span style="color: #b8950e; font-size: 0.9rem;">★★★★★</span>
+                                <span style="font-size: 0.8rem; color: #888;">5.0</span>
+                            </div>
+                            <p style="font-size: 0.8rem; color: #777; line-height: 1.5; margin: 0;">Web apps, automation, REST APIs, Node.js, Python specialist.</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <!-- Right Arrow -->
+                <button onclick="slideExperts(1)" style="position: absolute; right: -20px; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background: rgba(184,149,14,0.1); border: 1px solid rgba(184,149,14,0.3); border-radius: 50%; color: #b8950e; font-size: 1.5rem; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; transition: all 0.3s;" onmouseover="this.style.background='rgba(184,149,14,0.3)'" onmouseout="this.style.background='rgba(184,149,14,0.1)'">
+                    ›
+                </button>
+            </div>
+            
+            <!-- Carousel JavaScript -->
+            <script>
+                let currentSlide = 0;
+                const totalExperts = 8;
+                const visibleExperts = 3;
+                const maxSlide = totalExperts - visibleExperts;
+                
+                function slideExperts(direction) {
+                    currentSlide += direction;
+                    
+                    // Boundary checks
+                    if (currentSlide < 0) currentSlide = 0;
+                    if (currentSlide > maxSlide) currentSlide = maxSlide;
+                    
+                    // Calculate translate percentage
+                    const translatePercent = -(currentSlide * (100 / visibleExperts));
+                    document.getElementById('expertsTrack').style.transform = 'translateX(' + translatePercent + '%)';
+                }
+            </script>
+            
+            <div style="text-align: center;">
+                <a href="team.html" style="display: inline-flex; align-items: center; gap: 10px; background: #1a1a1a; border: 1px solid #b8950e; color: #fff; padding: 12px 25px; border-radius: 25px; text-decoration: none; font-weight: 600; font-size: 0.9rem;">
+                    View All Experts →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Banner - Centered with Infographics -->
+    <section style="padding: 50px 20px; background: linear-gradient(135deg, #0a0a0a 0%, #151515 100%); border-top: 1px solid rgba(245,197,66,0.15); position: relative; overflow: hidden;">
+        <!-- Background Decorative Elements -->
+        <div style="position: absolute; top: -100px; left: 10%; width: 200px; height: 200px; background: radial-gradient(circle, rgba(184,149,14,0.1) 0%, transparent 70%); border-radius: 50%;"></div>
+        <div style="position: absolute; bottom: -50px; right: 15%; width: 150px; height: 150px; background: radial-gradient(circle, rgba(184,149,14,0.08) 0%, transparent 70%); border-radius: 50%;"></div>
+        
+        <div style="max-width: 800px; margin: 0 auto; text-align: center; position: relative; z-index: 1;">
+            <!-- Icon Row -->
+            <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 30px;">
+                <div style="width: 50px; height: 50px; background: rgba(184,149,14,0.15); border: 2px solid rgba(184,149,14,0.4); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">🚀</div>
+                <div style="width: 50px; height: 50px; background: linear-gradient(145deg, #b8950e, #d4a81a); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 20px rgba(184,149,14,0.4);">👑</div>
+                <div style="width: 50px; height: 50px; background: rgba(184,149,14,0.15); border: 2px solid rgba(184,149,14,0.4); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">⭐</div>
+            </div>
+            
+            <!-- Badge -->
+            <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(184,149,14,0.1); border: 1px solid rgba(184,149,14,0.3); padding: 8px 16px; border-radius: 20px; margin-bottom: 20px;">
+                <span style="color: #b8950e; font-size: 0.8rem; font-weight: 600; letter-spacing: 1px;">LET'S WORK TOGETHER</span>
+            </div>
+            
+            <!-- Headline -->
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #fff; margin: 0 0 15px 0; font-weight: 700; line-height: 1.2;">
+                Ready to Build Something <span style="color:#b8950e;">Exceptional?</span>
+            </h2>
+            
+            <!-- Subtitle -->
+            <p style="font-size: 1.05rem; color: #999; margin: 0 0 35px 0; line-height: 1.7;">
+                Let's bring your vision to life with the right experts and the right results.<br>
+                <span style="color: #b8950e; font-weight: 600;">We're just one message away!</span>
+            </p>
+            
+            <!-- Stats Row -->
+            <div style="display: flex; justify-content: center; gap: 50px; margin-bottom: 35px; flex-wrap: wrap;">
+                <div style="text-align: center;">
+                    <div style="font-size: 1.8rem; font-weight: 800; color: #b8950e;">50+</div>
+                    <div style="font-size: 0.8rem; color: #777; text-transform: uppercase; letter-spacing: 1px;">Elite Experts</div>
+                </div>
+                <div style="width: 1px; height: 40px; background: rgba(184,149,14,0.3);"></div>
+                <div style="text-align: center;">
+                    <div style="font-size: 1.8rem; font-weight: 800; color: #b8950e;">95%</div>
+                    <div style="font-size: 0.8rem; color: #777; text-transform: uppercase; letter-spacing: 1px;">Satisfaction</div>
+                </div>
+                <div style="width: 1px; height: 40px; background: rgba(184,149,14,0.3);"></div>
+                <div style="text-align: center;">
+                    <div style="font-size: 1.8rem; font-weight: 800; color: #b8950e;">24/7</div>
+                    <div style="font-size: 0.8rem; color: #777; text-transform: uppercase; letter-spacing: 1px;">Support</div>
+                </div>
+            </div>
+            
+            <!-- Buttons -->
+            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                <a href="contact.html" style="display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(145deg, #b8950e, #d4a81a); color: #000; padding: 16px 32px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: all 0.3s; box-shadow: 0 4px 20px rgba(184,149,14,0.3);">
+                    Start Your Project 
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+                <a href="team.html" style="display: inline-flex; align-items: center; gap: 10px; background: transparent; border: 2px solid #b8950e; color: #b8950e; padding: 16px 32px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: all 0.3s;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    Browse Experts
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer - Matching Homepage Style -->
+        <!-- Footer -->
+        <!-- Footer -->
+        <!-- Footer -->
+        <!-- Footer -->
+    <footer id="contact" class="lux-ivory" style="padding: 80px 0 30px; border-top: 1px solid rgba(0,0,0,0.05); overflow: hidden; background: #fff;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 5%;">
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 50px; margin-bottom: 60px;">
+                
+                <!-- Brand Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+                        <img src="Logo/thegeniusagency.png" alt="Logo" style="height: 64px;" onerror="this.src='../Logo/thegeniusagency.png'">
+                        <div style="color: #111; font-weight: 900; line-height: 1.1; font-size: 1.8rem; letter-spacing: -0.02em;">
+                            THE GENIUS<br><span class="text-yellow" style="color: #F5C542;">AGENCY</span>
+                        </div>
+                    </div>
+                    <p style="color: #555; font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px; max-width: 280px;">We help businesses grow with innovative digital solutions. Your success is our mission.</p>
+                    <div style="display: flex; gap: 12px;">
+                        <!-- Instagram -->
+                        <a href="https://www.instagram.com/thegeniusagencyteamhq" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        </a>
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/TheGeniusAgency" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        </a>
+                        <!-- TikTok -->
+                        <a href="https://www.tiktok.com/@thegeniusagencytm?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+                        </a>
+                        <!-- YouTube -->
+                        <a href="https://www.youtube.com/@The_Genius_Agency" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Quick Links</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="index.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Home</a></li>
+                        <li><a href="team.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Experts</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Services</a></li>
+                        <li><a href="portfolio.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Portfolios</a></li>
+                        <li><a href="index.html#about" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">About Us</a></li>
+                        <li><a href="contact.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Services</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Website Design</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">eCommerce & Shopify</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Mobile App Development</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">UI/UX Design</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Marketing & SEO</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Content & eBooks</a></li>
+                    </ul>
+                </div>
+
+                <!-- For Clients & Contact Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <!-- For Clients -->
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">For Clients</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px;">
+                        <li><a href="privacy.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Privacy Policy</a></li>
+                        <li><a href="terms.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Terms & Conditions</a></li>
+                    </ul>
+
+                    <!-- Contact Us -->
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Contact Us</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 20px;">
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            </div>
+                            <a href="mailto:info@thegeniusagency.com" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#555'">info@thegeniusagency.com</a>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            </div>
+                            <span style="color: #555; font-size: 0.95rem;">Always Available 24/7</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Bottom Bar -->
+            <div style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 35px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 20px;">
+                <p style="color: #666; font-size: 0.85rem; margin: 0; font-weight: 500; text-align: center;">© <span id="year">2026</span> THE GENIUS AGENCY. ALL RIGHTS RESERVED.</p>
+            </div>
+        </div>
+    </footer>
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+    <!-- Google Translate Auto-Detect -->
+    <div id="google_translate_element" style="display:none;"></div>
+    <style>
+        .goog-te-banner-frame, .goog-te-balloon-frame { display: none !important; }
+        body { top: 0 !important; }
+        .goog-te-gadget { font-size: 0 !important; }
+        #gt-float-btn {
+            position: fixed; bottom: 24px; left: 24px; z-index: 99999;
+            background: #b8950e; color: #000; border: none; border-radius: 50px;
+            padding: 10px 18px; font-size: 0.82rem; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 20px rgba(184,149,14,0.4);
+            transition: all 0.25s ease; letter-spacing: 0.3px;
+        }
+        #gt-float-btn:hover { background: #f5c542; transform: translateY(-2px); }
+        #gt-float-btn svg { width: 16px; height: 16px; }
+    </style>
+    <button id="gt-float-btn" onclick="document.getElementById('gt-lang-select').style.display = document.getElementById('gt-lang-select').style.display === 'none' ? 'block' : 'none';">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        Translate
+    </button>
+    <div id="gt-lang-select" style="display:none; position:fixed; bottom:70px; left:24px; z-index:99999; background:#fff; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.15); padding:8px; min-width:160px; border:1px solid rgba(184,149,14,0.2);">
+        <div id="google_translate_element2"></div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false, layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element2');
+        }
+        (function() {
+            var lang = (navigator.language || navigator.userLanguage || 'en').split('-')[0];
+            if (lang !== 'en') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(function() { var sel = document.querySelector('.goog-te-combo'); if (sel) { sel.value = lang; sel.dispatchEvent(new Event('change')); } }, 1500);
+                });
+            }
+        })();
+    </script>
+    <script>
+        // Mobile Menu Logic
+        const menuToggle = document.getElementById('mobile-menu-toggle');
+        const closeMenu = document.getElementById('close-mobile-menu');
+        const navOverlay = document.getElementById('mobile-nav');
+        
+        menuToggle.addEventListener('click', () => {
+            navOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        closeMenu.addEventListener('click', () => {
+            navOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/nav-auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard | The Genius Agency</title>
+<link rel="icon" type="image/png" href="../Logo/thegeniusagency.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--gold:#F5C542;--gold-dark:#b8950e;--navy:#0a1628;--bg:var(--navy);--bg2:#0d1e36;--bg3:#122848;--border:rgba(245,197,66,0.15);--text:#f0f0f0;--muted:#8a9bb8;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden;}
+
+/* SIDEBAR */
+.sidebar{width:220px;min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;overflow-y:auto;}
+.sidebar-logo{padding:20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.logo-badge{background:var(--gold);color:#000;font-size:0.6rem;font-weight:800;padding:2px 6px;border-radius:4px;letter-spacing:1px;}
+.logo-name{font-size:0.8rem;font-weight:700;color:#fff;line-height:1.2;}
+.logo-sub{font-size:0.65rem;color:var(--muted);}
+.sidebar-section{padding:12px 0;}
+.sidebar-section-label{font-size:0.62rem;font-weight:700;color:#444;letter-spacing:1.5px;padding:0 16px;margin-bottom:6px;text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--muted);font-size:0.82rem;font-weight:500;cursor:pointer;transition:all 0.2s;text-decoration:none;border-left:3px solid transparent;position:relative;}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,0.04);}
+.nav-item.active{color:var(--gold);background:rgba(245,197,66,0.08);border-left-color:var(--gold);}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:#ef4444;color:#fff;font-size:0.58rem;padding:1px 5px;border-radius:6px;font-weight:700;}
+.sidebar-bottom{padding:14px 16px;border-top:1px solid var(--border);margin-top:auto;}
+.admin-pill{display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg3);border-radius:10px;}
+.admin-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#b8950e,#F5C542);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.78rem;color:#000;flex-shrink:0;}
+.admin-info{flex:1;min-width:0;}
+.admin-name{font-size:0.75rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.admin-role{font-size:0.6rem;color:var(--gold);font-weight:600;}
+.btn-so{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;}
+.btn-so:hover{color:#ef4444;}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{height:58px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:50;}
+.topbar-left{display:flex;flex-direction:column;}
+.topbar-title{font-size:0.92rem;font-weight:700;color:#fff;}
+.topbar-date{font-size:0.68rem;color:var(--muted);}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.notif-btn{position:relative;width:36px;height:36px;background:var(--bg3);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);border:none;}
+.notif-btn:hover{color:#fff;}
+#notif-badge{position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;font-size:0.55rem;font-weight:800;min-width:16px;height:16px;border-radius:8px;display:none;align-items:center;justify-content:center;padding:0 3px;}
+.content{padding:24px;flex:1;}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px;transition:border-color 0.2s;cursor:default;}
+.stat-card:hover{border-color:rgba(245,197,66,0.25);}
+.stat-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.stat-icon-box{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.stat-trend{font-size:0.68rem;font-weight:600;padding:3px 7px;border-radius:6px;}
+.trend-up{background:rgba(34,197,94,0.15);color:#22c55e;}
+.trend-neutral{background:rgba(255,255,255,0.06);color:var(--muted);}
+.stat-value{font-size:1.7rem;font-weight:800;color:#fff;line-height:1;margin-bottom:4px;}
+.stat-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
+
+/* CHARTS ROW */
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px;}
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;}
+.chart-title{font-size:0.82rem;font-weight:700;color:#fff;margin-bottom:16px;}
+.chart-wrap{position:relative;height:180px;}
+
+/* TABLES ROW */
+.tables-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.table-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;}
+.table-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.table-title{font-size:0.82rem;font-weight:700;color:#fff;}
+.btn-link{background:none;border:none;cursor:pointer;color:var(--gold);font-size:0.75rem;font-weight:600;text-decoration:none;}
+.btn-link:hover{text-decoration:underline;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:0.65rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;text-align:left;}
+td{font-size:0.78rem;color:var(--text);padding:9px 0;border-top:1px solid var(--border);}
+.td-name{font-weight:600;color:#fff;}
+.td-muted{color:var(--muted);}
+.status-pill{padding:3px 9px;border-radius:20px;font-size:0.65rem;font-weight:700;letter-spacing:0.3px;white-space:nowrap;}
+.avatar-sm{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dark),var(--gold));display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:#000;margin-right:8px;vertical-align:middle;}
+
+/* ACTIVITY */
+.activity-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-top:16px;}
+
+/* VIDEO HERO */
+.video-hero{position:relative;width:100%;height:320px;overflow:hidden;border-radius:16px;margin-bottom:24px;border:1px solid var(--border);}
+.video-hero video{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);min-width:100%;min-height:100%;object-fit:cover;}
+.video-hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,22,40,0.85),rgba(10,22,40,0.6));display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px;}
+.video-hero-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;color:#fff;margin-bottom:12px;text-shadow:0 2px 20px rgba(0,0,0,0.3);}
+.video-hero-subtitle{font-size:1rem;color:var(--gold);font-weight:600;letter-spacing:1px;}
+.activity-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.activity-item:last-child{border-bottom:none;}
+.activity-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.activity-text{font-size:0.8rem;color:var(--text);flex:1;line-height:1.5;}
+.activity-time{font-size:0.67rem;color:var(--muted);flex-shrink:0;}
+
+/* LOADING */
+.loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:16px;}
+.loading-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:800;color:var(--gold);}
+.spinner{width:32px;height:32px;border:3px solid rgba(245,197,66,0.15);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr);}.charts-row{grid-template-columns:1fr;}.tables-row{grid-template-columns:1fr;}}
+</style>
+    <script src="../js/analytics.js"></script>
+</head>
+<body>
+
+<div class="loading-screen" id="loading-screen">
+  <div class="loading-logo">THE GENIUS AGENCY</div>
+  <div class="spinner"></div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div>
+      <div class="logo-name">THE GENIUS</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+        <div class="logo-sub">AGENCY</div>
+        <div class="logo-badge">ADMIN</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Overview</div>
+    <a href="dashboard.html" class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Operations</div>
+    <a href="chat.html" class="nav-item" id="nav-chat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Messages
+      <span class="nav-badge" id="badge-msgs" style="display:none;"></span>
+    </a>
+    <a href="orders.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+      Orders
+    </a>
+    <a href="projects.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Projects
+    </a>
+    <a href="offers.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Offers
+    </a>
+    <a href="payments.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Payments
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">People</div>
+    <a href="clients.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Clients
+    </a>
+    <a href="experts.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+      Experts
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Content</div>
+    <a href="content.html?tab=portfolio" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      Portfolio
+    </a>
+    <a href="content.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Site Content
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Website</div>
+    <a href="../index.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      View Website
+    </a>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="admin-pill">
+      <div class="admin-avatar" id="admin-avatar">A</div>
+      <div class="admin-info">
+        <div class="admin-name" id="admin-name">Admin</div>
+        <div class="admin-role">MASTER ADMIN</div>
+      </div>
+      <button class="btn-so" onclick="doSignOut()" title="Sign out">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-title">Dashboard Overview</span>
+      <span class="topbar-date" id="topbar-date"></span>
+    </div>
+    <div class="topbar-right">
+      <div style="position:relative;">
+        <button class="notif-btn" onclick="toggleNotif()">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span id="notif-badge" style="display:none;position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;font-size:0.6rem;font-weight:800;width:15px;height:15px;border-radius:50%;align-items:center;justify-content:center;">0</span>
+        </button>
+        <div id="notif-panel" style="display:none;position:absolute;top:40px;right:0;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:12px;min-width:280px;box-shadow:0 10px 40px rgba(0,0,0,0.5);z-index:1000;max-height:400px;overflow-y:auto;">
+          <div style="padding:12px 16px;font-size:0.8rem;font-weight:700;color:#fff;border-bottom:1px solid rgba(255,255,255,0.05);">Notifications</div>
+          <div id="notif-list">
+            <div style="padding:20px;text-align:center;font-size:0.75rem;color:#555;">No new notifications</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIDEO HERO -->
+  <div class="video-hero">
+    <video autoplay muted loop playsinline>
+      <source src="../thegeniushero.mp4" type="video/mp4">
+    </video>
+    <div class="video-hero-overlay">
+      <h1 class="video-hero-title">Welcome Back, Admin</h1>
+      <p class="video-hero-subtitle">THE GENIUS AGENCY DASHBOARD</p>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card" style="border-left: 4px solid var(--gold);">
+        <div class="stat-top">
+          <div class="stat-icon-box" style="background:rgba(245,197,66,0.15);">🌐</div>
+          <span class="stat-trend trend-up">LIVE</span>
+        </div>
+        <div class="stat-value" id="stat-visits">0</div>
+        <div class="stat-label">Total Visits</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon-box" style="background:rgba(59,130,246,0.15);">📝</div>
+          <span class="stat-trend trend-up" id="trend-signups">+0</span>
+        </div>
+        <div class="stat-value" id="stat-signups">0</div>
+        <div class="stat-label">Total Sign Ups</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon-box" style="background:rgba(16,185,129,0.15);">👥</div>
+          <span class="stat-trend trend-neutral" id="trend-clients">+0</span>
+        </div>
+        <div class="stat-value" id="stat-clients">0</div>
+        <div class="stat-label">Total Clients</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon-box" style="background:rgba(16,185,129,0.15);">⚡</div>
+          <span class="stat-trend trend-neutral" id="trend-active">Active</span>
+        </div>
+        <div class="stat-value" id="stat-active">0</div>
+        <div class="stat-label">Active Projects</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon-box" style="background:rgba(245,197,66,0.15);">💰</div>
+          <span class="stat-trend trend-up" id="trend-rev">This month</span>
+        </div>
+        <div class="stat-value" id="stat-revenue">$0</div>
+        <div class="stat-label">Total Revenue</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon-box" style="background:rgba(239,68,68,0.15);">💬</div>
+          <span class="stat-trend trend-neutral">Unread</span>
+        </div>
+        <div class="stat-value" id="stat-unread">0</div>
+        <div class="stat-label">Unread Messages</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon-box" style="background:rgba(139,92,246,0.15);">📋</div>
+          <span class="stat-trend trend-neutral">Pending</span>
+        </div>
+        <div class="stat-value" id="stat-offers">0</div>
+        <div class="stat-label">Pending Offers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon-box" style="background:rgba(34,197,94,0.15);">✅</div>
+          <span class="stat-trend trend-up">All time</span>
+        </div>
+        <div class="stat-value" id="stat-completed">0</div>
+        <div class="stat-label">Completed Projects</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon-box" style="background:rgba(6,182,212,0.15);">📦</div>
+          <span class="stat-trend trend-neutral">Awaiting</span>
+        </div>
+        <div class="stat-value" id="stat-delivery">0</div>
+        <div class="stat-label">Pending Delivery</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon-box" style="background:rgba(249,115,22,0.15);">🌟</div>
+          <span class="stat-trend trend-up">Rating</span>
+        </div>
+        <div class="stat-value" id="stat-rating">5.0</div>
+        <div class="stat-label">Avg. Expert Rating</div>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">Monthly Revenue</div>
+        <div class="chart-wrap"><canvas id="revenueChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Projects by Status</div>
+        <div class="chart-wrap"><canvas id="statusChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- TABLES -->
+    <div class="tables-row" style="margin-bottom: 24px;">
+      <div class="table-card" style="border-color: rgba(59,130,246,0.3); background: linear-gradient(145deg, var(--bg2), rgba(59,130,246,0.05));">
+        <div class="table-header">
+          <span class="table-title">New Inquiries & Consultations</span>
+          <a href="chat.html" class="btn-link">View all →</a>
+        </div>
+        <table>
+          <thead><tr><th>Client</th><th>Inquiry Type</th><th>Time</th></tr></thead>
+          <tbody id="tbody-leads"><tr><td colspan="3" style="color:var(--muted);text-align:center;padding:20px;"><div class="spinner" style="margin:auto;width:20px;height:20px;border-width:2px;"></div></td></tr></tbody>
+        </table>
+      </div>
+      <div class="table-card">
+        <div class="table-header">
+          <span class="table-title">Recent Payments (Earnings)</span>
+          <a href="payments.html" class="btn-link">View all →</a>
+        </div>
+        <table>
+          <thead><tr><th>Client</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody id="tbody-payments"><tr><td colspan="3" style="color:var(--muted);text-align:center;padding:20px;"><div class="spinner" style="margin:auto;width:20px;height:20px;border-width:2px;"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    
+  <div class="tables-row" style="margin-bottom: 24px;">
+      <div class="table-card" style="grid-column: span 2;">
+        <div class="table-header">
+          <span class="table-title">User Directory (All Sign Ups)</span>
+          <a href="clients.html" class="btn-link">Manage Users →</a>
+        </div>
+        <table>
+          <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Country</th><th>Joined</th></tr></thead>
+          <tbody id="tbody-full-directory"><tr><td colspan="5" style="color:var(--muted);text-align:center;padding:20px;"><div class="spinner" style="margin:auto;width:20px;height:20px;border-width:2px;"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tables-row" style="margin-bottom: 24px;">
+      <div class="table-card">
+        <div class="table-header">
+          <span class="table-title">Recent Sign Ups (New Leads)</span>
+          <a href="clients.html" class="btn-link">View all →</a>
+        </div>
+        <table>
+          <thead><tr><th>User</th><th>Role</th><th>Joined</th></tr></thead>
+          <tbody id="tbody-signups"><tr><td colspan="3" style="color:var(--muted);text-align:center;padding:20px;"><div class="spinner" style="margin:auto;width:20px;height:20px;border-width:2px;"></div></td></tr></tbody>
+        </table>
+      </div>
+      <div class="table-card">
+        <div class="table-header">
+          <span class="table-title">Recent Conversations</span>
+          <a href="chat.html" class="btn-link">View all →</a>
+        </div>
+        <table>
+          <thead><tr><th>Client</th><th>Status</th><th>Last Message</th></tr></thead>
+          <tbody id="tbody-convos"><tr><td colspan="3" style="color:var(--muted);text-align:center;padding:20px;"><div class="spinner" style="margin:auto;width:20px;height:20px;border-width:2px;"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ACTIVITY LOG -->
+    <div class="activity-card">
+      <div class="table-header" style="margin-bottom:12px;">
+        <span class="table-title">Recent Activity</span>
+      </div>
+      <div id="activity-list">
+        <div style="display:flex;justify-content:center;padding:20px;"><div class="spinner" style="width:20px;height:20px;border-width:2px;"></div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SB_URL='https://tjxyxasorunhrtvstwpa.supabase.co';
+const SB_KEY='sb_publishable_d3YtyYkTynAVyTEVIN19dQ_-4wZkGHV';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+
+let adminUser=null;
+
+function ft(ts){if(!ts)return'';const d=new Date(ts),now=new Date(),diff=now-d;if(diff<60000)return'Just now';if(diff<3600000)return Math.floor(diff/60000)+'m ago';return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
+function fc(a,c='USD'){return new Intl.NumberFormat('en-US',{style:'currency',currency:c,minimumFractionDigits:0}).format(a||0);}
+function av(n){return(n||'').split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2)||'?';}
+function statusColor(s){const m={new_lead:'#3b82f6',discussing:'#8b5cf6',offer_sent:'#f59e0b',payment_pending:'#ef4444',in_progress:'#10b981',under_review:'#f97316',delivered:'#06b6d4',revision:'#ec4899',completed:'#22c55e',auto_completed:'#84cc16',cancelled:'#6b7280',refunded:'#f87171'};return m[s]||'#888';}
+function statusLabel(s){const m={new_lead:'New Lead',discussing:'Discussing',offer_sent:'Offer Sent',payment_pending:'Payment Pending',in_progress:'In Progress',under_review:'Under Review',delivered:'Delivered',revision:'Revision',completed:'Completed',auto_completed:'Auto Completed',cancelled:'Cancelled',refunded:'Refunded'};return m[s]||s;}
+
+
+async function init(){
+  try {
+    console.log('Initializing Admin Dashboard...');
+    
+    const { data: sessionData, error: sessionError } = await sb.auth.getSession();
+    const session = sessionData?.session;
+    
+    if (sessionError) {
+        console.error('Session error:', sessionError);
+    }
+    
+    if(!session){
+      console.warn('No session, redirecting to login.');
+      window.location.href='../login.html';
+      return;
+    }
+    
+    console.log('Fetching admin profile for:', session.user.id);
+    const { data: p, error: profileError } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+    
+    if (profileError) {
+        console.error('Profile fetch error:', profileError);
+    }
+
+    if(!p || p.role!=='admin'){
+      console.warn('Unauthorized or missing profile. Role:', p?.role);
+      alert('Access Denied: You do not have administrator privileges or your profile is missing.');
+      window.location.href='../login.html';
+      return;
+    }
+    
+    adminUser=p;
+    document.getElementById('admin-name').textContent=p.full_name||'Admin';
+    document.getElementById('admin-avatar').textContent=av(p.full_name);
+    document.getElementById('topbar-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    
+    // Initialize notifications now that adminUser is set
+    initNotifUI();
+    
+    // Hide loading screen as soon as we have the profile
+    document.getElementById('loading-screen').style.display='none';
+
+    // Load data in parallel, but handle individual failures
+    try {
+        await Promise.all([
+          loadStats().catch(e => console.error('Stats error:', e)),
+          loadConvos().catch(e => console.error('Convos error:', e)),
+          loadLeads().catch(e => console.error('Leads error:', e)),
+          loadPayments().catch(e => console.error('Payments error:', e)),
+          loadActivity().catch(e => console.error('Activity error:', e)),
+          loadSignups().catch(e => console.error('Signups error:', e))
+        ]);
+        buildCharts();
+        subscribeRealtime();
+    } catch (dataError) {
+        console.error('Error loading dashboard data:', dataError);
+    }
+  } catch (fatalError) {
+    console.error('Fatal initialization error:', fatalError);
+    document.getElementById('loading-screen').style.display='none';
+    alert('An error occurred while loading the dashboard. Please check the console for details.');
+  }
+}
+
+async function loadStats(){
+  const[{count:clients},{count:totalProfiles},{data:projects},{data:payments},{count:pendingOffers},{count:deliveries},{data:experts},{count:totalVisits}]=await Promise.all([
+    sb.from('profiles').select('id',{count:'exact',head:true}).eq('role','client'),
+    sb.from('profiles').select('id',{count:'exact',head:true}),
+    sb.from('projects').select('status'),
+    sb.from('payments').select('amount,status,created_at'),
+    sb.from('offers').select('id',{count:'exact',head:true}).eq('status','sent'),
+    sb.from('deliveries').select('id',{count:'exact',head:true}).eq('status','pending'),
+    sb.from('experts').select('rating'),
+    sb.from('site_analytics').select('visitor_id',{count:'exact',head:true})
+  ]);
+  const active=(projects||[]).filter(p=>['in_progress','discussing','under_review','revision','offer_sent','payment_pending'].includes(p.status)).length;
+  const completed=(projects||[]).filter(p=>['completed','auto_completed'].includes(p.status)).length;
+  const revenue=(payments||[]).filter(p=>p.status==='successful').reduce((s,p)=>s+Number(p.amount),0);
+  const validExperts=(experts||[]).filter(e=>e && e.rating!==null && e.rating!==undefined);
+  const avgRating=validExperts.length?((validExperts.reduce((s,e)=>s+Number(e.rating),0)/validExperts.length).toFixed(1)):'5.0';
+  document.getElementById('stat-clients').textContent=clients||0;
+  document.getElementById('stat-signups').textContent=totalProfiles||0;
+  document.getElementById('stat-visits').textContent=totalVisits||0;
+  document.getElementById('stat-active').textContent=active;
+  document.getElementById('stat-revenue').textContent=fc(revenue);
+  document.getElementById('stat-offers').textContent=pendingOffers||0;
+  document.getElementById('stat-completed').textContent=completed;
+  document.getElementById('stat-delivery').textContent=deliveries||0;
+  document.getElementById('stat-rating').textContent=avgRating;
+
+  const{data:convos}=await sb.from('conversations').select('unread_admin');
+  const unread=(convos||[]).reduce((s,c)=>s+(c.unread_admin||0),0);
+  document.getElementById('stat-unread').textContent=unread;
+  if(unread>0){
+    const b=document.getElementById('badge-msgs');b.textContent=unread;b.style.display='inline';
+    const nb=document.getElementById('notif-badge');nb.textContent=unread;nb.style.display='flex';
+  }
+
+  window._projectsForChart=projects||[];
+  window._paymentsForChart=payments||[];
+}
+
+async function loadConvos(){
+  const{data}=await sb.from('conversations').select('id,status,last_message,last_message_at,unread_admin,profiles(full_name)').order('updated_at',{ascending:false}).limit(8);
+  const tb=document.getElementById('tbody-convos');
+  if(!data||!data.length){tb.innerHTML='<tr><td colspan="3" style="color:var(--muted);text-align:center;padding:20px;">No conversations yet</td></tr>';return;}
+  tb.innerHTML=data.map(c=>{
+    const col=statusColor(c.status);
+    const name=c.profiles?.full_name||'Unknown';
+    return`<tr style="cursor:pointer;" onclick="window.location.href='chat.html?cid=${c.id}'">
+      <td><span class="avatar-sm">${av(name)}</span><span class="td-name">${name}</span></td>
+      <td><span class="status-pill" style="background:${col}22;color:${col};">${statusLabel(c.status)}</span></td>
+      <td class="td-muted">${ft(c.last_message_at)}${c.unread_admin>0?` <span style="background:#ef4444;color:#fff;font-size:0.6rem;padding:1px 5px;border-radius:6px;margin-left:4px;">${c.unread_admin}</span>`:''}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function loadLeads(){
+  // Fetch conversations with new_lead status to identify custom projects and video consultations
+  const{data}=await sb.from('conversations').select('id,status,last_message,last_message_at,profiles(full_name)').eq('status','new_lead').order('updated_at',{ascending:false}).limit(6);
+  const tb=document.getElementById('tbody-leads');
+  if(!data||!data.length){tb.innerHTML='<tr><td colspan="3" style="color:var(--muted);text-align:center;padding:20px;">No new inquiries currently</td></tr>';return;}
+  tb.innerHTML=data.map(c=>{
+    const name=c.profiles?.full_name||'Unknown';
+    const msg = c.last_message || '';
+    let type = 'New Inquiry';
+    let typeCol = '#3b82f6';
+    if (msg.includes('VIDEO CONSULTATION')) {
+      type = 'Video Consultation';
+      typeCol = '#ec4899';
+    } else if (msg.includes('CUSTOM PROJECT')) {
+      type = 'Custom Project';
+      typeCol = '#f59e0b';
+    }
+    return`<tr style="cursor:pointer;" onclick="window.location.href='chat.html?cid=${c.id}'">
+      <td><span class="avatar-sm">${av(name)}</span><span class="td-name">${name}</span></td>
+      <td><span class="status-pill" style="background:${typeCol}22;color:${typeCol}; border: 1px solid ${typeCol}44;">${type}</span></td>
+      <td class="td-muted">${ft(c.last_message_at)}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function loadPayments(){
+  const{data}=await sb.from('payments').select('amount,status,created_at,source,profiles(full_name)').order('created_at',{ascending:false}).limit(8);
+  const tb=document.getElementById('tbody-payments');
+  if(!data||!data.length){tb.innerHTML='<tr><td colspan="3" style="color:var(--muted);text-align:center;padding:20px;">No payments yet</td></tr>';return;}
+  const cols={successful:'#22c55e',pending:'#f59e0b',failed:'#ef4444',refunded:'#f87171'};
+  tb.innerHTML=data.map(p=>{
+    const name=p.profiles?.full_name||'Unknown';
+    const col=cols[p.status]||'#888';
+    return`<tr>
+      <td><span class="avatar-sm">${av(name)}</span><span class="td-name">${name}</span></td>
+      <td style="font-weight:700;color:#fff;">${fc(p.amount)}</td>
+      <td><span class="status-pill" style="background:${col}22;color:${col};">${p.status}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+async function loadActivity(){
+  const{data}=await sb.from('activity_logs').select('*,profiles(full_name)').order('created_at',{ascending:false}).limit(10);
+  const el=document.getElementById('activity-list');
+  if(!data||!data.length){el.innerHTML='<div style="color:var(--muted);font-size:0.82rem;padding:10px 0;">No activity yet</div>';return;}
+  const dotColors={admin:'#F5C542',client:'#3b82f6',expert:'#8b5cf6'};
+  el.innerHTML=data.map(a=>`
+    <div class="activity-item">
+      <div class="activity-dot" style="background:${dotColors[a.actor_role]||'#888'};"></div>
+      <div class="activity-text"><strong style="color:#fff;">${a.profiles?.full_name||a.actor_role}</strong> ${a.action}</div>
+      <div class="activity-time">${ft(a.created_at)}</div>
+    </div>`).join('');
+}
+
+async function loadSignups(){
+  const{data}=await sb.from('profiles').select('full_name,email,role,created_at,country').order('created_at',{ascending:false});
+  const tb=document.getElementById('tbody-signups');
+  const dTb=document.getElementById('tbody-full-directory');
+  
+  if(!data||!data.length){
+    tb.innerHTML='<tr><td colspan="3" style="color:var(--muted);text-align:center;padding:20px;">No signups yet</td></tr>';
+    dTb.innerHTML='<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:20px;">No users yet</td></tr>';
+    return;
+  }
+  
+  // Recent leads (first 8)
+  tb.innerHTML=data.slice(0, 8).map(p=>`
+    <tr>
+      <td><span class="avatar-sm">${av(p.full_name)}</span><span class="td-name">${p.full_name}</span><div style="font-size:0.65rem;color:var(--muted);margin-left:36px;">${p.email}</div></td>
+      <td><span class="status-pill" style="background:rgba(255,255,255,0.05);color:var(--gold);">${p.role}</span></td>
+      <td class="td-muted">${ft(p.created_at)}</td>
+    </tr>`).join('');
+
+  // Full directory
+  dTb.innerHTML=data.map(p=>`
+    <tr>
+      <td><span class="avatar-sm">${av(p.full_name)}</span><span class="td-name">${p.full_name}</span></td>
+      <td class="td-muted">${p.email}</td>
+      <td><span class="status-pill" style="background:rgba(255,255,255,0.05);color:var(--gold);">${p.role}</span></td>
+      <td class="td-muted">${p.country || '—'}</td>
+      <td class="td-muted">${ft(p.created_at)}</td>
+    </tr>`).join('');
+}
+
+function buildCharts(){
+  const payments=window._paymentsForChart||[];
+  const projects=window._projectsForChart||[];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const now=new Date();
+  const labels=Array.from({length:6},(_,i)=>{const d=new Date(now.getFullYear(),now.getMonth()-5+i,1);return months[d.getMonth()];});
+  const revenueData=labels.map((_,i)=>{
+    const d=new Date(now.getFullYear(),now.getMonth()-5+i,1);
+    return payments.filter(p=>p.status==='successful'&&new Date(p.created_at).getMonth()===d.getMonth()&&new Date(p.created_at).getFullYear()===d.getFullYear()).reduce((s,p)=>s+Number(p.amount),0);
+  });
+  const rCtx=document.getElementById('revenueChart').getContext('2d');
+  const grad=rCtx.createLinearGradient(0,0,0,180);
+  grad.addColorStop(0,'rgba(245,197,66,0.3)');grad.addColorStop(1,'rgba(245,197,66,0)');
+  new Chart(rCtx,{type:'line',data:{labels,datasets:[{data:revenueData,borderColor:'#F5C542',backgroundColor:grad,borderWidth:2,fill:true,tension:0.4,pointBackgroundColor:'#F5C542',pointRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#555',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},y:{ticks:{color:'#555',font:{size:10},callback:v=>'$'+v.toLocaleString()},grid:{color:'rgba(255,255,255,0.04)'}}}}});
+  const statusCounts={};
+  (projects).forEach(p=>{statusCounts[p.status]=(statusCounts[p.status]||0)+1;});
+  const sLabels=Object.keys(statusCounts).map(statusLabel);
+  const sData=Object.values(statusCounts);
+  const sColors=Object.keys(statusCounts).map(statusColor);
+  new Chart(document.getElementById('statusChart'),{type:'doughnut',data:{labels:sLabels,datasets:[{data:sData,backgroundColor:sColors.map(c=>c+'88'),borderColor:sColors,borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#888',font:{size:10},boxWidth:10}}},cutout:'65%'}});
+}
+
+function subscribeRealtime(){
+  sb.channel('admin-realtime').on('postgres_changes',{event:'INSERT',schema:'public',table:'conversations'},(p)=>{
+    showToast('🌟 New Lead!','A new client started a conversation.');
+    loadStats();loadConvos();
+  }).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},(p)=>{
+    if(p.new.sender_role!=='admin')loadStats();
+  }).on('postgres_changes',{event:'INSERT',schema:'public',table:'payments'},(p)=>{
+    showToast('💳 Payment Received!',`Amount: ${fc(p.new.amount)}`);
+    loadStats();loadPayments();
+  }).subscribe();
+}
+
+async function toggleNotif(){
+  const p=document.getElementById('notif-panel');
+  if(p.style.display==='none'){
+    p.style.display='block';
+    await loadNotifs();
+  } else {
+    p.style.display='none';
+  }
+}
+
+async function loadNotifs(){
+  const list=document.getElementById('notif-list');
+  const{data,error}=await sb.from('notifications').select('*').eq('user_id',adminUser.id).order('created_at',{ascending:false}).limit(10);
+  if(error)return;
+  if(!data||data.length===0){
+    list.innerHTML='<div style="padding:20px;text-align:center;font-size:0.75rem;color:#555;">No new notifications</div>';
+    return;
+  }
+  list.innerHTML=data.map(n=>`
+    <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.03);cursor:pointer;background:${n.is_read?'transparent':'rgba(245,197,66,0.02)'}" onclick="markNotifRead('${n.id}','${n.reference_id}')">
+      <div style="font-size:0.75rem;font-weight:700;color:#fff;margin-bottom:2px;">${n.title}</div>
+      <div style="font-size:0.7rem;color:#888;line-height:1.4;">${n.body}</div>
+      <div style="font-size:0.55rem;color:var(--gold);margin-top:5px;font-weight:600;">${ft(n.created_at)}</div>
+    </div>
+  `).join('');
+}
+
+async function markNotifRead(id,refId){
+  await sb.from('notifications').update({is_read:true}).eq('id',id);
+  if(refId) window.location.href=`chat.html?cid=${refId}`;
+  else toggleNotif();
+}
+
+function initNotifUI(){
+  const container = document.createElement('div');
+  container.id = 'notif-container';
+  container.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;';
+  document.body.appendChild(container);
+
+  const badge=document.getElementById('notif-badge');
+  const updateBadge=async()=>{
+    if(!adminUser) return;
+    const{count}=await sb.from('notifications').select('id',{count:'exact',head:true}).eq('user_id',adminUser.id).eq('is_read',false);
+    if(count>0){badge.textContent=count>99?'99+':count;badge.style.display='flex';}
+    else badge.style.display='none';
+  };
+  updateBadge();
+  sb.channel('admin-notifs').on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:'user_id=eq.'+adminUser.id},p=>{
+    updateBadge();
+    showToast(p.new.title, p.new.body);
+  }).subscribe();
+}
+
+function ft(ts){if(!ts)return'';const d=new Date(ts),now=new Date(),diff=now-d;if(diff<60000)return'Just now';if(diff<3600000)return Math.floor(diff/60000)+'m ago';if(diff<86400000)return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});return d.toLocaleDateString([],{month:'short',day:'numeric'});}
+
+function showToast(title,body){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:24px;right:24px;z-index:99999;background:#1a1a1a;border:1px solid rgba(245,197,66,0.3);border-radius:12px;padding:14px 18px;max-width:300px;box-shadow:0 10px 40px rgba(0,0,0,0.5);transform:translateX(110%);transition:transform 0.35s;font-family:Inter,sans-serif;';
+  t.innerHTML=`<div style="font-size:0.82rem;font-weight:700;color:#fff;margin-bottom:3px;">${title}</div><div style="font-size:0.75rem;color:#888;">${body}</div>`;
+  document.body.appendChild(t);
+  setTimeout(()=>t.style.transform='translateX(0)',10);
+  setTimeout(()=>{t.style.transform='translateX(110%)';setTimeout(()=>t.remove(),400);},4500);
+}
+
+async function doSignOut(){await sb.auth.signOut();window.location.href='../login.html';}
+
+init();
+</script>
+</body>
+</html>

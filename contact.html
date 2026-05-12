@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | THE GENIUS AGENCY</title>
+    <link rel="icon" type="image/png" href="Logo/thegeniusagency.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/ai-support-styles.css">
+    <script src="js/analytics.js"></script>
+    <style>
+        body {
+            background: #0a1628;
+            color: #fff;
+        }
+
+        .video-hero {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+        }
+
+        .video-hero video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(10, 22, 40, 0.85) 0%, rgba(10, 22, 40, 0.5) 50%, rgba(10, 22, 40, 0.3) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-top: 60px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(245, 197, 66, 0.12);
+            border: 1px solid rgba(245, 197, 66, 0.3);
+            padding: 8px 20px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-badge-dot {
+            width: 6px;
+            height: 6px;
+            background: #F5C542;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .hero-badge-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #F5C542;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .video-hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0 0 16px 0;
+            line-height: 1.1;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-hero-title span {
+            color: #F5C542;
+            font-weight: 800;
+        }
+
+        .video-hero-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .hero-divider {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #F5C542, transparent);
+            margin: 20px auto;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #F5C542;
+            line-height: 1;
+        }
+
+        .hero-stat-label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        /* Theme Overrides for Alternating Sections */
+        .lux-ivory {
+            background: linear-gradient(160deg, #ffffff 0%, #fcf8e8 50%, #f5ecd0 100%) !important;
+            color: #111 !important;
+        }
+
+        .lux-ivory h2,
+        .lux-ivory h3,
+        .lux-ivory h4 {
+            color: #000 !important;
+        }
+
+        .lux-ivory p {
+            color: #555 !important;
+        }
+
+        .lux-light {
+            background: #fdfbf7 !important;
+            color: #111 !important;
+        }
+
+        .lux-light h2,
+        .lux-light h3,
+        .lux-light h4 {
+            color: #000 !important;
+        }
+
+        .lux-light p {
+            color: #444 !important;
+        }
+
+        /* Force override hardcoded white text in light sections */
+        .lux-ivory div,
+        .lux-ivory span,
+        .lux-light div,
+        .lux-light span {
+            color: inherit;
+        }
+
+        .lux-ivory [style*="color: #fff"],
+        .lux-ivory [style*="color:#fff"],
+        .lux-ivory [style*="color: rgba(255,255,255"],
+        .lux-light [style*="color: #fff"],
+        .lux-light [style*="color: rgba(255,255,255"] {
+            color: #111 !important;
+        }
+
+        .lux-ivory .glass,
+        .lux-light .glass {
+            background: #ffffff !important;
+            border: 1px solid rgba(212, 175, 55, 0.2) !important;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .lux-ivory .glass:hover,
+        .lux-light .glass:hover {
+            border-color: var(--primary-yellow) !important;
+            box-shadow: 0 20px 60px rgba(245, 197, 66, 0.1) !important;
+        }
+
+        /* Light Theme Form Adjustments */
+        .lux-ivory label {
+            color: #111 !important;
+            font-weight: 700 !important;
+        }
+
+        .lux-ivory input,
+        .lux-ivory select,
+        .lux-ivory textarea {
+            background: #fff !important;
+            border: 1px solid #ccc !important;
+            color: #000 !important;
+        }
+
+        .lux-ivory input:focus,
+        .lux-ivory select:focus,
+        .lux-ivory textarea:focus {
+            border-color: var(--primary-yellow) !important;
+            box-shadow: 0 0 0 4px rgba(245, 197, 66, 0.1) !important;
+        }
+
+        .lux-ivory input::placeholder,
+        .lux-ivory textarea::placeholder {
+            color: #888 !important;
+        }
+
+        /* Light Theme Card Overrides */
+        .lux-ivory div[style*="background: #0f1d32"] {
+            background: #fff !important;
+            border: 1px solid rgba(212, 175, 55, 0.2) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important;
+        }
+
+        /* Step cards & FAQ in Light Theme */
+        .lux-light div[style*="background: linear-gradient"],
+        .lux-ivory .faq-card {
+            background: #fff !important;
+            color: #111 !important;
+        }
+
+        .lux-light h4 {
+            color: #000 !important;
+        }
+
+        /* Stronger Specificity to Protect Navy Cards in Light Sections */
+        .lux-ivory .navy-card,
+        .lux-ivory .navy-card *,
+        .lux-light .navy-card,
+        .lux-light .navy-card * {
+            color: #ffffff !important;
+        }
+
+        .lux-ivory .navy-card .text-yellow,
+        .lux-ivory .navy-card [style*="color: #F5C542"],
+        .lux-ivory .navy-card [style*="color:#F5C542"],
+        .lux-light .navy-card [style*="color: #F5C542"] {
+            color: #F5C542 !important;
+        }
+
+        .lux-ivory .navy-card p,
+        .lux-ivory .navy-card [style*="color: rgba(255,255,255,0.6)"],
+        .lux-light .navy-card p,
+        .lux-light .navy-card [style*="color: rgba(255,255,255,0.6)"] {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        /* Mobile Menu Styles */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 1001;
+        }
+
+        .mobile-nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 22, 40, 0.98);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-overlay.active {
+            display: flex;
+        }
+
+        .mobile-nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: color 0.3s;
+        }
+
+        .mobile-nav-link:hover {
+            color: var(--primary-yellow);
+        }
+
+        .mobile-nav-link.active {
+            color: var(--primary-yellow);
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu { display: none !important; }
+            .mobile-menu-btn { display: block !important; }
+            #user-nav-section { display: none !important; }
+            
+            .nav-pill {
+                padding: 10px 20px !important;
+                width: 92% !important;
+                top: 15px !important;
+            }
+
+            .logo-text { font-size: 0.9rem !important; }
+            .logo-divider { height: 20px !important; margin: 0 8px !important; }
+
+            .video-hero { height: 350px !important; }
+            .video-hero-title { font-size: 2.2rem !important; }
+            .video-hero-subtitle { font-size: 0.8rem !important; letter-spacing: 1px !important; }
+            .hero-stats { gap: 20px !important; margin-top: 20px !important; }
+            .hero-stat-number { font-size: 1.4rem !important; }
+            .hero-stat-label { font-size: 0.65rem !important; }
+
+            .video-hero-overlay { padding-top: 40px !important; }
+
+            div[style*="grid-template-columns: repeat(3, 1fr)"] {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+            }
+
+            .contact-main-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            div[style*="grid-template-columns: 1.1fr 0.9fr"] {
+                grid-template-columns: 1fr !important;
+                gap: 40px !important;
+            }
+
+            div[style*="display: flex; justify-content: space-between; align-items: flex-start"] {
+                flex-direction: column !important;
+                gap: 40px !important;
+                align-items: center !important;
+            }
+
+            div[style*="position: absolute; top: 35px; left: 10%; right: 10%; height: 2px"] {
+                display: none !important;
+            }
+
+            div[style*="grid-template-columns: 1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+            }
+
+            h1[style*="font-size: clamp(2.5rem, 5vw, 3.8rem)"] {
+                font-size: 1.8rem !important;
+            }
+        }
+    </style>
+    <script src="js/analytics.js"></script>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="nav-pill" style="display: flex; justify-content: space-between; align-items: center;">
+        <a href="index.html" style="display: flex; align-items: center; text-decoration: none;">
+            <img src="Logo/thegeniusagency.png" alt="Logo" style="height: 38px;">
+            <div class="logo-divider"></div>
+            <div class="logo-text">
+                <span style="color: white; display: block; margin-bottom: 2px; font-size: 0.9em;">THE GENIUS</span>
+                <span style="color: var(--primary-yellow); display: block; font-size: 0.9em;">AGENCY</span>
+            </div>
+        </a>
+
+        <!-- Desktop Menu -->
+        <div class="nav-menu">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="team.html" class="nav-link">Experts</a>
+            <a href="services.html" class="nav-link">Services</a>
+            <a href="portfolio.html" class="nav-link">Portfolios</a>
+            <a href="about.html" class="nav-link">About Us</a>
+            <a href="contact.html" class="nav-link active">Contact Us</a>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:15px;" id="user-nav-section">
+            <a href="login.html" class="btn-msg" id="nav-auth-link" style="background: var(--primary-yellow); color: #000; font-weight: 700; padding: 10px 20px; border-radius: 50px; text-decoration: none;">
+                Client Log in / Sign up
+            </a>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-btn" id="mobile-menu-toggle">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </nav>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav">
+        <button style="position: absolute; top: 30px; right: 30px; background: none; border: none; color: white; font-size: 2.5rem; cursor: pointer;" id="close-mobile-menu">&times;</button>
+        <a href="index.html" class="mobile-nav-link">Home</a>
+        <a href="team.html" class="mobile-nav-link">Experts</a>
+        <a href="services.html" class="mobile-nav-link">Services</a>
+        <a href="portfolio.html" class="mobile-nav-link">Portfolios</a>
+        <a href="about.html" class="mobile-nav-link">About Us</a>
+        <a href="contact.html" class="mobile-nav-link active">Contact Us</a>
+        <a href="login.html" class="btn btn-primary" style="margin-top: 20px; width: 80%;">Client Log In</a>
+    </div>
+
+    <!-- Video Hero -->
+    <div class="video-hero">
+        <video autoplay muted loop playsinline>
+            <source src="thegeniushero.mp4" type="video/mp4">
+        </video>
+        <div class="video-hero-overlay">
+            <div class="hero-badge">
+                <div class="hero-badge-dot"></div>
+                <span class="hero-badge-text">Get In Touch</span>
+            </div>
+            <h1 class="video-hero-title">Let's <span>Connect</span></h1>
+            <div class="hero-divider"></div>
+            <p class="video-hero-subtitle">Contact Us</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-number">10+</div>
+                    <div class="hero-stat-label">Experts</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-number">100+</div>
+                    <div class="hero-stat-label">Projects</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-number">80+</div>
+                    <div class="hero-stat-label">Clients</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTACT OPTIONS SECTION -->
+    <!-- CONTACT OPTIONS SECTION -->
+    <section class="lux-section lux-richblack" style="padding: 35px 0;">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <span
+                    style="font-size: 0.7rem; color: #F5C542; letter-spacing: 3px; text-transform: uppercase; font-weight: 700;">Ways
+                    to Connect With Us</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px;">
+                <!-- Card 1 -->
+                <div style="background: #0f1d32; border: 1px solid rgba(245,197,66,0.15); border-radius: 20px; padding: 40px 30px; text-align: center; transition: 0.3s;"
+                    onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.1)';"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                    <div
+                        style="width: 70px; height: 70px; background: rgba(184,149,14,0.1); border: 1px solid rgba(184,149,14,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px;">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </div>
+                    <h3 style="font-size: 1.2rem; color: #fff; margin: 0 0 12px 0;">Start a Project</h3>
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0 0 25px 0;">
+                        For serious project inquiries and custom builds. Tell us your vision.</p>
+                    <a href="#contact-form"
+                        style="display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(145deg, #F5C542, #d4a81a); color: #000; text-decoration: none; font-weight: 700; font-size: 0.9rem; padding: 14px 28px; border-radius: 30px; box-shadow: 0 4px 20px rgba(245,197,66,0.3); transition: all 0.3s;"
+                        onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 30px rgba(245,197,66,0.5)';"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(245,197,66,0.3)';">
+                        Get Started <span style="font-size: 1.2rem;">→</span>
+                    </a>
+                </div>
+
+                <!-- Card 2 -->
+                <div style="background: #0f1d32; border: 1px solid rgba(245,197,66,0.15); border-radius: 20px; padding: 40px 30px; text-align: center; transition: 0.3s;"
+                    onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.1)';"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                    <div
+                        style="width: 70px; height: 70px; background: rgba(184,149,14,0.1); border: 1px solid rgba(184,149,14,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px;">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 style="font-size: 1.2rem; color: #fff; margin: 0 0 12px 0;">Speak With Our Team</h3>
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0 0 25px 0;">
+                        General questions and consultation. We're here to help you find the right solution.</p>
+                    <a href="#contact-form"
+                        style="display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(145deg, #F5C542, #d4a81a); color: #000; text-decoration: none; font-weight: 700; font-size: 0.9rem; padding: 14px 28px; border-radius: 30px; box-shadow: 0 4px 20px rgba(245,197,66,0.3); transition: all 0.3s;"
+                        onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 30px rgba(245,197,66,0.5)';"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(245,197,66,0.3)';">
+                        Contact Us <span style="font-size: 1.2rem;">→</span>
+                    </a>
+                </div>
+
+                <!-- Card 3 -->
+                <div style="background: #0f1d32; border: 1px solid rgba(245,197,66,0.15); border-radius: 20px; padding: 40px 30px; text-align: center; transition: 0.3s;"
+                    onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.1)';"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                    <div
+                        style="width: 70px; height: 70px; background: rgba(184,149,14,0.1); border: 1px solid rgba(184,149,14,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px;">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
+                    </div>
+                    <h3 style="font-size: 1.2rem; color: #fff; margin: 0 0 12px 0;">Custom Offer Request</h3>
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0 0 25px 0;">
+                        Need custom pricing or scope? Send us your requirements for a tailored proposal.</p>
+                    <a href="#contact-form"
+                        style="display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(145deg, #F5C542, #d4a81a); color: #000; text-decoration: none; font-weight: 700; font-size: 0.9rem; padding: 14px 28px; border-radius: 30px; box-shadow: 0 4px 20px rgba(245,197,66,0.3); transition: all 0.3s;"
+                        onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 30px rgba(245,197,66,0.5)';"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(245,197,66,0.3)';">
+                        Request Now <span style="font-size: 1.2rem;">→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         CONTACT HERO SECTION
+    ═══════════════════════════════════════════════════ -->
+    <section class="lux-section lux-ivory" style="padding: 30px 0 20px;">
+        <div class="container">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+                <p class="svc-eyebrow"
+                    style="color: var(--primary-yellow); letter-spacing: 4px; font-weight: 800; margin-bottom: 15px;">
+                    GET IN TOUCH</p>
+                <h1 style="font-size: clamp(2.5rem, 5vw, 3.8rem); margin-bottom: 20px;">Let's Create Something <span
+                        class="text-yellow">Genius</span></h1>
+                <p style="font-size: 1.1rem; color: #555; line-height: 1.6;">Have a vision? We have the experts to bring
+                    it to life. Send us a message and start your journey with a premium team today.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         MAIN CONTACT & OFFER SECTION
+    ═══════════════════════════════════════════════════ -->
+    <section class="lux-section lux-ivory" style="padding-bottom: 60px;">
+        <div class="container">
+            <div class="contact-main-grid"
+                style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: start;">
+
+                <!-- LEFT: THE FORM (Refined & Professional) -->
+                <div class="reveal"
+                    style="background: #0f1d32; border-radius: 24px; padding: 45px; box-shadow: 0 30px 70px rgba(0,0,0,0.15); border: 1px solid rgba(245,197,66,0.1);">
+                    <div style="margin-bottom: 35px;">
+                        <h3 style="color: white; font-size: 1.8rem; margin-bottom: 8px;">Send Us a Message</h3>
+                        <p style="color: rgba(255,255,255,0.6); font-size: 0.95rem;">Fill out the form below and our
+                            team will get back to you within 24 hours.</p>
+                    </div>
+
+                    <form id="contact-form" style="display: flex; flex-direction: column; gap: 20px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label
+                                    style="display: block; color: rgba(255,255,255,0.8); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 700;">Full
+                                    Name</label>
+                                <input type="text" placeholder="John Doe" required
+                                    style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 18px; color: white; font-size: 0.95rem; outline: none; transition: 0.3s;"
+                                    onfocus="this.style.borderColor='#F5C542'; this.style.background='rgba(255,255,255,0.08)';"
+                                    onblur="this.style.borderColor='rgba(255,255,255,0.1)';">
+                            </div>
+                            <div class="form-group">
+                                <label
+                                    style="display: block; color: rgba(255,255,255,0.8); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 700;">Email
+                                    Address</label>
+                                <input type="email" placeholder="john@example.com" required
+                                    style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 18px; color: white; font-size: 0.95rem; outline: none; transition: 0.3s;"
+                                    onfocus="this.style.borderColor='#F5C542'; this.style.background='rgba(255,255,255,0.08)';"
+                                    onblur="this.style.borderColor='rgba(255,255,255,0.1)';">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label
+                                style="display: block; color: rgba(255,255,255,0.8); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 700;">Subject</label>
+                            <select
+                                style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 18px; color: white; font-size: 0.95rem; outline: none; appearance: none; transition: 0.3s;"
+                                onfocus="this.style.borderColor='#F5C542';">
+                                <option value="General Inquiry">General Inquiry</option>
+                                <option value="Project Proposal">Project Proposal</option>
+                                <option value="Partnership">Partnership</option>
+                                <option value="Support">Support</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label
+                                style="display: block; color: rgba(255,255,255,0.8); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 700;">Your
+                                Message</label>
+                            <textarea rows="5" placeholder="Tell us about your project or inquiry..." required
+                                style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 18px; color: white; font-size: 0.95rem; outline: none; resize: none; transition: 0.3s;"
+                                onfocus="this.style.borderColor='#F5C542'; this.style.background='rgba(255,255,255,0.08)';"
+                                onblur="this.style.borderColor='rgba(255,255,255,0.1)';"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary"
+                            style="padding: 16px; width: 100%; font-size: 1rem; margin-top: 10px; background: linear-gradient(90deg, #F5C542, #D4AF37); border: none; color: #000; font-weight: 800; border-radius: 14px;">
+                            Send Message &rarr;
+                        </button>
+                    </form>
+                </div>
+
+                <!-- RIGHT: OFFER & INFO (High Impact) -->
+                <div class="contact-sidebar reveal">
+
+                    <!-- EXCLUSIVE OFFER CARD -->
+                    <div
+                        style="background: linear-gradient(135deg, #F5C542 0%, #D4AF37 100%); border-radius: 24px; padding: 25px; position: relative; overflow: hidden; margin-bottom: 20px; box-shadow: 0 20px 50px rgba(184,149,14,0.3);">
+                        <!-- Decor -->
+                        <div
+                            style="position: absolute; top: -20px; right: -20px; width: 120px; height: 120px; background: rgba(255,255,255,0.2); border-radius: 50%; blur: 40px;">
+                        </div>
+
+                        <div style="position: relative; z-index: 2;">
+                            <div
+                                style="display: inline-flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.1); padding: 5px 12px; border-radius: 50px; margin-bottom: 12px;">
+                                <div style="width: 6px; height: 6px; background: #000; border-radius: 50%;"></div>
+                                <span
+                                    style="font-size: 0.65rem; font-weight: 800; color: #000; text-transform: uppercase; letter-spacing: 1px;">Exclusive
+                                    Offer</span>
+                            </div>
+
+                            <h2 style="color: #000; font-size: 1.6rem; margin-bottom: 5px; line-height: 1.1;">Get <span
+                                    style="font-size: 2.4rem; display: block; font-weight: 900;">20% OFF</span></h2>
+                            <p
+                                style="color: rgba(0,0,0,0.7); font-size: 0.9rem; margin-bottom: 20px; font-weight: 500; line-height: 1.3;">
+                                On your first project with us. Claim your genius discount today.</p>
+
+                            <button id="view-coupon-btn"
+                                style="background: #000; color: #F5C542; border: 1px solid #F5C542; padding: 12px 20px; border-radius: 12px; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.3s; width: 100%; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 10px;"
+                                onmouseover="this.style.background='#F5C542'; this.style.color='#000';"
+                                onmouseout="this.style.background='#000'; this.style.color='#F5C542';">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                                VIEW COUPON CODE
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- WHAT HAPPENS NEXT -->
+                    <div
+                        style="background: white; border-radius: 24px; padding: 25px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.03);">
+                        <h4
+                            style="color: #111; font-size: 1.05rem; margin-bottom: 18px; display: flex; align-items: center; gap: 10px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary-yellow)"
+                                stroke-width="2.5">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            What Happens Next?
+                        </h4>
+
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div style="display: flex; gap: 10px;">
+                                <div
+                                    style="width: 26px; height: 26px; background: rgba(245,197,66,0.1); color: #B48712; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; flex-shrink: 0;">
+                                    1</div>
+                                <div>
+                                    <h5 style="color: #111; margin-bottom: 1px; font-size: 0.9rem;">Expert Review</h5>
+                                    <p style="color: #666; font-size: 0.8rem; line-height: 1.3;">Our team reviews your
+                                        inquiry and selects the best experts.</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <div
+                                    style="width: 26px; height: 26px; background: rgba(245,197,66,0.1); color: #B48712; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; flex-shrink: 0;">
+                                    2</div>
+                                <div>
+                                    <h5 style="color: #111; margin-bottom: 1px; font-size: 0.9rem;">Consultation</h5>
+                                    <p style="color: #666; font-size: 0.8rem; line-height: 1.3;">We schedule a quick
+                                        discovery call to dive deeper.</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <div
+                                    style="width: 26px; height: 26px; background: rgba(245,197,66,0.1); color: #B48712; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; flex-shrink: 0;">
+                                    3</div>
+                                <div>
+                                    <h5 style="color: #111; margin-bottom: 1px; font-size: 0.9rem;">Project Launch</h5>
+                                    <p style="color: #666; font-size: 0.8rem; line-height: 1.3;">We provide a proposal
+                                        and kick off your project.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VIDEO CONSULTATION SECTION -->
+    <!-- VIDEO CONSULTATION SECTION -->
+    <section id="video-consultation" class="lux-section lux-charcoal"
+        style="padding: 40px 0; position: relative; overflow: hidden;">
+        <!-- Decorative elements -->
+        <div
+            style="position: absolute; top: -100px; right: -100px; width: 400px; height: 400px; background: rgba(245,197,66,0.03); border-radius: 50%; filter: blur(80px);">
+        </div>
+        <div
+            style="position: absolute; bottom: -100px; left: -100px; width: 300px; height: 300px; background: rgba(245,197,66,0.02); border-radius: 50%; filter: blur(60px);">
+        </div>
+
+        <div class="container">
+            <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 80px; align-items: center;">
+                <div>
+                    <div
+                        style="display: inline-flex; align-items: center; gap: 10px; background: rgba(245,197,66,0.1); border: 1px solid rgba(245,197,66,0.2); padding: 10px 20px; border-radius: 50px; margin-bottom: 30px;">
+                        <span
+                            style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e;"></span>
+                        <span
+                            style="font-size: 0.75rem; font-weight: 800; color: #F5C542; letter-spacing: 2px; text-transform: uppercase;">Direct
+                            Access to Experts</span>
+                    </div>
+
+                    <h2
+                        style="font-family: 'Playfair Display', serif; font-size: 3.5rem; color: #fff; margin: 0 0 25px 0; line-height: 1.1; font-weight: 900;">
+                        Book Your <span class="text-yellow">VIP Video</span> Consultation</h2>
+
+                    <p
+                        style="font-size: 1.1rem; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 40px; max-width: 90%;">
+                        Skip the back-and-forth emails. Schedule a high-level strategy session with our lead developers
+                        and designers to map out your project architecture, timeline, and ROI.
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 25px; border-radius: 20px; transition: transform 0.3s;"
+                            onmouseover="this.style.transform='translateY(-5px)';"
+                            onmouseout="this.style.transform='translateY(0)';">
+                            <div
+                                style="width: 45px; height: 45px; background: rgba(245,197,66,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: #F5C542;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                </svg>
+                            </div>
+                            <h4 style="color: #fff; margin-bottom: 10px; font-size: 1.1rem;">Zero Risk</h4>
+                            <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; line-height: 1.5;">No commitment
+                                required. We focus pure strategy and value.</p>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 25px; border-radius: 20px; transition: transform 0.3s;"
+                            onmouseover="this.style.transform='translateY(-5px)';"
+                            onmouseout="this.style.transform='translateY(0)';">
+                            <div
+                                style="width: 45px; height: 45px; background: rgba(245,197,66,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: #F5C542;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                            </div>
+                            <h4 style="color: #fff; margin-bottom: 10px; font-size: 1.1rem;">Fast Track</h4>
+                            <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; line-height: 1.5;">Get answers
+                                in 30 minutes that would take weeks of research.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="position: relative;">
+                    <!-- Glassmorphic Form Card -->
+                    <div
+                        style="background: rgba(15, 29, 50, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(245,197,66,0.3); border-radius: 30px; padding: 50px; box-shadow: 0 40px 100px rgba(0,0,0,0.4);">
+                        <div style="text-align: center; margin-bottom: 35px;">
+                            <h3 style="color: #fff; font-size: 1.5rem; font-weight: 800; margin-bottom: 10px;">Schedule
+                                Your Session</h3>
+                            <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">Fill out the details below to
+                                request your slot.</p>
+                        </div>
+
+                        <form id="videoForm" style="display: flex; flex-direction: column; gap: 25px;">
+                            <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 0.8rem; font-weight: 700; color: #F5C542; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Preferred
+                                        Date *</label>
+                                    <input type="date" id="vf-date" required
+                                        style="width: 100%; padding: 15px 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 0.95rem; outline: none; transition: 0.3s; cursor: pointer;"
+                                        onfocus="this.style.borderColor='#F5C542'; this.style.background='rgba(245,197,66,0.05)';"
+                                        onblur="this.style.borderColor='rgba(255,255,255,0.1)'; this.style.background='rgba(255,255,255,0.05)';">
+                                    <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 8px;">Min. 2
+                                        days in advance required</p>
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 0.8rem; font-weight: 700; color: #F5C542; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Time
+                                        Block *</label>
+                                    <select id="vf-time" required
+                                        style="width: 100%; padding: 15px 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 0.95rem; outline: none; transition: 0.3s; appearance: none; cursor: pointer; background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23F5C542' d='M6 8L1 3h10z'/%3E%3C/svg%3E&quot;); background-repeat: no-repeat; background-position: right 16px center;">
+                                        <option value="" style="color: #000;">Select Time</option>
+                                        <option value="Morning (9 AM - 12 PM)" style="color: #000;">Morning</option>
+                                        <option value="Afternoon (1 PM - 4 PM)" style="color: #000;">Afternoon</option>
+                                        <option value="Evening (5 PM - 8 PM)" style="color: #000;">Evening</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 0.8rem; font-weight: 700; color: #F5C542; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Preferred
+                                        Time *</label>
+                                    <input type="text" id="vf-time-exact" required placeholder="e.g. 12:45 PM"
+                                        style="width: 100%; padding: 15px 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 0.95rem; outline: none; transition: 0.3s;"
+                                        onfocus="this.style.borderColor='#F5C542';"
+                                        onblur="this.style.borderColor='rgba(255,255,255,0.1)';">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label
+                                    style="display: block; font-size: 0.8rem; font-weight: 700; color: #F5C542; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Primary
+                                    Goal *</label>
+                                <input type="text" id="vf-topic" required placeholder="What are we building?"
+                                    style="width: 100%; padding: 15px 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 0.95rem; outline: none; transition: 0.3s;"
+                                    onfocus="this.style.borderColor='#F5C542';"
+                                    onblur="this.style.borderColor='rgba(255,255,255,0.1)';">
+                            </div>
+
+                            <button type="submit" id="vf-submit-btn"
+                                style="width: 100%; padding: 20px; background: #F5C542; color: #000; border: none; border-radius: 15px; font-size: 1.1rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px; transition: all 0.3s; margin-top: 10px; box-shadow: 0 10px 30px rgba(245,197,66,0.3);"
+                                onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 40px rgba(245,197,66,0.4)';"
+                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(245,197,66,0.3)';">
+                                Request VIP Consultation
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14v-4z">
+                                    </path>
+                                    <rect x="3" y="6" width="12" height="12" rx="2" ry="2"></rect>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Decorative background glow for the card -->
+                    <div
+                        style="position: absolute; inset: -20px; background: var(--primary-yellow); opacity: 0.1; filter: blur(40px); z-index: -1; border-radius: 50px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW OUR RESPONSE WORKS -->
+    <!-- HOW OUR RESPONSE WORKS -->
+    <section class="lux-section lux-ivory" style="padding: 100px 0; position: relative; overflow: hidden;">
+        <div
+            style="position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(184,149,14,0.3), transparent);">
+        </div>
+
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 70px;">
+                <span
+                    style="font-size: 0.75rem; color: #b8950e; letter-spacing: 4px; text-transform: uppercase; font-weight: 800; display: block; margin-bottom: 15px;">Operational
+                    Excellence</span>
+                <h2
+                    style="font-family: 'Playfair Display', serif; font-size: 3rem; color: #0a1628; margin: 0 0 15px 0; font-weight: 800;">
+                    Our <span style="color: #b8950e;">5-Step</span> Process</h2>
+                <div style="width: 60px; height: 3px; background: #F5C542; margin: 0 auto;"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; position: relative;">
+                <!-- Connecting Line -->
+                <div
+                    style="position: absolute; top: 35px; left: 10%; right: 10%; height: 2px; background: linear-gradient(90deg, rgba(184,149,14,0.3), rgba(184,149,14,0.6), rgba(184,149,14,0.3));">
+                </div>
+
+                <div style="flex: 1; text-align: center; position: relative; z-index: 1;">
+                    <div
+                        style="width: 75px; height: 75px; background: #0a1628; border: 2px solid #F5C542; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </div>
+                    <h4 style="font-size: 1.1rem; color: #0a1628; font-weight: 800; margin: 0 0 10px 0;">Submit Request
+                    </h4>
+                    <p style="font-size: 0.9rem; color: #555; margin: 0; line-height: 1.5;">Send us your project details
+                        using the form above.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div style="flex: 1; text-align: center; position: relative; z-index: 1;">
+                    <div
+                        style="width: 75px; height: 75px; background: #0a1628; border: 2px solid #F5C542; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </div>
+                    <h4 style="font-size: 1.1rem; color: #0a1628; font-weight: 800; margin: 0 0 10px 0;">Review & Match
+                    </h4>
+                    <p style="font-size: 0.9rem; color: #555; margin: 0; line-height: 1.5;">We review your requirements
+                        and match you with the best-fit expert.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div style="flex: 1; text-align: center; position: relative; z-index: 1;">
+                    <div
+                        style="width: 75px; height: 75px; background: #0a1628; border: 2px solid #F5C542; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                    <h4 style="font-size: 1.1rem; color: #0a1628; font-weight: 800; margin: 0 0 10px 0;">Custom Offer
+                        Sent</h4>
+                    <p style="font-size: 0.9rem; color: #555; margin: 0; line-height: 1.5;">You receive a custom offer
+                        with timeline and project details.</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div style="flex: 1; text-align: center; position: relative; z-index: 1;">
+                    <div
+                        style="width: 75px; height: 75px; background: #0a1628; border: 2px solid #F5C542; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <h4 style="font-size: 1.1rem; color: #0a1628; font-weight: 800; margin: 0 0 10px 0;">Payment Secured
+                    </h4>
+                    <p style="font-size: 0.9rem; color: #555; margin: 0; line-height: 1.5;">Secure your project with
+                        safe and transparent payment.</p>
+                </div>
+
+                <!-- Step 5 -->
+                <div style="flex: 1; text-align: center; position: relative; z-index: 1;">
+                    <div
+                        style="width: 75px; height: 75px; background: #0a1628; border: 2px solid #F5C542; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <h4 style="font-size: 1.1rem; color: #0a1628; font-weight: 800; margin: 0 0 10px 0;">Project Begins
+                    </h4>
+                    <p style="font-size: 0.9rem; color: #555; margin: 0; line-height: 1.5;">Your expert starts working
+                        and keeps you updated at every step.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AIMS & OBJECTIVES SECTION -->
+    <section class="lux-section lux-richblack" style="padding: 30px 0;">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: #fff; margin: 0 0 10px 0;">
+                    Our Aims & <span style="color: #F5C542;">Objectives</span></h2>
+                <p style="font-size: 0.95rem; color: rgba(255,255,255,0.6); max-width: 600px; margin: 0 auto;">We are driven by a commitment to excellence and a passion for transformative digital solutions.</p>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px;">
+                <!-- Objective 1: Premium Quality -->
+                <div class="reveal" style="text-align: center; padding: 30px 20px; background: #0f1d32; border-radius: 20px; border: 1px solid rgba(245,197,66,0.1); transition: 0.3s;" onmouseover="this.style.borderColor='rgba(245,197,66,0.3)'; this.style.transform='translateY(-5px)';" onmouseout="this.style.borderColor='rgba(245,197,66,0.1)'; this.style.transform='translateY(0)';">
+                    <div style="width: 50px; height: 50px; background: rgba(245,197,66,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                    </div>
+                    <h4 style="font-size: 1rem; color: #fff; margin: 0 0 10px 0; font-weight: 700;">Premium Quality</h4>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6); line-height: 1.5; margin: 0;">Delivering high-end, pixel-perfect solutions that exceed global standards.</p>
+                </div>
+
+                <!-- Objective 2: Strategic Innovation -->
+                <div class="reveal" style="text-align: center; padding: 30px 20px; background: #0f1d32; border-radius: 20px; border: 1px solid rgba(245,197,66,0.1); transition: 0.3s;" onmouseover="this.style.borderColor='rgba(245,197,66,0.3)'; this.style.transform='translateY(-5px)';" onmouseout="this.style.borderColor='rgba(245,197,66,0.1)'; this.style.transform='translateY(0)';">
+                    <div style="width: 50px; height: 50px; background: rgba(245,197,66,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+                    </div>
+                    <h4 style="font-size: 1rem; color: #fff; margin: 0 0 10px 0; font-weight: 700;">Strategic Innovation</h4>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6); line-height: 1.5; margin: 0;">Integrating cutting-edge technologies to keep your business ahead.</p>
+                </div>
+
+                <!-- Objective 3: Customer Success -->
+                <div class="reveal" style="text-align: center; padding: 30px 20px; background: #0f1d32; border-radius: 20px; border: 1px solid rgba(245,197,66,0.1); transition: 0.3s;" onmouseover="this.style.borderColor='rgba(245,197,66,0.3)'; this.style.transform='translateY(-5px)';" onmouseout="this.style.borderColor='rgba(245,197,66,0.1)'; this.style.transform='translateY(0)';">
+                    <div style="width: 50px; height: 50px; background: rgba(245,197,66,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    </div>
+                    <h4 style="font-size: 1rem; color: #fff; margin: 0 0 10px 0; font-weight: 700;">Customer Success</h4>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6); line-height: 1.5; margin: 0;">Building lasting partnerships through transparent communication.</p>
+                </div>
+
+                <!-- Objective 4: Agile Execution -->
+                <div class="reveal" style="text-align: center; padding: 30px 20px; background: #0f1d32; border-radius: 20px; border: 1px solid rgba(245,197,66,0.1); transition: 0.3s;" onmouseover="this.style.borderColor='rgba(245,197,66,0.3)'; this.style.transform='translateY(-5px)';" onmouseout="this.style.borderColor='rgba(245,197,66,0.1)'; this.style.transform='translateY(0)';">
+                    <div style="width: 50px; height: 50px; background: rgba(245,197,66,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                    <h4 style="font-size: 1rem; color: #fff; margin: 0 0 10px 0; font-weight: 700;">Agile Execution</h4>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6); line-height: 1.5; margin: 0;">Ensuring rapid project turnaround with absolute precision.</p>
+                </div>
+
+                <!-- Objective 5: Global Empowerment -->
+                <div class="reveal" style="text-align: center; padding: 30px 20px; background: #0f1d32; border-radius: 20px; border: 1px solid rgba(245,197,66,0.1); transition: 0.3s;" onmouseover="this.style.borderColor='rgba(245,197,66,0.3)'; this.style.transform='translateY(-5px)';" onmouseout="this.style.borderColor='rgba(245,197,66,0.1)'; this.style.transform='translateY(0)';">
+                    <div style="width: 50px; height: 50px; background: rgba(245,197,66,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20"></path><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                    </div>
+                    <h4 style="font-size: 1rem; color: #fff; margin: 0 0 10px 0; font-weight: 700;">Global Reach</h4>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6); line-height: 1.5; margin: 0;">Scaling businesses globally with world-class agency expertise.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <!-- FAQ SECTION -->
+    <section class="lux-section lux-ivory" style="padding: 30px 0;">
+        <div class="container" style="max-width: 1000px;">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <div
+                    style="display: inline-flex; align-items: center; gap: 8px; background: rgba(245,197,66,0.12); border: 1px solid rgba(245,197,66,0.3); padding: 8px 20px; border-radius: 30px; margin-bottom: 20px;">
+                    <div style="width: 6px; height: 6px; background: #F5C542; border-radius: 50%;"></div>
+                    <span
+                        style="font-size: 0.75rem; font-weight: 600; color: #F5C542; letter-spacing: 2px; text-transform: uppercase;">Support
+                        Center</span>
+                </div>
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #fff; margin: 0 0 15px 0;">
+                    Frequently Asked <span style="color: #F5C542;">Questions</span></h2>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.6); max-width: 500px; margin: 0 auto;">Everything
+                    you need to know about our services and how we work</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                <!-- FAQ 1 -->
+                <div class="faq-card"
+                    style="background: linear-gradient(145deg, #0f1d32 0%, #0a1628 100%); border: 1px solid rgba(245,197,66,0.15); border-radius: 16px; padding: 25px; transition: all 0.3s;"
+                    onmouseover="this.style.borderColor='rgba(245,197,66,0.4)'; this.style.transform='translateY(-3px)';"
+                    onmouseout="this.style.borderColor='rgba(245,197,66,0.15)'; this.style.transform='translateY(0)';">
+                    <div style="display: flex; align-items: flex-start; gap: 15px;">
+                        <div
+                            style="width: 45px; height: 45px; background: rgba(245,197,66,0.1); border: 1px solid rgba(245,197,66,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F5C542"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3 style="font-size: 1rem; color: #fff; font-weight: 600; margin: 0 0 10px 0;">How does
+                                payment work?</h3>
+                            <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0;">We
+                                use a secure escrow system. You pay upfront, but funds are only released to the expert
+                                after you approve the completed work.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="faq-card"
+                    style="background: linear-gradient(145deg, #0f1d32 0%, #0a1628 100%); border: 1px solid rgba(245,197,66,0.15); border-radius: 16px; padding: 25px; transition: all 0.3s;"
+                    onmouseover="this.style.borderColor='rgba(245,197,66,0.4)'; this.style.transform='translateY(-3px)';"
+                    onmouseout="this.style.borderColor='rgba(245,197,66,0.15)'; this.style.transform='translateY(0)';">
+                    <div style="display: flex; align-items: flex-start; gap: 15px;">
+                        <div
+                            style="width: 45px; height: 45px; background: rgba(245,197,66,0.1); border: 1px solid rgba(245,197,66,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F5C542"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3 style="font-size: 1rem; color: #fff; font-weight: 600; margin: 0 0 10px 0;">Can I choose
+                                my own expert?</h3>
+                            <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0;">
+                                Absolutely! You can browse our expert directory and request a specific expert, or let us
+                                match you with the best fit.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="faq-card"
+                    style="background: linear-gradient(145deg, #0f1d32 0%, #0a1628 100%); border: 1px solid rgba(245,197,66,0.15); border-radius: 16px; padding: 25px; transition: all 0.3s;"
+                    onmouseover="this.style.borderColor='rgba(245,197,66,0.4)'; this.style.transform='translateY(-3px)';"
+                    onmouseout="this.style.borderColor='rgba(245,197,66,0.15)'; this.style.transform='translateY(0)';">
+                    <div style="display: flex; align-items: flex-start; gap: 15px;">
+                        <div
+                            style="width: 45px; height: 45px; background: rgba(245,197,66,0.1); border: 1px solid rgba(245,197,66,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F5C542"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3 style="font-size: 1rem; color: #fff; font-weight: 600; margin: 0 0 10px 0;">How long
+                                does delivery take?</h3>
+                            <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0;">
+                                Delivery times vary by project scope. Simple tasks may take 2-3 days, while complex
+                                projects can take weeks.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="faq-card"
+                    style="background: linear-gradient(145deg, #0f1d32 0%, #0a1628 100%); border: 1px solid rgba(245,197,66,0.15); border-radius: 16px; padding: 25px; transition: all 0.3s;"
+                    onmouseover="this.style.borderColor='rgba(245,197,66,0.4)'; this.style.transform='translateY(-3px)';"
+                    onmouseout="this.style.borderColor='rgba(245,197,66,0.15)'; this.style.transform='translateY(0)';">
+                    <div style="display: flex; align-items: flex-start; gap: 15px;">
+                        <div
+                            style="width: 45px; height: 45px; background: rgba(245,197,66,0.1); border: 1px solid rgba(245,197,66,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F5C542"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3 style="font-size: 1rem; color: #fff; font-weight: 600; margin: 0 0 10px 0;">Can I
+                                request revisions?</h3>
+                            <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0;">Of
+                                course! We include revision rounds in every project until you're completely satisfied
+                                with the results.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="faq-card"
+                    style="background: linear-gradient(145deg, #0f1d32 0%, #0a1628 100%); border: 1px solid rgba(245,197,66,0.15); border-radius: 16px; padding: 25px; transition: all 0.3s;"
+                    onmouseover="this.style.borderColor='rgba(245,197,66,0.4)'; this.style.transform='translateY(-3px)';"
+                    onmouseout="this.style.borderColor='rgba(245,197,66,0.15)'; this.style.transform='translateY(0)';">
+                    <div style="display: flex; align-items: flex-start; gap: 15px;">
+                        <div
+                            style="width: 45px; height: 45px; background: rgba(245,197,66,0.1); border: 1px solid rgba(245,197,66,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F5C542"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3 style="font-size: 1rem; color: #fff; font-weight: 600; margin: 0 0 10px 0;">Do you offer
+                                custom offers?</h3>
+                            <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0;">
+                                Yes! Every project is unique. We'll create a custom offer tailored to your specific
+                                needs and budget.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 6 -->
+                <div class="faq-card"
+                    style="background: linear-gradient(145deg, #0f1d32 0%, #0a1628 100%); border: 1px solid rgba(245,197,66,0.15); border-radius: 16px; padding: 25px; transition: all 0.3s;"
+                    onmouseover="this.style.borderColor='rgba(245,197,66,0.4)'; this.style.transform='translateY(-3px)';"
+                    onmouseout="this.style.borderColor='rgba(245,197,66,0.15)'; this.style.transform='translateY(0)';">
+                    <div style="display: flex; align-items: flex-start; gap: 15px;">
+                        <div
+                            style="width: 45px; height: 45px; background: rgba(245,197,66,0.1); border: 1px solid rgba(245,197,66,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F5C542"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3 style="font-size: 1rem; color: #fff; font-weight: 600; margin: 0 0 10px 0;">What if my
+                                expert is unavailable?</h3>
+                            <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0;">
+                                We'll immediately offer you equally qualified alternatives from our pool of vetted
+                                experts.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA SECTION -->
+    <section
+        style="padding: 70px 0; background: linear-gradient(135deg, #0a1628 0%, #0d1e36 50%, #0a1628 100%); position: relative; overflow: hidden;">
+        <div
+            style="position: absolute; inset: 0; background: radial-gradient(circle at 30% 50%, rgba(184,149,14,0.15) 0%, transparent 50%);">
+        </div>
+        <div
+            style="position: absolute; inset: 0; background: radial-gradient(circle at 70% 50%, rgba(245,197,66,0.1) 0%, transparent 50%);">
+        </div>
+
+        <div class="container" style="text-align: center; position: relative; z-index: 1;">
+            <div
+                style="width: 70px; height: 70px; background: rgba(184,149,14,0.1); border: 2px solid rgba(184,149,14,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5C542" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+            </div>
+
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2.8rem; color: #fff; margin: 0 0 20px 0;">
+                Ready To Start Your <span style="color: #F5C542;">Project?</span>
+            </h2>
+
+            <p style="font-size: 1.1rem; color: rgba(255,255,255,0.6); line-height: 1.7; margin-bottom: 40px;">
+                Let's bring your ideas to life with the right experts and a smooth, agency-managed process.
+            </p>
+
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <a href="#contact-form"
+                    style="display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(145deg, #F5C542, #b8950e); color: #000; padding: 16px 32px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1rem; box-shadow: 0 4px 25px rgba(245,197,66,0.4);">
+                    Start a Project
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </a>
+                <a href="team.html"
+                    style="display: inline-flex; align-items: center; gap: 10px; background: transparent; border: 2px solid rgba(184,149,14,0.5); color: #F5C542; padding: 16px 32px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 1rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    View Experts
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <!-- Footer -->
+    <!-- Footer -->
+    <!-- Footer -->
+    <!-- Footer -->
+    <footer id="contact" class="lux-ivory"
+        style="padding: 80px 0 30px; border-top: 1px solid rgba(0,0,0,0.05); overflow: hidden; background: #fff;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 5%;">
+
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 50px; margin-bottom: 60px;">
+
+                <!-- Brand Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+                        <img src="Logo/thegeniusagency.png" alt="Logo" style="height: 64px;"
+                            onerror="this.src='../Logo/thegeniusagency.png'">
+                        <div
+                            style="color: #111; font-weight: 900; line-height: 1.1; font-size: 1.8rem; letter-spacing: -0.02em;">
+                            THE GENIUS<br><span class="text-yellow" style="color: #F5C542;">AGENCY</span>
+                        </div>
+                    </div>
+                    <p style="color: #555; font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px; max-width: 280px;">
+                        We help businesses grow with innovative digital solutions. Your success is our mission.</p>
+                    <div style="display: flex; gap: 12px;">
+                        <!-- Instagram -->
+                        <a href="https://www.instagram.com/thegeniusagencyteamhq" target="_blank" rel="noopener" target="_blank"
+                            style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;"
+                            onmouseover="this.style.background='#F5C542'; this.style.color='#000';"
+                            onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </a>
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/TheGeniusAgency" target="_blank" rel="noopener" target="_blank"
+                            style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;"
+                            onmouseover="this.style.background='#F5C542'; this.style.color='#000';"
+                            onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                        </a>
+                        <!-- TikTok -->
+                        <a href="https://www.tiktok.com/@thegeniusagencytm?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener"
+                            target="_blank"
+                            style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;"
+                            onmouseover="this.style.background='#F5C542'; this.style.color='#000';"
+                            onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
+                            </svg>
+                        </a>
+                        <!-- YouTube -->
+                        <a href="https://www.youtube.com/@The_Genius_Agency" target="_blank" rel="noopener" target="_blank"
+                            style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;"
+                            onmouseover="this.style.background='#F5C542'; this.style.color='#000';"
+                            onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z">
+                                </path>
+                                <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4
+                        style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">
+                        Quick Links</h4>
+                    <ul
+                        style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="index.html"
+                                style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;"
+                                onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Home</a>
+                        </li>
+                        <li><a href="team.html"
+                                style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;"
+                                onmouseover="this.style.color='#D4AF37'"
+                                onmouseout="this.style.color='#555'">Experts</a></li>
+                        <li><a href="services.html"
+                                style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;"
+                                onmouseover="this.style.color='#D4AF37'"
+                                onmouseout="this.style.color='#555'">Services</a></li>
+                        <li><a href="portfolio.html"
+                                style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;"
+                                onmouseover="this.style.color='#D4AF37'"
+                                onmouseout="this.style.color='#555'">Portfolios</a></li>
+                        <li><a href="index.html#about"
+                                style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;"
+                                onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">About
+                                Us</a></li>
+                        <li><a href="contact.html"
+                                style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;"
+                                onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Contact
+                                Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4
+                        style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">
+                        Services</h4>
+                    <ul
+                        style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="services.html"
+                                style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;"
+                                onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Website
+                                Design</a></li>
+                        <li><a href="services.html"
+                                style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;"
+                                onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">eCommerce
+                                & Shopify</a></li>
+                        <li><a href="services.html"
+                                style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;"
+                                onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Mobile App
+                                Development</a></li>
+                        <li><a href="services.html"
+                                style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;"
+                                onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">UI/UX
+                                Design</a></li>
+                        <li><a href="services.html"
+                                style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;"
+                                onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Marketing
+                                & SEO</a></li>
+                        <li><a href="services.html"
+                                style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;"
+                                onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Content &
+                                eBooks</a></li>
+                    </ul>
+                </div>
+
+                <!-- For Clients & Contact Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <!-- For Clients -->
+                    <h4
+                        style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">
+                        For Clients</h4>
+                    <ul
+                        style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px;">
+                        <li><a href="privacy.html"
+                                style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;"
+                                onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Privacy
+                                Policy</a></li>
+                        <li><a href="terms.html"
+                                style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;"
+                                onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Terms &
+                                Conditions</a></li>
+                    </ul>
+
+                    <!-- Contact Us -->
+                    <h4
+                        style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">
+                        Contact Us</h4>
+                    <ul
+                        style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 20px;">
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div
+                                style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path
+                                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                    </path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                            </div>
+                            <a href="mailto:info@thegeniusagency.com"
+                                style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;"
+                                onmouseover="this.style.color='#000'"
+                                onmouseout="this.style.color='#555'">info@thegeniusagency.com</a>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div
+                                style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                            </div>
+                            <span style="color: #555; font-size: 0.95rem;">Always Available 24/7</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Bottom Bar -->
+            <div
+                style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 35px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 20px;">
+                <p style="color: #666; font-size: 0.85rem; margin: 0; font-weight: 500; text-align: center;">© <span
+                        id="year">2026</span> THE GENIUS AGENCY. ALL RIGHTS RESERVED.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+    <!-- Google Translate Auto-Detect -->
+    <div id="google_translate_element" style="display:none;"></div>
+    <style>
+        .goog-te-banner-frame,
+        .goog-te-balloon-frame {
+            display: none !important;
+        }
+
+        body {
+            top: 0 !important;
+        }
+
+        .goog-te-gadget {
+            font-size: 0 !important;
+        }
+
+        #gt-float-btn {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 99999;
+            background: #b8950e;
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 18px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(184, 149, 14, 0.4);
+            transition: all 0.25s ease;
+            letter-spacing: 0.3px;
+        }
+
+        #gt-float-btn:hover {
+            background: #f5c542;
+            transform: translateY(-2px);
+        }
+
+        #gt-float-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+    </style>
+    <button id="gt-float-btn"
+        onclick="document.getElementById('gt-lang-select').style.display = document.getElementById('gt-lang-select').style.display === 'none' ? 'block' : 'none';">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+        Translate
+    </button>
+    <div id="gt-lang-select"
+        style="display:none; position:fixed; bottom:70px; left:24px; z-index:99999; background:#fff; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.15); padding:8px; min-width:160px; border:1px solid rgba(184,149,14,0.2);">
+        <div id="google_translate_element2"></div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false, layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element2');
+        }
+        (function () {
+            var lang = (navigator.language || navigator.userLanguage || 'en').split('-')[0];
+            if (lang !== 'en') {
+                document.addEventListener('DOMContentLoaded', function () {
+                    setTimeout(function () { var sel = document.querySelector('.goog-te-combo'); if (sel) { sel.value = lang; sel.dispatchEvent(new Event('change')); } }, 1500);
+                });
+            }
+        })();
+    </script>
+    <script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script>
+        // Mobile Menu Logic
+        const menuToggle = document.getElementById('mobile-menu-toggle');
+        const closeMenu = document.getElementById('close-mobile-menu');
+        const navOverlay = document.getElementById('mobile-nav');
+        
+        menuToggle.addEventListener('click', () => {
+            navOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        closeMenu.addEventListener('click', () => {
+            navOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/nav-auth.js"></script>
+    <script src="main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Setup minimum date for Video Consultation (2 days ahead)
+            const dateInput = document.getElementById('vf-date');
+            if (dateInput) {
+                const minDate = new Date();
+                minDate.setDate(minDate.getDate() + 2);
+                const dd = String(minDate.getDate()).padStart(2, '0');
+                const mm = String(minDate.getMonth() + 1).padStart(2, '0'); // January is 0!
+                const yyyy = minDate.getFullYear();
+                dateInput.setAttribute("min", `${yyyy}-${mm}-${dd}`);
+            }
+
+            // Custom Project Form Handler
+            const projectForm = document.getElementById('projectForm');
+            if (projectForm) {
+                projectForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if (!session) {
+                        alert('Please sign up or log in to submit a project inquiry.');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+
+                    const user = session.user;
+                    const btn = document.getElementById('pf-submit-btn');
+                    const origHtml = btn.innerHTML;
+                    btn.innerHTML = 'Processing...';
+                    btn.disabled = true;
+
+                    try {
+                        // Gather data
+                        const name = document.getElementById('pf-name').value;
+                        const email = document.getElementById('pf-email').value;
+                        const phone = document.getElementById('pf-phone').value;
+                        const type = document.getElementById('pf-type').value;
+                        const budget = document.getElementById('pf-budget').value || 'Not specified';
+                        const deadline = document.getElementById('pf-deadline').value || 'Not specified';
+                        const desc = document.getElementById('pf-desc').value;
+                        const company = document.getElementById('pf-company').value || 'None';
+                        const expert = document.getElementById('pf-expert') ? document.getElementById('pf-expert').value : 'No Preference';
+
+                        console.log('Submitting project inquiry for user:', user.id);
+                        const { data: convo, error: convoErr } = await supabaseClient.from('conversations').insert({
+                            client_id: user.id,
+                            status: 'active'
+                        }).select().single();
+
+                        if (convoErr) throw convoErr;
+
+                        // Create Message
+                        const msgContent = `📋 CUSTOM PROJECT INQUIRY\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nCompany: ${company}\n\nProject Type: ${type}\nBudget: ${budget}\nDeadline: ${deadline}\nExpert: ${expert}\n\nDescription:\n${desc}`;
+
+                        const { error: msgErr } = await supabaseClient.from('messages').insert({
+                            conversation_id: convo.id,
+                            sender_id: user.id,
+                            sender_role: 'client',
+                            content: msgContent,
+                            message_type: 'normal'
+                        });
+
+                        if (msgErr) throw msgErr;
+
+                        alert('Your custom project inquiry has been successfully submitted!');
+                        window.location.href = 'client/chat.html';
+
+                    } catch (err) {
+                        console.error('Detailed error submitting project:', err);
+                        alert('Submission Error: ' + (err.message || JSON.stringify(err)));
+                        btn.innerHTML = origHtml;
+                        btn.disabled = false;
+                    }
+                });
+            }
+
+            // Video Consultation Form Handler
+            const videoForm = document.getElementById('videoForm');
+            if (videoForm) {
+                videoForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if (!session) {
+                        alert('Please sign up or log in to book a video consultation.');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+
+                    const user = session.user;
+                    const btn = document.getElementById('vf-submit-btn');
+                    const origHtml = btn.innerHTML;
+                    btn.innerHTML = 'Booking...';
+                    btn.disabled = true;
+
+                    try {
+                        const date = document.getElementById('vf-date').value;
+                        const time = document.getElementById('vf-time').value;
+                        const exactTime = document.getElementById('vf-time-exact').value;
+                        const topic = document.getElementById('vf-topic').value;
+
+                        // Create Conversation
+                        const { data: convo, error: convoErr } = await supabaseClient.from('conversations').insert({
+                            client_id: user.id,
+                            status: 'active'
+                        }).select().single();
+
+                        if (convoErr) throw convoErr;
+
+                        // Create Message
+                        const msgContent = `🎥 VIDEO CONSULTATION REQUEST\n\nDate: ${date}\nTime Block: ${time}\nPreferred Time: ${exactTime}\n\nTopic: ${topic}`;
+
+                        const { error: msgErr } = await supabaseClient.from('messages').insert({
+                            conversation_id: convo.id,
+                            sender_id: user.id,
+                            sender_role: 'client',
+                            content: msgContent,
+                            message_type: 'normal'
+                        });
+
+                        if (msgErr) throw msgErr;
+
+                        alert('Your video consultation request has been submitted! Our team will reach out to confirm the schedule.');
+                        window.location.href = 'client/chat.html';
+
+                    } catch (err) {
+                        console.error('Detailed error booking consultation:', err);
+                        alert('Booking Error: ' + (err.message || JSON.stringify(err)));
+                        btn.innerHTML = origHtml;
+                        btn.disabled = false;
+                    }
+                });
+            }
+        });
+    </script>
+    <!-- Coupon Modal -->
+    <div id="coupon-modal"
+        style="display:none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); align-items: center; justify-content: center; padding: 20px;">
+        <div
+            style="background: #fff; width: 100%; max-width: 500px; border-radius: 24px; overflow: hidden; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+            <button id="close-coupon"
+                style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; cursor: pointer; color: #888;">&times;</button>
+            <div style="padding: 40px; text-align: center;">
+                <div
+                    style="width: 70px; height: 70px; background: rgba(245,197,66,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="#b8950e" stroke-width="2">
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                        <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                    </svg>
+                </div>
+                <h2 style="font-size: 1.8rem; font-weight: 800; color: #111; margin-bottom: 10px;">Your 20% Discount
+                    Code</h2>
+                <p style="color: #666; font-size: 0.95rem; margin-bottom: 25px;">Use this code to get 20% off your next
+                    project!</p>
+
+                <div
+                    style="background: #f8f8f8; border: 2px dashed #b8950e; padding: 15px; border-radius: 12px; margin-bottom: 30px; position: relative;">
+                    <span id="coupon-code"
+                        style="font-family: monospace; font-size: 2rem; font-weight: 900; color: #111; letter-spacing: 5px;">DEGE01</span>
+                    <button onclick="navigator.clipboard.writeText('DEGE01'); alert('Code copied!')"
+                        style="display: block; margin: 10px auto 0; background: none; border: none; color: #b8950e; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: underline;">Copy
+                        Code</button>
+                </div>
+
+                <div style="text-align: left; background: rgba(245,197,66,0.05); padding: 20px; border-radius: 12px;">
+                    <h4 style="font-size: 0.9rem; font-weight: 800; color: #111; margin-bottom: 10px;">How to use:</h4>
+                    <ul style="padding-left: 20px; font-size: 0.85rem; color: #555; line-height: 1.6;">
+                        <li><strong>On Agency Website:</strong> Paste the code when submitting a custom project inquiry.
+                        </li>
+                        <li><strong>On Fiverr/Upwork:</strong> Send the code to our experts in a direct message before
+                            ordering.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/ai-support.js" defer></script>
+</body>
+</html>
+
+</html>

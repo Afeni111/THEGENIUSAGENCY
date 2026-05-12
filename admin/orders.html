@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orders | Admin | The Genius Agency</title>
+<link rel="icon" type="image/png" href="../Logo/thegeniusagency.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--gold:#F5C542;--gold-dark:#b8950e;--navy:#0a1628;--bg:var(--navy);--bg2:#0d1e36;--bg3:#122848;--border:rgba(245,197,66,0.15);--text:#f0f0f0;--muted:#8a9bb8;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;}
+.sidebar{width:220px;min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;overflow-y:auto;}
+.sidebar-logo{padding:20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.logo-badge{background:var(--gold);color:#000;font-size:0.6rem;font-weight:800;padding:2px 6px;border-radius:4px;letter-spacing:1px;}
+.logo-name{font-size:0.8rem;font-weight:700;color:#fff;line-height:1.2;}
+.logo-sub{font-size:0.65rem;color:var(--muted);}
+.sidebar-section{padding:12px 0;}
+.sidebar-section-label{font-size:0.62rem;font-weight:700;color:#444;letter-spacing:1.5px;padding:0 16px;margin-bottom:6px;text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--muted);font-size:0.82rem;font-weight:500;cursor:pointer;transition:all 0.2s;text-decoration:none;border-left:3px solid transparent;position:relative;}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,0.04);}
+.nav-item.active{color:var(--gold);background:rgba(245,197,66,0.08);border-left-color:var(--gold);}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;}
+.sidebar-bottom{padding:14px 16px;border-top:1px solid var(--border);margin-top:auto;}
+.admin-pill{display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg3);border-radius:10px;}
+.admin-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#b8950e,#F5C542);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.78rem;color:#000;flex-shrink:0;}
+.admin-info{flex:1;min-width:0;}
+.admin-name{font-size:0.75rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.admin-role{font-size:0.6rem;color:var(--gold);font-weight:600;}
+.btn-so{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;}
+.btn-so:hover{color:#ef4444;}
+
+.main{margin-left:220px;flex:1;padding:24px;display:flex;flex-direction:column;height:100vh;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.topbar-title{font-size:1.2rem;font-weight:800;color:#fff;}
+
+.table-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.table-header-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.search-wrap{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 14px;width:300px;}
+.search-wrap input{background:none;border:none;outline:none;color:#fff;font-size:0.85rem;flex:1;}
+.search-wrap input::placeholder{color:var(--muted);}
+
+.table-container{flex:1;overflow-y:auto;}
+table{width:100%;border-collapse:collapse;min-width:800px;}
+th{font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;padding:0 15px 12px 15px;text-align:left;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2);z-index:10;}
+td{font-size:0.85rem;color:var(--text);padding:15px;border-bottom:1px solid rgba(255,255,255,0.04);}
+tr:hover td{background:rgba(255,255,255,0.02);}
+
+.td-id{font-family:monospace;color:var(--gold);font-weight:600;}
+.td-name{font-weight:600;color:#fff;display:flex;align-items:center;gap:10px;}
+.avatar-sm{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dark),var(--gold));display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:#000;}
+.td-time{color:var(--muted);font-size:0.8rem;}
+
+.status-pill{padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;white-space:nowrap;}
+
+.spinner{width:30px;height:30px;border:3px solid rgba(245,197,66,0.15);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:60px auto;display:block;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:60px;color:var(--muted);}
+</style>
+    <script src="../js/analytics.js"></script>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div>
+      <div class="logo-name">THE GENIUS</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+        <div class="logo-sub">AGENCY</div>
+        <div class="logo-badge">ADMIN</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Overview</div>
+    <a href="dashboard.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Operations</div>
+    <a href="chat.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Messages
+    </a>
+    <a href="orders.html" class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+      Orders
+    </a>
+    <a href="projects.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Projects
+    </a>
+    <a href="offers.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Offers
+    </a>
+    <a href="payments.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Payments
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">People</div>
+    <a href="clients.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      Clients
+    </a>
+    <a href="experts.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+      Experts
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Content</div>
+    <a href="content.html?tab=portfolio" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      Portfolio
+    </a>
+    <a href="content.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Site Content
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Website</div>
+    <a href="../index.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      View Website
+    </a>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="admin-pill">
+      <div class="admin-avatar" id="admin-avatar">A</div>
+      <div class="admin-info">
+        <div class="admin-name" id="admin-name">Admin</div>
+        <div class="admin-role">MASTER ADMIN</div>
+      </div>
+      <button class="btn-so" onclick="doSignOut()" title="Sign out">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <span class="topbar-title">Order Management</span>
+  </div>
+  
+  <div class="table-card">
+    <div class="table-header-bar">
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="search" placeholder="Search by Order ID or Client..." oninput="render()">
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Client Name</th>
+            <th>Order Time</th>
+            <th>Delivery Time</th>
+            <th>Conditions (Status)</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-orders">
+          <tr><td colspan="6"><div class="spinner"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const SB_URL='https://tjxyxasorunhrtvstwpa.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqeHl4YXNvcnVuaHJ0dnN0d3BhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNzU3NTQsImV4cCI6MjA5MjY1MTc1NH0.YEZPhnJmFAk4IDxd-6LlhKAZfGTkODfGr1FJteA99vo';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+
+let projects=[];
+
+function av(n){return(n||'').split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2)||'?';}
+function sc(s){const m={new_lead:'#3b82f6',discussing:'#8b5cf6',offer_sent:'#f59e0b',payment_pending:'#ef4444',in_progress:'#10b981',under_review:'#f97316',delivered:'#06b6d4',revision:'#ec4899',completed:'#22c55e',auto_completed:'#84cc16',cancelled:'#6b7280',refunded:'#f87171'};return m[s]||'#888';}
+function sl(s){const m={new_lead:'New Lead',discussing:'Discussing',offer_sent:'Offer Sent',payment_pending:'Payment Pending',in_progress:'In Progress',under_review:'Under Review',delivered:'Delivered',revision:'Revision',completed:'Completed',auto_completed:'Auto Completed',cancelled:'Cancelled',refunded:'Refunded'};return m[s]||s;}
+function ft(ts){
+  if(!ts) return '—';
+  return new Date(ts).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit'});
+}
+function fd(ts){
+  if(!ts) return 'Not set';
+  return new Date(ts).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+}
+
+async function init(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='../login.html';return;}
+  const{data:p}=await sb.from('profiles').select('*').eq('id',session.user.id).single();
+  if(!p||p.role!=='admin'){window.location.href='../login.html';return;}
+  document.getElementById('admin-name').textContent=p.full_name||'Admin';
+  document.getElementById('admin-avatar').textContent=(p.full_name||'A').split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);
+  
+  // Exclude non-orders (new_lead, discussing) to strictly show actual orders.
+  // Wait, the user said "Orders page which will show all orders". It is safe to show everything or just orders.
+  // I will fetch all and then we can view everything as an order.
+  const{data}=await sb.from('projects').select('*,profiles!projects_client_id_fkey(full_name,email)').order('created_at',{ascending:false});
+  projects=data||[];
+  render();
+}
+
+function render(){
+  const q=document.getElementById('search').value.toLowerCase();
+  
+  // Filter for actual orders OR custom projects if we want.
+  // Based on user feedback from previous session: "Order should only occurred when the offer has been accepted, I mean payed for".
+  // So valid order statuses are: in_progress, under_review, delivered, revision, completed, auto_completed.
+  const validOrderStatuses = ['in_progress', 'under_review', 'delivered', 'revision', 'completed', 'auto_completed', 'cancelled', 'refunded'];
+  
+  const filtered = projects.filter(p=>{
+    if(!validOrderStatuses.includes(p.status)) return false;
+    const idStr = p.id.split('-')[0].toLowerCase();
+    if(q && !idStr.includes(q) && !(p.profiles?.full_name||'').toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  const tb = document.getElementById('tbody-orders');
+  if(!filtered.length){
+    tb.innerHTML='<tr><td colspan="6"><div class="empty">No active orders found.</div></td></tr>';
+    return;
+  }
+
+  tb.innerHTML=filtered.map(p=>{
+    const col=sc(p.status);
+    const name=p.profiles?.full_name||'Unknown';
+    const orderId = p.id.split('-')[0].toUpperCase();
+    
+    return `<tr style="cursor:pointer;" onclick="window.location.href='chat.html?cid=${p.id}'">
+      <td class="td-id">#${orderId}</td>
+      <td>
+        <div class="td-name">
+          <span class="avatar-sm">${av(name)}</span>
+          ${name}
+        </div>
+      </td>
+      <td class="td-time">${ft(p.created_at)}</td>
+      <td class="td-time" style="font-weight:600; color:#fff;">${fd(p.deadline)}</td>
+      <td><span class="status-pill" style="background:${col}22;color:${col};">${sl(p.status)}</span></td>
+      <td>
+        <button style="background:none; border:none; color:var(--gold); font-size:0.8rem; font-weight:600; cursor:pointer;">Manage →</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function doSignOut(){await sb.auth.signOut();window.location.href='../login.html';}
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Dashboard | The Genius Agency</title>
+<link rel="icon" type="image/png" href="../Logo/thegeniusagency.png">
+<link rel="stylesheet" href="../style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--gold:#F5C542;--gold-dark:#b8950e;}
+body{display:block!important;}
+
+/* DASHBOARD-SPECIFIC STYLES */
+.nav-pill{position:fixed!important;top:16px!important;}
+.db-hero{
+  position:relative;padding:130px 0 50px;overflow:hidden;
+  width:100vw;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;
+  box-sizing:border-box;
+  background:linear-gradient(150deg,#243560 0%,#1e2d52 30%,#263870 55%,#1a2848 100%);
+}
+/* Bright light blobs */
+.db-hero::before{
+  content:'';
+  position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:
+    radial-gradient(ellipse 70% 90% at 50% -10%,rgba(255,230,120,0.52),transparent 60%),
+    radial-gradient(ellipse 55% 60% at 0% 55%,rgba(245,197,66,0.32),transparent 55%),
+    radial-gradient(ellipse 55% 60% at 100% 40%,rgba(245,197,66,0.28),transparent 55%),
+    radial-gradient(ellipse 45% 40% at 50% 110%,rgba(180,210,255,0.15),transparent 58%),
+    radial-gradient(ellipse 30% 30% at 25% 50%,rgba(255,255,255,0.08),transparent 50%),
+    radial-gradient(ellipse 30% 30% at 75% 50%,rgba(255,255,255,0.07),transparent 50%);
+}
+/* Shimmer sweep — no ::after to avoid colour bleed bugs */
+/* Dot grid */
+.db-hero-grid{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background-image:radial-gradient(circle,rgba(245,197,66,0.20) 1px,transparent 1px);
+  background-size:38px 38px;
+  opacity:0.55;
+}
+.db-hero-inner{max-width:760px;margin:0 auto;padding:0 32px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;position:relative;z-index:2;}
+.db-hero-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(245,197,66,0.1);border:1px solid rgba(245,197,66,0.25);border-radius:50px;padding:5px 14px;font-size:0.72rem;font-weight:700;color:#F5C542;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:18px;}
+.db-hero-text h1{font-family:'Playfair Display',serif;font-size:clamp(1.9rem,4vw,2.8rem);font-weight:800;color:#fff;margin-bottom:12px;line-height:1.15;}
+.db-hero-text h1 span{background:linear-gradient(90deg,#F5C542,#ffd96a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.db-hero-text p{font-size:0.96rem;color:rgba(255,255,255,0.62);max-width:480px;line-height:1.75;margin-bottom:28px;}
+.db-hero-actions{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+.db-hero-badge{display:none;}
+.db-hero-divider{width:48px;height:2px;background:linear-gradient(90deg,#F5C542,transparent);border-radius:2px;margin:0 auto 22px;}
+.db-section{max-width:1200px;margin:0 auto;padding:28px 40px 60px;}
+.db-tabs{display:flex;gap:4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:4px;margin-bottom:28px;width:fit-content;}
+.db-tab{padding:9px 22px;border-radius:9px;font-size:0.83rem;font-weight:600;color:rgba(255,255,255,0.5);cursor:pointer;border:none;background:transparent;transition:all 0.2s;}
+.db-tab.active{background:var(--gold-warm);color:#000;}
+.db-tab:hover:not(.active){color:#fff;}
+.db-grid{display:flex;flex-direction:column;gap:24px;}
+.db-bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
+.db-panel{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;}
+.db-panel-header{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.db-panel-title{font-size:0.87rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;}
+.db-panel-title svg{width:15px;height:15px;color:var(--gold-warm);}
+.db-panel-count{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.4);font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:20px;}
+.db-stats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px;padding:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;width:fit-content;}
+.db-stat{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:12px;font-size:0.84rem;font-weight:600;color:rgba(255,255,255,0.5);text-decoration:none;cursor:pointer;transition:all 0.2s;border:1px solid transparent;white-space:nowrap;}
+.db-stat:hover{color:#fff;background:rgba(255,255,255,0.06);}
+.db-stat.active,.db-stat:focus{color:#000;background:var(--gold-warm);border-color:transparent;}
+.db-stat-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;font-size:0.62rem;font-weight:800;background:rgba(255,255,255,0.12);color:inherit;transition:background 0.2s;}
+.db-stat.active .db-stat-badge{background:rgba(0,0,0,0.18);}
+.db-stat.s-red{color:#ef4444;}
+.db-stat.s-red:hover{background:rgba(239,68,68,0.1);color:#ef4444;}
+.db-stat.s-red .db-stat-badge{background:rgba(239,68,68,0.15);}
+.proj-card{padding:16px 22px;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:background 0.2s;display:flex;flex-direction:column;gap:10px;}
+.proj-card:last-child{border-bottom:none;}
+.proj-card:hover{background:rgba(245,197,66,0.04);}
+.proj-top{display:flex;align-items:center;gap:12px;}
+.proj-icon{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.proj-info{flex:1;min-width:0;}
+.proj-title{font-size:0.86rem;font-weight:700;color:#fff;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.proj-meta{font-size:0.7rem;color:rgba(255,255,255,0.35);}
+.proj-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+.proj-status{padding:3px 10px;border-radius:20px;font-size:0.63rem;font-weight:700;white-space:nowrap;}
+.proj-unread{background:#ef4444;color:#fff;font-size:0.6rem;font-weight:800;padding:2px 7px;border-radius:10px;}
+.prog-wrap{display:flex;align-items:center;gap:10px;}
+.prog-bar{flex:1;height:3px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#b8950e,var(--gold-warm));transition:width 1s ease;}
+.prog-pct{font-size:0.65rem;color:rgba(255,255,255,0.3);flex-shrink:0;width:28px;text-align:right;}
+.proj-filter-tab{padding:6px 16px;border-radius:8px;font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.45);cursor:pointer;border:none;background:transparent;transition:all 0.2s;white-space:nowrap;}
+.proj-filter-tab:hover{color:#fff;background:rgba(255,255,255,0.06);}
+.proj-filter-tab.active{background:var(--gold-warm);color:#000;}
+.empty-state{text-align:center;padding:44px 22px;}
+.empty-icon{font-size:2.5rem;margin-bottom:12px;}
+.empty-title{font-size:0.92rem;font-weight:700;color:#fff;margin-bottom:6px;}
+.empty-text{font-size:0.8rem;color:rgba(255,255,255,0.35);line-height:1.6;margin-bottom:18px;}
+.qa-list{display:flex;flex-direction:column;gap:8px;padding:16px 18px 20px;}
+.qa-btn{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);color:rgba(255,255,255,0.75);padding:12px 14px;border-radius:10px;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:10px;text-decoration:none;}
+.qa-btn:hover{border-color:rgba(245,197,66,0.35);color:var(--gold-warm);background:rgba(245,197,66,0.05);transform:translateX(3px);}
+.qa-btn svg{width:15px;height:15px;flex-shrink:0;color:var(--gold-warm);}
+.qa-btn span{flex:1;}
+.qa-arrow{color:rgba(255,255,255,0.2);transition:transform 0.2s;}
+.qa-btn:hover .qa-arrow{transform:translateX(3px);}
+.act-item{display:flex;align-items:flex-start;gap:10px;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.act-item:last-child{border-bottom:none;}
+.act-icon{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-size:0.8rem;flex-shrink:0;}
+.act-body{flex:1;}
+.act-text{font-size:0.78rem;color:rgba(255,255,255,0.7);line-height:1.5;}
+.act-time{font-size:0.66rem;color:rgba(255,255,255,0.3);margin-top:2px;}
+.act-empty{padding:20px 18px;text-align:center;font-size:0.78rem;color:rgba(255,255,255,0.3);}
+.loading-screen{position:fixed;inset:0;background:#0a1628;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;}
+.loading-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:800;color:var(--gold-warm);margin-bottom:20px;letter-spacing:1px;}
+.loading-spinner{width:36px;height:36px;border:3px solid rgba(245,197,66,0.15);border-top-color:var(--gold-warm);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.fade-up{animation:fadeUp 0.45s ease forwards;}
+.db-user-bar{display:flex;align-items:center;gap:10px;padding:7px 14px;background:rgba(245,197,66,0.08);border:1px solid rgba(245,197,66,0.2);border-radius:50px;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+.db-user-bar:hover{background:rgba(245,197,66,0.14);}
+.db-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#b8950e,var(--gold-warm));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.75rem;color:#000;flex-shrink:0;overflow:hidden;}
+.db-avatar img{width:100%;height:100%;object-fit:cover;}
+.db-uname{font-size:0.78rem;font-weight:600;color:#fff;}
+.db-urole{font-size:0.62rem;color:var(--gold-warm);}
+.notif-wrap{position:relative;}
+.notif-btn{width:38px;height:38px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.6);transition:all 0.2s;}
+.notif-btn:hover{color:#fff;border-color:rgba(245,197,66,0.4);}
+#notif-badge{position:absolute;top:-3px;right:-3px;background:#ef4444;color:#fff;font-size:0.52rem;font-weight:800;min-width:16px;height:16px;border-radius:8px;display:none;align-items:center;justify-content:center;padding:0 3px;}
+.umenu-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:0.82rem;font-weight:500;color:rgba(255,255,255,0.75);text-decoration:none;transition:all 0.15s;white-space:nowrap;}
+.umenu-item:hover{background:rgba(245,197,66,0.07);color:#fff;}
+.umenu-item svg{flex-shrink:0;color:rgba(255,255,255,0.35);}
+.umenu-item:hover svg{color:var(--gold-warm);}
+@media(max-width:1400px){.db-stats{grid-template-columns:repeat(4,1fr);}}
+@media(max-width:1100px){.db-stats{grid-template-columns:repeat(4,1fr);}}
+@media(max-width:768px){.db-hero-inner{flex-direction:column;padding:0 20px;}.db-section{padding:0 20px 48px;}.db-stats{grid-template-columns:repeat(2,1fr);}.db-bottom-grid{grid-template-columns:1fr;}}
+.fiverr-pill{background:transparent;border:1px solid rgba(255,255,255,0.2);color:#a0a0a0;padding:6px 14px;border-radius:20px;font-size:0.8rem;font-weight:500;cursor:pointer;white-space:nowrap;transition:all 0.2s ease;}
+.fiverr-pill:hover{border-color:rgba(255,255,255,0.5);color:#fff;}
+.fiverr-pill.active{background:var(--gold);border-color:var(--gold);color:#000;font-weight:700;}
+
+/* Table Layout */
+.orders-table{width:100%;border-collapse:collapse;min-width:700px;}
+.orders-th{text-align:left;font-size:0.7rem;font-weight:700;color:#888;text-transform:uppercase;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(0,0,0,0.15);}
+.orders-row{transition:background 0.2s ease;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.05);}
+.orders-row:hover{background:rgba(255,255,255,0.02);}
+.orders-td{padding:16px;vertical-align:middle;font-size:0.85rem;}
+.td-expert-flex{display:flex;align-items:center;gap:12px;}
+.td-expert-avatar{width:36px;height:36px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--gold);border:1px solid rgba(245,197,66,0.2);flex-shrink:0;overflow:hidden;}
+.td-expert-avatar img{width:100%;height:100%;object-fit:cover;image-rendering:high-quality;transform:scale(0.92) translateZ(0);backface-visibility:hidden;border-radius:50%;}
+.td-expert-name{font-weight:600;color:#fff;}
+.td-status-pill{display:inline-block;padding:4px 10px;border-radius:4px;font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;}
+.td-service-flex{display:flex;align-items:center;gap:10px;}
+.td-service-thumb{width:40px;height:28px;border-radius:4px;background:rgba(255,255,255,0.05);object-fit:cover;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:0.6rem;}
+</style>
+    <script src="../js/analytics.js"></script>
+</head>
+<body>
+
+<div class="loading-screen" id="loading-screen">
+  <div class="loading-logo">THE GENIUS AGENCY</div>
+  <div class="loading-spinner"></div>
+</div>
+
+<!-- MAIN SITE NAV -->
+<nav class="nav-pill" style="display:flex;justify-content:space-between;align-items:center;">
+  <a href="../index.html" style="display:flex;align-items:center;text-decoration:none;">
+    <img src="../Logo/thegeniusagency.png" alt="Logo" style="height:42px;" onerror="this.style.display='none'">
+    <div class="logo-divider"></div>
+    <div class="logo-text">
+      <span style="color:white;display:block;margin-bottom:2px;">THE GENIUS</span>
+      <span style="color:var(--primary-yellow);display:block;">AGENCY</span>
+    </div>
+  </a>
+  <div class="nav-menu">
+    <a href="../index.html" class="nav-link">Home</a>
+    <a href="../team.html" class="nav-link">Experts</a>
+    <a href="../services.html" class="nav-link">Services</a>
+    <a href="../portfolio.html" class="nav-link">Portfolios</a>
+    <a href="../about.html" class="nav-link">About Us</a>
+    <a href="../contact.html" class="nav-link">Contact Us</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;position:relative;">
+    <!-- Messages icon -->
+    <a href="chat.html" class="notif-btn" title="Messages" style="text-decoration:none;position:relative;">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span id="msg-badge" style="display:none;position:absolute;top:-2px;right:-2px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-size:0.65rem;font-weight:800;min-width:16px;height:16px;border-radius:8px;align-items:center;justify-content:center;padding:0 3px;box-shadow:0 2px 5px rgba(239,68,68,0.4);">0</span>
+    </a>
+    <!-- Notification bell -->
+    <div class="notif-wrap" style="position:relative;">
+      <div class="notif-btn" onclick="toggleNotifPanel()" title="Notifications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span id="notif-badge"></span>
+      </div>
+      <div id="notif-panel" style="display:none;position:absolute;top:48px;right:0;background:#0d1e36;border:1px solid rgba(255,255,255,0.1);border-radius:14px;min-width:260px;box-shadow:0 12px 40px rgba(0,0,0,0.5);padding:12px 0;z-index:300;">
+        <div style="padding:10px 16px 12px;font-size:0.82rem;font-weight:700;color:#fff;border-bottom:1px solid rgba(255,255,255,0.07);">Notifications</div>
+        <div style="padding:18px 16px;text-align:center;font-size:0.78rem;color:rgba(255,255,255,0.35);">No new notifications</div>
+      </div>
+    </div>
+    <!-- Avatar icon only — dropdown on click -->
+    <div style="position:relative;">
+      <div id="sidebar-avatar" class="db-avatar" onclick="toggleUserMenu()" title="Account" style="width:34px;height:34px;cursor:pointer;border:2px solid rgba(245,197,66,0.35);transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(245,197,66,0.8)'" onmouseout="this.style.borderColor='rgba(245,197,66,0.35)'">?</div>
+      <!-- User dropdown -->
+      <div id="user-menu" style="display:none;position:absolute;top:44px;right:0;background:#0d1e36;border:1px solid rgba(255,255,255,0.1);border-radius:16px;min-width:220px;box-shadow:0 16px 48px rgba(0,0,0,0.6);padding:8px 0;z-index:300;">
+        <!-- User info header -->
+        <div style="padding:12px 16px 10px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:10px;">
+          <div id="menu-avatar" class="db-avatar" style="width:36px;height:36px;flex-shrink:0;">?</div>
+          <div>
+            <div id="menu-name" style="font-size:0.82rem;font-weight:700;color:#fff;">Loading...</div>
+            <div style="font-size:0.68rem;color:var(--gold-warm);">Client</div>
+          </div>
+        </div>
+        <!-- Menu items -->
+        <a href="dashboard.html" class="umenu-item" style="color:#F5C542;font-weight:600;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a href="projects.html" class="umenu-item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          My Orders
+        </a>
+        <a href="chat.html" class="umenu-item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Messages
+        </a>
+        <a href="profile.html" class="umenu-item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          My Profile
+        </a>
+        <div style="margin:6px 0;border-top:1px solid rgba(255,255,255,0.07);"></div>
+        <button onclick="doSignOut()" class="umenu-item" style="width:100%;background:none;border:none;text-align:left;cursor:pointer;color:#ef4444;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO BANNER -->
+<div class="db-hero fade-up">
+  <div class="db-hero-grid"></div>
+  <div class="db-hero-inner">
+    <div class="db-hero-text">
+      <h1 id="hero-greeting">Welcome back!</h1>
+      <div class="db-hero-divider"></div>
+      <p>Track your orders, communicate with your expert team, and manage all deliveries — in one place.</p>
+      <div class="db-hero-actions">
+        <a href="../contact.html" class="btn btn-primary btn-round">Start a New Project <span class="icon-circle">→</span></a>
+        <a href="chat.html" class="btn btn-outline btn-round">Open Messages <span class="icon-circle">→</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD CONTENT -->
+<section class="lux-section lux-charcoal">
+  <div class="db-section">
+
+    <!-- MAIN GRID -->
+    <div class="db-grid fade-up" style="animation-delay:0.1s">
+
+      <!-- PROJECTS PANEL -->
+      <div class="db-panel">
+        <div class="db-panel-header">
+          <div class="db-panel-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Orders
+          </div>
+          <a href="../contact.html" style="background:linear-gradient(135deg,#b8950e,var(--gold-warm));color:#000;border:none;padding:7px 16px;border-radius:8px;font-weight:700;font-size:0.76rem;cursor:pointer;display:flex;align-items:center;gap:5px;text-decoration:none;">+ New</a>
+        </div>
+        <!-- Project filter tabs -->
+        <div style="display:flex;gap:8px;padding:12px 16px 16px;overflow-x:auto;border-bottom:1px solid rgba(255,255,255,0.05);">
+          <button class="fiverr-pill active" data-f="all" onclick="filterProjects('all',this)">All (<span id="pill-all">0</span>)</button>
+          <button class="fiverr-pill" data-f="active" onclick="filterProjects('active',this)">Active (<span id="pill-active">0</span>)</button>
+          <button class="fiverr-pill" data-f="late" onclick="filterProjects('late',this)">Late (<span id="pill-late">0</span>)</button>
+          <button class="fiverr-pill" data-f="cancelled" onclick="filterProjects('cancelled',this)">Cancelled (<span id="pill-cancelled">0</span>)</button>
+          <button class="fiverr-pill" data-f="dispute" onclick="filterProjects('dispute',this)">Dispute (<span id="pill-dispute">0</span>)</button>
+          <button class="fiverr-pill" data-f="in_progress" onclick="filterProjects('in_progress',this)">In progress (<span id="pill-in_progress">0</span>)</button>
+          <button class="fiverr-pill" data-f="incomplete" onclick="filterProjects('incomplete',this)">Incomplete (<span id="pill-incomplete">0</span>)</button>
+          <button class="fiverr-pill" data-f="delivered" onclick="filterProjects('delivered',this)">Delivered (<span id="pill-delivered">0</span>)</button>
+        </div>
+        <div id="projects-list" style="overflow-x:auto;">
+          <div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: ACTIONS + ACTIVITY (Now placed below Orders) -->
+      <div class="db-bottom-grid">
+
+        <div class="db-panel">
+          <div class="db-panel-header">
+            <div class="db-panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              Quick Actions
+            </div>
+          </div>
+          <div class="qa-list">
+            <a href="projects.html" class="qa-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              <span>View All Orders</span>
+              <svg class="qa-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+            <a href="../contact.html" class="qa-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              <span>Place New Order</span>
+              <svg class="qa-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+            <a href="chat.html" class="qa-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <span>Open Messages</span>
+              <svg class="qa-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+            <a href="profile.html" class="qa-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span>Edit My Profile</span>
+              <svg class="qa-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+            <a href="../index.html" class="qa-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              <span>Back to Website</span>
+              <svg class="qa-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="db-panel">
+          <div class="db-panel-header">
+            <div class="db-panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Recent Activity
+            </div>
+          </div>
+          <div id="activity-list"><div class="act-empty">No recent activity yet.</div></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+const SB_URL = 'https://tjxyxasorunhrtvstwpa.supabase.co';
+const SB_KEY = 'sb_publishable_d3YtyYkTynAVyTEVIN19dQ_-4wZkGHV';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+let currentUser=null,currentProfile=null,allConvos=[],currentProjFilter='all';
+const activeStatuses=['in_progress','discussing','under_review','offer_sent','payment_pending','new_lead'];
+const completedStatuses=['completed','auto_completed'];
+const orderStatuses = ['incomplete', 'active', 'in_progress', 'delivered', 'revision', 'completed', 'auto_completed', 'cancelled', 'refunded', 'dispute', 'late'];
+
+function matchProjFilter(s){
+  if(currentProjFilter==='all') return true;
+  if(currentProjFilter==='active') return s === 'active';
+  if(currentProjFilter==='late') return s === 'late';
+  if(currentProjFilter==='cancelled') return ['cancelled','refunded'].includes(s);
+  if(currentProjFilter==='dispute') return s === 'dispute';
+  if(currentProjFilter==='in_progress') return s === 'in_progress';
+  if(currentProjFilter==='incomplete') return s === 'incomplete';
+  if(currentProjFilter==='delivered') return ['delivered','under_review','completed','auto_completed','revision'].includes(s);
+  return false;
+}
+function filterProjects(f,btn){
+  currentProjFilter=f;
+  document.querySelectorAll('.fiverr-pill').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderProjectList();
+}
+
+function ft(ts){if(!ts)return'';const d=new Date(ts),now=new Date(),diff=now-d;if(diff<60000)return'Just now';if(diff<3600000)return Math.floor(diff/60000)+'m ago';if(diff<86400000)return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});return d.toLocaleDateString([],{month:'short',day:'numeric'});}
+function statusColor(s){const m={new_lead:'#3b82f6',discussing:'#8b5cf6',offer_sent:'#f59e0b',payment_pending:'#ef4444',in_progress:'#10b981',under_review:'#f97316',delivered:'#06b6d4',revision:'#ec4899',completed:'#22c55e',auto_completed:'#84cc16',cancelled:'#6b7280',refunded:'#f87171'};return m[s]||'#888';}
+function statusLabel(s){const m={new_lead:'New Request',discussing:'Discussing',offer_sent:'Offer Sent',payment_pending:'Payment Pending',in_progress:'In Progress',under_review:'Under Review',delivered:'Delivered',revision:'Revision',completed:'Completed',auto_completed:'Auto Completed',cancelled:'Cancelled',refunded:'Refunded'};return m[s]||s;}
+function av(n){return(n||'').split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2)||'?';}
+
+async function init(){
+  console.log('Initializing Dashboard...');
+  const{data:{session}}=await sb.auth.getSession();
+  console.log('Session state:', session ? 'Found' : 'Not Found');
+  
+  if(!session){
+    console.warn('No session found, redirecting to login.');
+    window.location.href='../login.html';
+    return;
+  }
+  
+  currentUser=session.user;
+  console.log('Fetching profile for:', currentUser.id);
+  
+  let{data:p, error:fetchError}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
+  
+  if(fetchError) {
+    console.warn('Profile fetch error:', fetchError);
+  }
+
+  if(!p){
+    console.log('Profile missing, attempting to create one...');
+    const name=currentUser.user_metadata?.full_name||currentUser.user_metadata?.name||currentUser.email?.split('@')[0]||'Client';
+    const{data:newP, error:insertError}=await sb.from('profiles').insert({
+        id:currentUser.id,
+        full_name:name,
+        email:currentUser.email,
+        role:'client'
+    }).select().single();
+    
+    if (insertError) {
+        console.error('Profile creation failed:', insertError);
+        alert('We could not set up your profile. Error: ' + insertError.message + '\n\nPlease ensure your database is set up correctly.');
+        // Don't redirect immediately so the user can see the alert
+        return;
+    }
+    p=newP;
+  }
+  
+  if(!p){
+    console.error('Final profile check failed.');
+    window.location.href='../login.html';
+    return;
+  }
+  
+  if(p.role==='expert'){window.location.href='../expert/dashboard.html';return;}
+  if(p.role!=='client'&&p.role!=='admin'){
+    console.error('Invalid role:', p.role);
+    window.location.href='../login.html';
+    return;
+  }
+  currentProfile=p;
+  const firstName = p.full_name?.split(' ')[0] || 'there';
+  const now=new Date();
+  const hr=now.getHours();
+  const greet=hr<5?'Good night':hr<12?'Good morning':hr<17?'Good afternoon':hr<21?'Good evening':'Good night';
+  document.getElementById('hero-greeting').innerHTML=greet+', <span>'+firstName+'!</span>';
+  document.getElementById('loading-screen').style.display='none';
+
+  // Update profile icons and dropdown info
+  const avatarInitials = av(p.full_name || p.email);
+  const avatarContent = p.avatar_url ? `<img src="${p.avatar_url}" alt="Avatar">` : avatarInitials;
+  const sidebarAvatar = document.getElementById('sidebar-avatar');
+  const menuAvatar = document.getElementById('menu-avatar');
+  const menuName = document.getElementById('menu-name');
+  if(sidebarAvatar) sidebarAvatar.innerHTML = avatarContent;
+  if(menuAvatar) menuAvatar.innerHTML = avatarContent;
+  if(menuName) menuName.textContent = p.full_name || p.email;
+
+  await loadProjects();
+  initNotifUI();
+}
+
+function animateCount(el, val){
+  let start=0, end=parseInt(val)||0, dur=600, step=Math.ceil(dur/(end||1));
+  if(end===0){el.textContent='0';return;}
+  const t=setInterval(()=>{start+=1;el.textContent=start;if(start>=end)clearInterval(t);},Math.max(16,step));
+}
+
+function progressForStatus(s){
+  const m={new_lead:5,discussing:20,offer_sent:30,payment_pending:35,in_progress:55,under_review:75,delivered:85,revision:65,completed:100,auto_completed:100,cancelled:0,refunded:0};
+  return m[s]||10;
+}
+
+async function loadProjects(){
+  // Temporarily simplified query to test
+const{data:convos}=await sb.from('conversations').select('*').eq('client_id',currentUser.id).order('updated_at',{ascending:false});
+console.log('Conversations loaded:',convos);
+  allConvos=convos||[];
+  
+  let unreadMessagesTotal = 0;
+
+  // Load pending projects from localStorage
+  const pendingProjects = JSON.parse(localStorage.getItem('pending_projects') || '[]');
+  if (pendingProjects.length > 0) {
+    // Convert pending projects to conversation format
+    const localProjects = pendingProjects.map((p, idx) => ({
+      id: 'local-' + idx,
+      client_id: currentUser.id,
+      status: 'new_lead',
+      updated_at: p.created_at,
+      last_message_at: p.created_at,
+      last_message: p.description?.substring(0, 50) + '...',
+      unread_client: 0,
+      projects: {
+        title: p.title || 'New Project',
+        status: 'new_lead',
+        budget: p.budget,
+        progress: 5
+      }
+    }));
+    // Merge local projects with Supabase convos
+    allConvos = [...localProjects, ...allConvos];
+  }
+  
+  if(!allConvos.length){
+    document.getElementById('projects-list').innerHTML=`<div class="empty-state"><div class="empty-icon">💼</div><div class="empty-title">No projects yet</div><div class="empty-text">Start your first project and connect with our expert team.</div><a href="../contact.html" style="background:linear-gradient(135deg,#b8950e,var(--gold-warm));color:#000;padding:10px 22px;border-radius:8px;font-weight:700;font-size:0.82rem;cursor:pointer;margin:0 auto;display:flex;align-items:center;gap:6px;text-decoration:none;width:fit-content;">+ Start a Project</a></div>`;
+    document.getElementById('pill-all').textContent='0';
+    loadActivity([]);
+    return;
+  }
+  
+  // Tally unread messages across ALL conversations (including new leads/messages)
+  allConvos.forEach(c => {
+    if(c.unread_client) unreadMessagesTotal += c.unread_client;
+  });
+
+  // Filter to only include actual Orders
+  const allOrders = allConvos.filter(c => {
+    const s = c.projects ? c.projects.status : 'new_lead';
+    return orderStatuses.includes(s);
+  });
+
+  // Calculate counts for pills based on actual orders
+  let counts = { all: allOrders.length, active: 0, late: 0, cancelled: 0, dispute: 0, in_progress: 0, incomplete: 0, delivered: 0 };
+  
+  allOrders.forEach(c => {
+    const s = c.projects ? c.projects.status : 'new_lead';
+    if(s === 'active') counts.active++;
+    if(['cancelled','refunded'].includes(s)) counts.cancelled++;
+    if(s === 'dispute') counts.dispute++;
+    if(s === 'in_progress') counts.in_progress++;
+    if(s === 'incomplete') counts.incomplete++;
+    if(['delivered','under_review','completed','auto_completed','revision'].includes(s)) counts.delivered++;
+    if(s === 'late') counts.late++;
+  });
+
+  // Update msg badge
+  const msgBadge = document.getElementById('msg-badge');
+  if(msgBadge){
+    if(unreadMessagesTotal > 0){
+      msgBadge.style.display = 'flex';
+      msgBadge.textContent = unreadMessagesTotal > 99 ? '99+' : unreadMessagesTotal;
+    } else {
+      msgBadge.style.display = 'none';
+    }
+  }
+
+  Object.keys(counts).forEach(k => {
+    const el = document.getElementById('pill-' + k);
+    if (el) el.textContent = counts[k];
+  });
+
+  // Also update overall stats for the top boxes
+  const setStat=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  setStat('stat-total',counts.all);setStat('stat-active',counts.active);setStat('stat-done',counts.delivered);
+  setStat('stat-delivered',counts.delivered);setStat('stat-unread',unreadMessagesTotal);
+  setStat('stat-revision',allConvos.filter(c=> (c.projects ? c.projects.status : 'new_lead') ==='revision').length);setStat('stat-dispute',counts.dispute);
+
+  if(unreadMessagesTotal>0){const nb=document.getElementById('nav-chat');if(nb){nb.style.position='relative';const b=document.createElement('span');b.style.cssText='position:absolute;top:-4px;right:-6px;background:#ef4444;color:#fff;font-size:0.55rem;font-weight:800;min-width:14px;height:14px;border-radius:7px;display:flex;align-items:center;justify-content:center;padding:0 3px;';b.textContent=unreadMessagesTotal;nb.style.position='relative';nb.appendChild(b);}}
+  // check URL for filter param
+  const urlF=new URLSearchParams(location.search).get('filter');
+  if(urlF){
+    currentProjFilter=urlF;
+    document.querySelectorAll('.proj-filter-tab').forEach(t=>t.classList.toggle('active',t.dataset.f===urlF));
+  }
+  renderProjectList();
+  loadActivity(allConvos);
+}
+
+function renderProjectList(){
+  const list=document.getElementById('projects-list');
+  const ordersOnly=allConvos.filter(c=>orderStatuses.includes(c.projects ? c.projects.status : 'new_lead'));
+  const filtered=ordersOnly.filter(c=>matchProjFilter(c.projects ? c.projects.status : 'new_lead'));
+  if(!filtered.length){
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon">📬</div><div class="empty-title">No projects here</div><div class="empty-text">No projects match this filter.</div></div>`;
+    return;
+  }
+  
+  const rows = filtered.map(c=>{
+    const proj=c.projects||{};
+    const s = proj.status || 'new_lead';
+    const col=statusColor(s);
+    const expertName = c.expert_name || 'The Genius Agency';
+    const initials = av(expertName);
+    // Since images are stored locally in Freelancer Photos now, we use expert_avatar or fallback
+    const avatarHtml = c.expert_avatar ? `<img src="${c.expert_avatar}">` : initials;
+    const priceStr = proj.budget ? `US$${proj.budget}/Single payment` : 'TBD';
+    const thumbHtml = c.expert_avatar ? `<img src="${c.expert_avatar}" style="width:100%;height:100%;object-fit:cover;opacity:0.6;">` : '💼';
+    
+    return`<tr class="orders-row" onclick="window.location.href='chat.html?cid=${c.id}'">
+      <td class="orders-td">
+        <div class="td-expert-flex">
+          <div class="td-expert-avatar">${avatarHtml}</div>
+          <div class="td-expert-name">${expertName}</div>
+        </div>
+      </td>
+      <td class="orders-td">
+        <span class="td-status-pill" style="background:${col}22;color:${col};">${statusLabel(s)}</span>
+      </td>
+      <td class="orders-td" style="color:#aaa;font-size:0.8rem;">
+        TBD
+      </td>
+      <td class="orders-td">
+        <div class="td-service-flex">
+          <div class="td-service-thumb">${thumbHtml}</div>
+          <div style="font-weight:600;color:#fff;max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${proj.title||'New Project'}</div>
+        </div>
+      </td>
+      <td class="orders-td" style="color:#eee;font-weight:500;">
+        ${priceStr}
+      </td>
+    </tr>`;
+  }).join('');
+  
+  list.innerHTML=`<table class="orders-table">
+    <thead>
+      <tr>
+        <th class="orders-th">Expert Name</th>
+        <th class="orders-th">Status</th>
+        <th class="orders-th">Due Date</th>
+        <th class="orders-th">Service</th>
+        <th class="orders-th">Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rows}
+    </tbody>
+  </table>`;
+}
+
+function loadActivity(convos){
+  const el=document.getElementById('activity-list');
+  const items=[];
+  convos.slice(0,6).forEach(c=>{
+    if(c.last_message&&c.last_message_at){
+      const proj=c.projects||{};
+      items.push({icon:'💬',text:`New message on <strong style="color:#fff;">${proj.title||'New Project'}</strong>`,time:ft(c.last_message_at)});
+    }
+  });
+  if(!items.length){el.innerHTML='<div class="act-empty">No recent activity yet.</div>';return;}
+  el.innerHTML=items.map(i=>`<div class="act-item"><div class="act-icon">${i.icon}</div><div class="act-body"><div class="act-text">${i.text}</div><div class="act-time">${i.time}</div></div></div>`).join('');
+}
+
+async function openNewProject(){
+  const{data:session}=await sb.auth.getSession();
+  if(!session.session){window.location.href='../login.html';return;}
+  const{data:convo,error}=await sb.from('conversations').insert({client_id:currentUser.id,status:'new_lead'}).select().single();
+  if(!error&&convo){
+    await sb.from('projects').insert({client_id:currentUser.id,status:'new_lead'});
+    window.location.href=`chat.html?cid=${convo.id}&new=1`;
+  }
+}
+
+async function toggleNotifPanel(){
+  const p=document.getElementById('notif-panel');
+  if(p.style.display==='none'){
+    p.style.display='block';
+    await loadNotifs();
+  } else {
+    p.style.display='none';
+  }
+}
+async function loadNotifs(){
+  const p=document.getElementById('notif-panel');
+  const{data,error}=await sb.from('notifications').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(10);
+  if(error)return;
+  const list = p.querySelector('div:last-child');
+  if(!data||data.length===0){
+    list.innerHTML='<div style="padding:18px 16px;text-align:center;font-size:0.78rem;color:rgba(255,255,255,0.35);">No notifications yet</div>';
+    return;
+  }
+  list.innerHTML=data.map(n=>`
+    <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;background:${n.is_read?'transparent':'rgba(245,197,66,0.03)'}" onclick="markNotifRead('${n.id}','${n.reference_id}')">
+      <div style="font-size:0.78rem;font-weight:700;color:#fff;margin-bottom:2px;">${n.title}</div>
+      <div style="font-size:0.72rem;color:rgba(255,255,255,0.5);line-height:1.4;">${n.body}</div>
+      <div style="font-size:0.6rem;color:var(--gold);margin-top:6px;font-weight:700;">${ft(n.created_at)}</div>
+    </div>
+  `).join('');
+}
+async function markNotifRead(id,refId){
+    await sb.from('notifications').update({is_read:true}).eq('id',id);
+    if(refId) window.location.href=`chat.html?cid=${refId}`;
+    else toggleNotifPanel();
+}
+function initNotifUI(){
+  const badge=document.getElementById('notif-badge');
+  const updateBadge = async () => {
+    const{count}=await sb.from('notifications').select('id',{count:'exact',head:true}).eq('user_id',currentUser.id).eq('is_read',false);
+    if(count>0){badge.textContent=count>99?'99+':count;badge.style.display='flex';}
+    else badge.style.display='none';
+  };
+  updateBadge();
+  sb.channel('notif:'+currentUser.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:'user_id=eq.'+currentUser.id},(p)=>{
+    updateBadge();
+    showToast(p.new);
+  }).subscribe();
+}
+
+function showToast(n){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:80px;right:24px;z-index:99999;background:#1a1a1a;border:1px solid rgba(245,197,66,0.3);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;max-width:300px;box-shadow:0 10px 40px rgba(0,0,0,0.5);transform:translateX(110%);transition:transform 0.35s;font-family:Inter,sans-serif;';
+  t.innerHTML=`<div style="font-size:1.2rem;">🔔</div><div><div style="font-size:0.8rem;font-weight:700;color:#fff;margin-bottom:2px;">${n.title}</div><div style="font-size:0.72rem;color:#888;">${n.body}</div></div>`;
+  document.body.appendChild(t);
+  setTimeout(()=>t.style.transform='translateX(0)',10);
+  setTimeout(()=>{t.style.transform='translateX(110%)';setTimeout(()=>t.remove(),400);},4000);
+}
+
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.notif-wrap'))document.getElementById('notif-panel').style.display='none';
+});
+
+// Toggle user menu dropdown
+function toggleUserMenu(){
+  const menu=document.getElementById('user-menu');
+  if(menu) menu.style.display=menu.style.display==='none'?'block':'none';
+}
+async function doSignOut() {
+  await sb.auth.signOut();
+  window.location.href = '../login.html';
+}
+init();
+</script>
+
+    <!-- Footer -->
+        <!-- Footer -->
+        <!-- Footer -->
+        <!-- Footer -->
+    <footer id="contact" class="lux-ivory" style="padding: 80px 0 30px; border-top: 1px solid rgba(0,0,0,0.05); overflow: hidden; background: #fff;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 5%;">
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 50px; margin-bottom: 60px;">
+                
+                <!-- Brand Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+                        <img src="../Logo/thegeniusagency.png" alt="Logo" style="height: 64px;" onerror="this.src='../Logo/thegeniusagency.png'">
+                        <div style="color: #111; font-weight: 900; line-height: 1.1; font-size: 1.8rem; letter-spacing: -0.02em;">
+                            THE GENIUS<br><span class="text-yellow" style="color: #F5C542;">AGENCY</span>
+                        </div>
+                    </div>
+                    <p style="color: #555; font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px; max-width: 280px;">We help businesses grow with innovative digital solutions. Your success is our mission.</p>
+                    <div style="display: flex; gap: 12px;">
+                        <!-- Instagram -->
+                        <a href="https://www.instagram.com/thegeniusagencyteamhq" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        </a>
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/TheGeniusAgency" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        </a>
+                        <!-- TikTok -->
+                        <a href="https://www.tiktok.com/@thegeniusagencytm?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+                        </a>
+                        <!-- YouTube -->
+                        <a href="https://www.youtube.com/@The_Genius_Agency" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Quick Links</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="../index.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Home</a></li>
+                        <li><a href="../team.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Experts</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Services</a></li>
+                        <li><a href="../portfolio.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Portfolios</a></li>
+                        <li><a href="../index.html#about" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">About Us</a></li>
+                        <li><a href="../contact.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Services</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Website Design</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">eCommerce & Shopify</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Mobile App Development</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">UI/UX Design</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Marketing & SEO</a></li>
+                        <li><a href="../services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Content & eBooks</a></li>
+                    </ul>
+                </div>
+
+                <!-- For Clients & Contact Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <!-- For Clients -->
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">For Clients</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px;">
+                        <li><a href="../privacy.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Privacy Policy</a></li>
+                        <li><a href="../terms.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Terms & Conditions</a></li>
+                    </ul>
+
+                    <!-- Contact Us -->
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Contact Us</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 20px;">
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            </div>
+                            <a href="mailto:info@thegeniusagency.com" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#555'">info@thegeniusagency.com</a>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            </div>
+                            <span style="color: #555; font-size: 0.95rem;">Always Available 24/7</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Bottom Bar -->
+            <div style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 35px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 20px;">
+                <p style="color: #666; font-size: 0.85rem; margin: 0; font-weight: 500; text-align: center;">© <span id="year">2026</span> THE GENIUS AGENCY. ALL RIGHTS RESERVED.</p>
+            </div>
+        </div>
+    </footer>
+
+<!-- FLOATING TRANSLATE (same as main site) -->
+<style>
+.goog-te-banner-frame,.goog-te-balloon-frame{display:none!important;}
+body{top:0!important;}
+.goog-te-gadget{font-size:0!important;}
+.goog-te-gadget .goog-te-combo{display:none!important;}
+#gt-float-btn{position:fixed;bottom:24px;right:24px;z-index:99999;background:#b8950e;color:#000;border:none;border-radius:50px;padding:10px 18px;font-size:0.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(184,149,14,0.4);transition:all 0.25s ease;letter-spacing:0.3px;}
+#gt-float-btn:hover{background:#f5c542;transform:translateY(-2px);box-shadow:0 6px 25px rgba(245,197,66,0.5);}
+#gt-float-btn svg{width:16px;height:16px;}
+</style>
+<button id="gt-float-btn" onclick="document.getElementById('gt-lang-select').style.display=document.getElementById('gt-lang-select').style.display==='none'?'block':'none';">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+  Translate
+</button>
+<div id="gt-lang-select" style="display:none;position:fixed;bottom:70px;right:24px;z-index:99999;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.15);padding:8px;min-width:160px;border:1px solid rgba(184,149,14,0.2);">
+  <div id="google_translate_element2"></div>
+</div>
+<script type="text/javascript">
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({pageLanguage:'en',autoDisplay:false,layout:google.translate.TranslateElement.InlineLayout.SIMPLE},'google_translate_element2');
+}
+(function(){
+  var lang=(navigator.language||navigator.userLanguage||'en').split('-')[0];
+  if(lang!=='en'){
+    document.addEventListener('DOMContentLoaded',function(){
+      setTimeout(function(){var sel=document.querySelector('.goog-te-combo');if(sel){sel.value=lang;sel.dispatchEvent(new Event('change'));}},1500);
+    });
+  }
+})();
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

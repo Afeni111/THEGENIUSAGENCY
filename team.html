@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Genius Squad | THE GENIUS AGENCY</title>
+    <link rel="icon" type="image/png" href="Logo/thegeniusagency.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { background: #0a1628; }
+        .video-hero { position: relative; height: 480px; overflow: hidden; }
+        .video-hero video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+        .video-hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10,22,40,0.85) 0%, rgba(10,22,40,0.5) 50%, rgba(10,22,40,0.3) 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: 60px; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(245,197,66,0.12); border: 1px solid rgba(245,197,66,0.3); padding: 8px 20px; border-radius: 30px; margin-bottom: 20px; backdrop-filter: blur(10px); }
+        .hero-badge-dot { width: 6px; height: 6px; background: #F5C542; border-radius: 50%; animation: pulse 2s infinite; }
+        .hero-badge-text { font-size: 0.75rem; font-weight: 600; color: #F5C542; letter-spacing: 2px; text-transform: uppercase; }
+        .video-hero-title { font-family: 'Playfair Display', serif; font-size: 3.2rem; font-weight: 700; color: #fff; margin: 0 0 16px 0; line-height: 1.1; text-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+        .video-hero-title span { color: #F5C542; font-weight: 800; }
+        .video-hero-subtitle { font-size: 1.1rem; color: rgba(255,255,255,0.8); font-weight: 400; letter-spacing: 3px; text-transform: uppercase; margin: 0; }
+        .hero-divider { width: 60px; height: 2px; background: linear-gradient(90deg, transparent, #F5C542, transparent); margin: 20px auto; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .hero-stats { display: flex; gap: 40px; margin-top: 30px; }
+        .hero-stat { text-align: center; }
+        .hero-stat-number { font-size: 1.8rem; font-weight: 800; color: #F5C542; line-height: 1; }
+        .hero-stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+        /* Mobile Menu Styles */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 1001;
+        }
+
+        .mobile-nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 22, 40, 0.98);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-overlay.active {
+            display: flex;
+        }
+
+        .mobile-nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: color 0.3s;
+        }
+
+        .mobile-nav-link:hover {
+            color: var(--primary-yellow);
+        }
+
+        .mobile-nav-link.active {
+            color: var(--primary-yellow);
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu { display: none !important; }
+            .mobile-menu-btn { display: block !important; }
+            #user-nav-section { display: none !important; }
+            
+            .nav-pill {
+                padding: 10px 20px !important;
+                width: 92% !important;
+                top: 15px !important;
+            }
+
+            .logo-text { font-size: 0.9rem !important; }
+            .logo-divider { height: 20px !important; margin: 0 8px !important; }
+
+            .video-hero { height: 400px !important; }
+            .video-hero-title { font-size: 2.2rem !important; }
+            .video-hero-subtitle { font-size: 0.8rem !important; letter-spacing: 1px !important; }
+            .hero-stats { gap: 20px !important; margin-top: 20px !important; }
+            .hero-stat-number { font-size: 1.4rem !important; }
+            .hero-stat-label { font-size: 0.65rem !important; }
+        }
+    </style>
+    <script src="js/analytics.js"></script>
+</head>
+<body>
+
+            <!-- Navigation -->
+    <nav class="nav-pill" style="display: flex; justify-content: space-between; align-items: center;">
+        <a href="index.html" style="display: flex; align-items: center; text-decoration: none;">
+            <img src="Logo/thegeniusagency.png" alt="Logo" style="height: 38px;">
+            <div class="logo-divider"></div>
+            <div class="logo-text">
+                <span style="color: white; display: block; margin-bottom: 2px; font-size: 0.9em;">THE GENIUS</span>
+                <span style="color: var(--primary-yellow); display: block; font-size: 0.9em;">AGENCY</span>
+            </div>
+        </a>
+
+        <!-- Desktop Menu -->
+        <div class="nav-menu">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="team.html" class="nav-link active">Experts</a>
+            <a href="services.html" class="nav-link">Services</a>
+            <a href="portfolio.html" class="nav-link">Portfolios</a>
+            <a href="about.html" class="nav-link">About Us</a>
+            <a href="contact.html" class="nav-link">Contact Us</a>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:15px;" id="user-nav-section">
+            <a href="login.html" class="btn-msg" id="nav-auth-link" style="background: var(--primary-yellow); color: #000; font-weight: 700; padding: 10px 20px; border-radius: 50px; text-decoration: none;">
+                Client Log in / Sign up
+            </a>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-btn" id="mobile-menu-toggle">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </nav>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav">
+        <button style="position: absolute; top: 30px; right: 30px; background: none; border: none; color: white; font-size: 2.5rem; cursor: pointer;" id="close-mobile-menu">&times;</button>
+        <a href="index.html" class="mobile-nav-link">Home</a>
+        <a href="team.html" class="mobile-nav-link active">Experts</a>
+        <a href="services.html" class="mobile-nav-link">Services</a>
+        <a href="portfolio.html" class="mobile-nav-link">Portfolios</a>
+        <a href="about.html" class="mobile-nav-link">About Us</a>
+        <a href="contact.html" class="mobile-nav-link">Contact Us</a>
+        <a href="login.html" class="btn btn-primary" style="margin-top: 20px; width: 80%;">Client Log In</a>
+    </div>
+
+    <!-- Video Hero -->
+    <div class="video-hero">
+        <video autoplay muted loop playsinline>
+            <source src="thegeniushero.mp4" type="video/mp4">
+        </video>
+        <div class="video-hero-overlay">
+            <div class="hero-badge">
+                <div class="hero-badge-dot"></div>
+                <span class="hero-badge-text">Elite Talent Network</span>
+            </div>
+            <h1 class="video-hero-title">Meet The <span>Experts</span></h1>
+            <div class="hero-divider"></div>
+            <p class="video-hero-subtitle">Our Genius Squad</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-number">10+</div>
+                    <div class="hero-stat-label">Experts</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-number">100+</div>
+                    <div class="hero-stat-label">Projects</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-number">80+</div>
+                    <div class="hero-stat-label">Clients</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <main id="expert-main-view" class="experts-page">
+        <!-- DIRECTORY (light, like reference) -->
+        <section id="experts-directory" class="lux-section lux-ivory experts-directory">
+            <div class="container experts-directory-inner">
+                <aside class="experts-filter-panel reveal">
+                    <div class="filter-box">
+                        <div class="filter-title">Filter Experts</div>
+
+                        <div class="filter-group">
+                            <div class="filter-label">Categories</div>
+                            <label class="filter-check"><input type="checkbox" value="Graphic Design" class="filter-category"> Graphic Design</label>
+                            <label class="filter-check"><input type="checkbox" value="Digital Marketing" class="filter-category"> Digital Marketing</label>
+                            <label class="filter-check"><input type="checkbox" value="Programming & Tech" class="filter-category"> Programming & Tech</label>
+                            <label class="filter-check"><input type="checkbox" value="Content" class="filter-category"> Content</label>
+                            <label class="filter-check"><input type="checkbox" value="Video Editing" class="filter-category"> Video Editing</label>
+                        </div>
+
+                        <div class="filter-group">
+                            <div class="filter-label">Availability</div>
+                            <label class="filter-check"><input type="checkbox" value="available" id="filter-available"> Available Now</label>
+                        </div>
+
+                        <div class="filter-group">
+                            <div class="filter-label">Platform</div>
+                            <label class="filter-check"><input type="checkbox" value="Fiverr" class="filter-platform"> Fiverr</label>
+                            <label class="filter-check"><input type="checkbox" value="Upwork" class="filter-platform"> Upwork</label>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="experts-results">
+                    <div class="experts-toolbar reveal">
+                        <div class="toolbar-left">
+                            <div class="toolbar-pill">
+                                <span class="toolbar-pill-label">All Categories</span>
+                                <select id="top-category">
+                                    <option value="All">All Categories</option>
+                                    <option value="Graphic Design">Graphic Design</option>
+                                    <option value="Digital Marketing">Digital Marketing</option>
+                                    <option value="Programming & Tech">Programming & Tech</option>
+                                    <option value="Content">Content</option>
+                                    <option value="Video Editing">Video Editing</option>
+                                </select>
+                            </div>
+                            <div class="toolbar-pill">
+                                <span class="toolbar-pill-label">Availability</span>
+                                <select id="top-availability">
+                                    <option value="All">All</option>
+                                    <option value="available">Available</option>
+                                </select>
+                            </div>
+                            <div class="toolbar-pill">
+                                <span class="toolbar-pill-label">Platform</span>
+                                <select id="top-platform">
+                                    <option value="All">All</option>
+                                    <option value="Fiverr">Fiverr</option>
+                                    <option value="Upwork">Upwork</option>
+                                </select>
+                            </div>
+                            <div class="toolbar-pill">
+                                <span class="toolbar-pill-label">Sort</span>
+                                <select id="top-sort">
+                                    <option value="topRated">Sort by: Top Rated</option>
+                                    <option value="name">Sort by: Name</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="toolbar-right">
+                            <div class="toolbar-search">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input id="top-search" type="text" placeholder="Search experts...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="experts-meta reveal">
+                        <div id="experts-count">Showing 0 experts</div>
+                        <div class="experts-view-toggles" aria-hidden="true">
+                            <button class="view-toggle active" type="button">▦</button>
+                            <button class="view-toggle" type="button">☰</button>
+                        </div>
+                    </div>
+
+                    <div class="expert-grid" id="team-grid">
+                        <!-- Rendered by main.js -->
+                    </div>
+
+                    <div class="experts-pagination reveal" id="experts-pagination">
+                        <!-- Rendered by main.js -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Mobile Menu Logic
+        const menuToggle = document.getElementById('mobile-menu-toggle');
+        const closeMenu = document.getElementById('close-mobile-menu');
+        const navOverlay = document.getElementById('mobile-nav');
+        
+        menuToggle.addEventListener('click', () => {
+            navOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        closeMenu.addEventListener('click', () => {
+            navOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Brief Submission Overlay -->
+    <div id="brief-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:10000; align-items:center; justify-content:center; padding:20px;">
+        <div style="background:#111; border:1px solid rgba(212,175,55,0.3); border-radius:18px; padding:30px; max-width:500px; width:100%; position:relative;">
+            <button id="close-brief-btn" style="position:absolute; top:15px; right:15px; background:none; border:none; color:#888; font-size:24px; cursor:pointer;">&times;</button>
+            <h3 style="color:var(--primary-yellow); margin:0 0 8px; font-size:1.3rem;">Send Message</h3>
+            <p style="color:#888; margin:0 0 20px; font-size:0.9rem;">Tell us about your project and we'll connect you with the right expert.</p>
+            <form id="brief-form" style="display:flex; flex-direction:column; gap:15px;">
+                <input id="brief-title" type="text" placeholder="Project Title" required style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:12px 15px; color:#fff; font-size:0.9rem; outline:none;">
+                <input id="brief-budget" type="text" placeholder="Budget (optional)" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:12px 15px; color:#fff; font-size:0.9rem; outline:none;">
+                <textarea id="brief-desc" placeholder="Tell us about your project..." rows="4" required style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:12px 15px; color:#fff; font-size:0.9rem; outline:none; resize:none;"></textarea>
+                <button type="submit" style="background:linear-gradient(90deg, #F5C542, #D4AF37); color:#000; border:none; border-radius:8px; padding:14px; font-weight:700; font-size:0.95rem; cursor:pointer; margin-top:5px;">Send Message</button>
+            </form>
+        </div>
+    </div>
+
+            <!-- Footer -->
+        <!-- Footer -->
+        <!-- Footer -->
+        <!-- Footer -->
+    <footer id="contact" class="lux-ivory" style="padding: 80px 0 30px; border-top: 1px solid rgba(0,0,0,0.05); overflow: hidden; background: #fff;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 5%;">
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 50px; margin-bottom: 60px;">
+                
+                <!-- Brand Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+                        <img src="Logo/thegeniusagency.png" alt="Logo" style="height: 64px;" onerror="this.src='../Logo/thegeniusagency.png'">
+                        <div style="color: #111; font-weight: 900; line-height: 1.1; font-size: 1.8rem; letter-spacing: -0.02em;">
+                            THE GENIUS<br><span class="text-yellow" style="color: #F5C542;">AGENCY</span>
+                        </div>
+                    </div>
+                    <p style="color: #555; font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px; max-width: 280px;">We help businesses grow with innovative digital solutions. Your success is our mission.</p>
+                    <div style="display: flex; gap: 12px;">
+                        <!-- Instagram -->
+                        <a href="https://www.instagram.com/thegeniusagencyteamhq" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        </a>
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/TheGeniusAgency" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        </a>
+                        <!-- TikTok -->
+                        <a href="https://www.tiktok.com/@thegeniusagencytm?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+                        </a>
+                        <!-- YouTube -->
+                        <a href="https://www.youtube.com/@The_Genius_Agency" target="_blank" rel="noopener" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #111; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#F5C542'; this.style.color='#000';" onmouseout="this.style.background='rgba(0,0,0,0.03)'; this.style.color='#111';">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Quick Links</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="index.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Home</a></li>
+                        <li><a href="team.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Experts</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Services</a></li>
+                        <li><a href="portfolio.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Portfolios</a></li>
+                        <li><a href="index.html#about" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">About Us</a></li>
+                        <li><a href="contact.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Services</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Website Design</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">eCommerce & Shopify</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Mobile App Development</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">UI/UX Design</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Marketing & SEO</a></li>
+                        <li><a href="services.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Content & eBooks</a></li>
+                    </ul>
+                </div>
+
+                <!-- For Clients & Contact Col -->
+                <div style="display: flex; flex-direction: column;">
+                    <!-- For Clients -->
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">For Clients</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px;">
+                        <li><a href="privacy.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Privacy Policy</a></li>
+                        <li><a href="terms.html" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Terms & Conditions</a></li>
+                    </ul>
+
+                    <!-- Contact Us -->
+                    <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Contact Us</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 20px;">
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            </div>
+                            <a href="mailto:info@thegeniusagency.com" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#555'">info@thegeniusagency.com</a>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 35px; height: 35px; border-radius: 8px; background: rgba(180, 135, 18, 0.1); border: 1px solid rgba(180, 135, 18, 0.2); display: flex; align-items: center; justify-content: center; color: #B48712; flex-shrink: 0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            </div>
+                            <span style="color: #555; font-size: 0.95rem;">Always Available 24/7</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Bottom Bar -->
+            <div style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 35px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 20px;">
+                <p style="color: #666; font-size: 0.85rem; margin: 0; font-weight: 500; text-align: center;">© <span id="year">2026</span> THE GENIUS AGENCY. ALL RIGHTS RESERVED.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Project Brief Modal (Phase 2) -->
+    <div class="modal-overlay" id="brief-overlay" style="display: none; align-items: center; justify-content: center; z-index: 2000;">
+        <div style="background: #111; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 12px; width: 90%; max-width: 500px; padding: 30px; position: relative;">
+            <button id="close-brief-btn" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            <h2 style="margin-top: 0; color: var(--primary-yellow); font-size: 1.5rem; margin-bottom: 5px;">Project Brief</h2>
+            <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 25px;">Provide the details for your project to get started.</p>
+            
+            <form id="brief-form" style="display: flex; flex-direction: column; gap: 15px;">
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #ccc; font-size: 0.85rem;">Project Title</label>
+                    <input type="text" id="brief-title" required style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #ccc; font-size: 0.85rem;">Description</label>
+                    <textarea id="brief-desc" rows="4" required style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; resize: vertical;"></textarea>
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #ccc; font-size: 0.85rem;">Estimated Budget ($) - Optional</label>
+                    <input type="number" id="brief-budget" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white;">
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="margin-top: 10px; width: 100%; padding: 15px; font-size: 1rem; font-weight: 600; background: linear-gradient(90deg, #F5C542, #D4AF37, #B8962E); color: #000; border: none;">Submit & Start Chat &rarr;</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Portfolio Viewer (image/pdf/video) -->
+    <div id="portfolio-viewer" style="display:none; position: fixed; inset: 0; z-index: 10050; background: rgba(0,0,0,0.92); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 20px;">
+        <button id="portfolio-viewer-close" style="position:absolute; top: 22px; right: 22px; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: #fff; font-size: 28px; cursor: pointer; line-height: 0;">&times;</button>
+        <div id="portfolio-viewer-frame" style="position: relative; width: min(1100px, 96vw); height: min(720px, 86vh); border-radius: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,0.12); background: rgba(10,10,10,0.9); box-shadow: 0 30px 90px rgba(0,0,0,0.6);">
+            <div id="portfolio-viewer-content" style="position:absolute; inset: 0; display:flex; align-items:center; justify-content:center;"></div>
+            <div id="portfolio-viewer-watermark" style="position:absolute; inset:0; pointer-events:none; opacity:0.22; mix-blend-mode: screen;"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/nav-auth.js"></script>
+    <script src="main.js?v=31"></script>
+
+    <!-- Google Translate Auto-Detect -->
+    <div id="google_translate_element" style="display:none;"></div>
+    <style>
+        .goog-te-banner-frame, .goog-te-balloon-frame { display: none !important; }
+        body { top: 0 !important; }
+        .goog-te-gadget { font-size: 0 !important; }
+        #gt-float-btn {
+            position: fixed; bottom: 24px; left: 24px; z-index: 99999;
+            background: #b8950e; color: #000; border: none; border-radius: 50px;
+            padding: 10px 18px; font-size: 0.82rem; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 20px rgba(184,149,14,0.4);
+            transition: all 0.25s ease; letter-spacing: 0.3px;
+        }
+        #gt-float-btn:hover { background: #f5c542; transform: translateY(-2px); }
+        #gt-float-btn svg { width: 16px; height: 16px; }
+    </style>
+    <button id="gt-float-btn" onclick="document.getElementById('gt-lang-select').style.display = document.getElementById('gt-lang-select').style.display === 'none' ? 'block' : 'none';">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        Translate
+    </button>
+    <div id="gt-lang-select" style="display:none; position:fixed; bottom:70px; left:24px; z-index:99999; background:#fff; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.15); padding:8px; min-width:160px; border:1px solid rgba(184,149,14,0.2);">
+        <div id="google_translate_element2"></div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false, layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element2');
+        }
+        (function() {
+            var lang = (navigator.language || navigator.userLanguage || 'en').split('-')[0];
+            if (lang !== 'en') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(function() { var sel = document.querySelector('.goog-te-combo'); if (sel) { sel.value = lang; sel.dispatchEvent(new Event('change')); } }, 1500);
+                });
+            }
+        })();
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

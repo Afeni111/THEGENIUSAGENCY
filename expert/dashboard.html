@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expert Portal | The Genius Agency</title>
+<link rel="icon" type="image/png" href="../Logo/thegeniusagency.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--gold:#F5C542;--gold-dark:#b8950e;--bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;--border:rgba(255,255,255,0.07);--text:#f0f0f0;--muted:#888;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;}
+.sidebar{width:220px;min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;}
+.sl{padding:20px 16px;border-bottom:1px solid var(--border);}
+.sl-name{font-size:0.8rem;font-weight:700;color:#fff;}
+.sl-badge{display:inline-block;background:rgba(139,92,246,0.2);color:#8b5cf6;font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:4px;margin-top:3px;letter-spacing:1px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 16px;color:var(--muted);font-size:0.82rem;font-weight:500;text-decoration:none;border-left:3px solid transparent;transition:all 0.2s;}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,0.04);}
+.nav-item.active{color:var(--gold);background:rgba(245,197,66,0.08);border-left-color:var(--gold);}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;}
+.sidebar-bottom{padding:16px;border-top:1px solid var(--border);margin-top:auto;}
+.user-pill{display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg3);border-radius:10px;}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#8b5cf6);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75rem;color:#fff;flex-shrink:0;}
+.user-name{font-size:0.76rem;font-weight:600;color:#fff;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.btn-so{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;}
+.btn-so:hover{color:#ef4444;}
+.main{margin-left:220px;flex:1;padding:24px;}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+.topbar-title{font-size:1rem;font-weight:800;color:#fff;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px;}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.stat-icon{font-size:1.3rem;margin-bottom:8px;}
+.stat-val{font-size:1.6rem;font-weight:800;color:#fff;line-height:1;}
+.stat-lbl{font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:5px;}
+.section-title{font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:14px;}
+.assigned-list{display:flex;flex-direction:column;gap:12px;}
+.project-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;cursor:pointer;transition:all 0.2s;}
+.project-card:hover{border-color:rgba(245,197,66,0.25);}
+.pc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.pc-title{font-size:0.88rem;font-weight:600;color:#fff;}
+.status-pill{padding:3px 9px;border-radius:20px;font-size:0.65rem;font-weight:700;}
+.pc-meta{font-size:0.75rem;color:var(--muted);margin-bottom:12px;}
+.progress-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;margin-bottom:12px;}
+.progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#7c3aed,#8b5cf6);}
+.btn-chat{padding:8px 16px;background:var(--gold);color:#000;border:none;border-radius:8px;font-weight:700;font-size:0.78rem;cursor:pointer;}
+.btn-upload{padding:8px 16px;background:none;border:1px solid rgba(139,92,246,0.5);color:#8b5cf6;border-radius:8px;font-weight:600;font-size:0.78rem;cursor:pointer;margin-left:8px;}
+.empty{text-align:center;padding:50px;color:var(--muted);}
+.empty-icon{font-size:2.5rem;margin-bottom:12px;}
+.notice{background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:10px;padding:14px 16px;font-size:0.8rem;color:#aaa;margin-bottom:20px;line-height:1.6;}
+.notice strong{color:#8b5cf6;}
+.spinner{width:28px;height:28px;border:3px solid rgba(245,197,66,0.15);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:40px auto;display:block;}
+.loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+    <script src="../js/analytics.js"></script>
+</head>
+<body>
+<div class="loading-screen" id="ls"><div class="spinner"></div></div>
+<aside class="sidebar">
+  <div class="sl">
+    <div class="sl-name">THE GENIUS AGENCY</div>
+    <div class="sl-badge">EXPERT PORTAL</div>
+  </div>
+  <a href="dashboard.html" class="nav-item active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    My Projects
+  </a>
+  <a href="chat.html" class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Messages
+  </a>
+  <div class="sidebar-bottom">
+    <div class="user-pill">
+      <div class="user-avatar" id="exp-avatar">E</div>
+      <span class="user-name" id="exp-name">Expert</span>
+      <button class="btn-so" onclick="doSignOut()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+</aside>
+<div class="main">
+  <div class="topbar">
+    <span class="topbar-title" id="greeting">Expert Portal</span>
+  </div>
+  <div class="notice">
+    <strong>Important:</strong> You can view assigned projects, communicate with admin, and upload work files. You cannot access other projects, payment details, or deliver directly to clients. Admin controls all deliveries.
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-icon">📁</div><div class="stat-val" id="s-assigned">0</div><div class="stat-lbl">Assigned</div></div>
+    <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-val" id="s-active">0</div><div class="stat-lbl">In Progress</div></div>
+    <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-val" id="s-done">0</div><div class="stat-lbl">Completed</div></div>
+    <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-val" id="s-rating">5.0</div><div class="stat-lbl">Rating</div></div>
+  </div>
+  <div class="section-title">Assigned Projects</div>
+  <div id="list"><div class="spinner"></div></div>
+</div>
+<script>
+const SB_URL='https://tjxyxasorunhrtvstwpa.supabase.co',SB_KEY='sb_publishable_d3YtyYkTynAVyTEVIN19dQ_-4wZkGHV';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+let expertProfile=null,expertRecord=null;
+function av(n){return(n||'').split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2)||'?';}
+function sc(s){const m={in_progress:'#10b981',under_review:'#f97316',delivered:'#06b6d4',revision:'#ec4899',completed:'#22c55e',discussing:'#8b5cf6'};return m[s]||'#888';}
+function sl(s){const m={in_progress:'In Progress',under_review:'Under Review',delivered:'Delivered',revision:'Revision',completed:'Completed',discussing:'Discussing',new_lead:'New Lead'};return m[s]||s;}
+
+async function init(){
+  console.log('Initializing Expert Portal...');
+  const{data:{session}}=await sb.auth.getSession();
+  console.log('Session state:', session ? 'Found' : 'Not Found');
+  
+  if(!session){
+    console.warn('No session, redirecting to login.');
+    window.location.href='../login.html';
+    return;
+  }
+  
+  console.log('Fetching expert profile for:', session.user.id);
+  const{data:p, error:profileError}=await sb.from('profiles').select('*').eq('id',session.user.id).single();
+  
+  if (profileError) {
+      console.error('Expert profile fetch error:', profileError);
+  }
+
+  if(!p||p.role!=='expert'){
+    console.warn('Unauthorized or missing profile. Role:', p?.role);
+    alert('Access Denied: You do not have expert privileges.');
+    window.location.href='../login.html';
+    return;
+  }
+  
+  expertProfile=p;
+  document.getElementById('exp-name').textContent=p.full_name||p.email;
+  document.getElementById('exp-avatar').textContent=av(p.full_name);
+  document.getElementById('greeting').textContent='Welcome, '+(p.full_name?.split(' ')[0]||'Expert')+' 👋';
+  
+  console.log('Fetching expert record link...');
+  const{data:er, error:expertError}=await sb.from('experts').select('*').eq('profile_id',p.id).single();
+  if (expertError) console.warn('Expert record not found:', expertError);
+  
+  expertRecord=er;
+  if(er){document.getElementById('s-rating').textContent=er.rating||'5.0';}
+  await loadProjects();
+  document.getElementById('ls').style.display='none';
+}
+async function loadProjects(){
+  if(!expertRecord){document.getElementById('list').innerHTML='<div class="empty"><div class="empty-icon">⚠️</div><p>Expert record not linked to your account.<br>Contact admin.</p></div>';return;}
+  const{data:convos}=await sb.from('conversations').select('*,projects(title,status,budget,deadline,progress)').eq('expert_id',expertRecord.id).order('updated_at',{ascending:false});
+  const list=document.getElementById('list');
+  if(!convos?.length){list.innerHTML='<div class="empty"><div class="empty-icon">📂</div><p style="color:var(--muted);">No projects assigned yet.<br>Admin will assign you when a project matches your skills.</p></div>';return;}
+  let active=0,done=0;
+  convos.forEach(c=>{const s=c.status;if(['in_progress','under_review','revision'].includes(s))active++;if(['completed','auto_completed'].includes(s))done++;});
+  document.getElementById('s-assigned').textContent=convos.length;
+  document.getElementById('s-active').textContent=active;
+  document.getElementById('s-done').textContent=done;
+  list.innerHTML='<div class="assigned-list">'+convos.map(c=>{
+    const p=c.projects||{};const col=sc(c.status);
+    return`<div class="project-card">
+      <div class="pc-top"><div class="pc-title">${p.title||'Project'}</div><span class="status-pill" style="background:${col}22;color:${col};">${sl(c.status)}</span></div>
+      <div class="pc-meta">${p.deadline?'📅 Deadline: '+new Date(p.deadline).toLocaleDateString():''}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${p.progress||0}%;"></div></div>
+      <div>
+        <button class="btn-chat" onclick="window.location.href='chat.html?cid=${c.id}'">💬 View Chat</button>
+        <button class="btn-upload" onclick="uploadWork('${c.id}')">⬆ Upload Work</button>
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+}
+async function uploadWork(convId){
+  const input=document.createElement('input');input.type='file';input.multiple=true;
+  input.onchange=async(e)=>{
+    const{data:{session}}=await sb.auth.getSession();
+    for(const file of Array.from(e.target.files)){
+      const path=`${convId}/expert_${Date.now()}_${file.name}`;
+      const{data:up}=await sb.storage.from('deliveries').upload(path,file,{upsert:true});
+      if(up){
+        const{data:url}=sb.storage.from('deliveries').getPublicUrl(path);
+        await sb.from('messages').insert({conversation_id:convId,sender_id:session.user.id,sender_role:'expert',content:`[EXPERT UPLOAD: ${file.name}] — Awaiting admin review`,message_type:'normal',metadata:{file_url:url.publicUrl,file_name:file.name}});
+        alert('✅ File uploaded! Admin will review and deliver to client.');
+      }
+    }
+  };
+  input.click();
+}
+async function doSignOut(){await sb.auth.signOut();window.location.href='../login.html';}
+init();
+</script>
+</body>
+</html>
