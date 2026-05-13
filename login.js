@@ -29,13 +29,33 @@ const authToggle = document.getElementById('auth-toggle');
 let isLoginMode = true;
 
 let isRedirecting = false;
+async function getDetectedCountry() {
+    try {
+        const res = await fetch('https://ipapi.co/json/');
+        const data = await res.json();
+        return data.country_name || 'Unknown';
+    } catch (e) {
+        console.warn('Country detection failed:', e);
+        return 'Unknown';
+    }
+}
+
 // ── Role-based redirect helper ──────────────────────────────
 async function redirectByRole(userId) {
     if (isRedirecting) return;
     isRedirecting = true;
     console.log('Redirecting user:', userId);
     try {
-        const { data: profile, error } = await supabaseClient.from('profiles').select('role').eq('id', userId).single();
+        const { data: profile, error } = await supabaseClient.from('profiles').select('role, country').eq('id', userId).single();
+        
+        // If profile exists but country is missing, try to update it once
+        if (profile && !profile.country) {
+            const detected = await getDetectedCountry();
+            if (detected && detected !== 'Unknown') {
+                await supabaseClient.from('profiles').update({ country: detected }).eq('id', userId);
+            }
+        }
+
         if (error) {
             console.error('Error fetching profile:', error);
             // Default to client if no profile exists yet
@@ -206,8 +226,9 @@ if (authForm) {
 
                 // Insert into profiles table so role is assigned immediately
                 if (userId) {
+                    const country = await getDetectedCountry();
                     const { error: dbError } = await supabaseClient.from('profiles').insert([
-                        { id: userId, full_name: name, email, role: 'client' }
+                        { id: userId, full_name: name, email, role: 'client', country: country }
                     ]);
                     if (dbError) console.warn('Could not insert to profiles table:', dbError.message);
                 }
