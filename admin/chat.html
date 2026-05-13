@@ -147,8 +147,10 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 @media (max-width: 992px) {
+  body.viewing-chat .mobile-menu-toggle { display: none !important; }
+  
   .convo-panel { margin-left: 0; width: 100%; border-right: none; height: 100%; z-index: 10; }
-  .chat-main { position: fixed; inset: 0; z-index: 20; background: #081220; display: none; margin-left: 0; }
+  .chat-main { position: fixed; inset: 0; z-index: 20; background: #081220; display: none; margin-left: 0; height: 100dvh; }
   body.viewing-chat .chat-main { display: flex; }
   body.viewing-chat .convo-panel { display: none; }
 
