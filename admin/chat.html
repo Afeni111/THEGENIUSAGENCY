@@ -733,17 +733,16 @@ function scrollBottom(){const el=document.getElementById('chat-messages');el.scr
 
 async function sendMsg(){
   const inp=document.getElementById('chat-input');
-  const btn=document.querySelector('.ibtn-send');
   const txt=inp.value.trim();
   if(!txt||!activeConvoId)return;
-
-  // Disable UI
+  
+  // Disable input while sending
+  const btn = document.querySelector('.ibtn-send');
   inp.disabled = true;
   btn.disabled = true;
   btn.style.opacity = '0.5';
 
   try {
-    console.log('Sending message to convo:', activeConvoId);
     const { data: msg, error } = await sb.from('messages').insert({
       conversation_id: activeConvoId,
       sender_id: adminUser.id,
@@ -759,21 +758,21 @@ async function sendMsg(){
       inp.value = '';
       inp.style.height = 'auto';
     }
-    
     setTyping(false);
     
-    // Background logging (don't let it block the UI if it fails)
+    // Log activity in background
     sb.from('activity_logs').insert({
       actor_id: adminUser.id,
       actor_role: 'admin',
       action: 'replied to conversation',
       reference_id: activeConvoId,
       reference_type: 'conversation'
-    }).then(({error}) => { if(error) console.warn('Logging failed:', error); });
+    });
 
   } catch (err) {
-    console.error('Send failed:', err);
+    console.error('Send message failed:', err);
     alert('❌ Failed to send message: ' + (err.message || 'Unknown error'));
+    // If it failed, don't clear the input so they don't lose their text
   } finally {
     inp.disabled = false;
     btn.disabled = false;
