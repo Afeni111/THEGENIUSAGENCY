@@ -754,25 +754,14 @@ async function sendMsg(){
     if (error) throw error;
 
     if (msg) {
-      appendMsg({ ...msg, profiles: { full_name: adminProfile.full_name, role: 'admin' } });
+      appendMsg({ ...msg, profiles: { full_name: (adminProfile?.full_name || 'Admin'), role: 'admin' } });
       inp.value = '';
       inp.style.height = 'auto';
     }
     setTyping(false);
-    
-    // Log activity in background
-    sb.from('activity_logs').insert({
-      actor_id: adminUser.id,
-      actor_role: 'admin',
-      action: 'replied to conversation',
-      reference_id: activeConvoId,
-      reference_type: 'conversation'
-    });
-
   } catch (err) {
     console.error('Send message failed:', err);
     alert('❌ Failed to send message: ' + (err.message || 'Unknown error'));
-    // If it failed, don't clear the input so they don't lose their text
   } finally {
     inp.disabled = false;
     btn.disabled = false;
