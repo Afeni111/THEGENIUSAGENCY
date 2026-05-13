@@ -500,10 +500,11 @@ let currentExpertId = null;
 
 const openExpertModal = (id) => {
     console.log('Opening expert modal for:', id);
-    window.experts = experts; // Ensure global access
     
-    // Force ensure modal exists if it somehow doesn't
-    if (typeof ensureExpertModal === 'function') ensureExpertModal();
+    // Force ensure modal exists and is initialized
+    ensureExpertModal();
+    initExpertModal();
+    initExpertTabs();
     
     const expert = (window.experts || experts).find(e => e.id === id);
     if (!expert) return;
@@ -746,17 +747,31 @@ const openExpertModal = (id) => {
         const hasUpwork = p.includes('upwork') || link.includes('upwork');
         
         let fiverrUrl = fiverrLink || (link.includes('fiverr') ? link : '');
-        let upworkUrl = link.includes('upwork') ? link : '';
+        let upworkUrl = link.includes('upwork') ? link : (p.includes('upwork') ? link : '');
         
+        // If we still don't have an Upwork URL but the platform says Upwork, 
+        // and 'link' doesn't contain fiverr, use 'link' as upworkUrl
+        if (hasUpwork && !upworkUrl && link && !link.includes('fiverr')) {
+            upworkUrl = link;
+        }
+
         let btns = '';
         if (hasFiverr && fiverrUrl) {
-            btns += `<a href="${fiverrUrl}" target="_blank" rel="noopener" class="sb-plat-btn sb-plat-fiverr">Fiverr</a>`;
+            btns += `<a href="${fiverrUrl}" target="_blank" rel="noopener" class="sb-plat-btn sb-plat-fiverr"><span style="font-size:1.1rem;">f</span> Fiverr</a>`;
         }
         if (hasUpwork && upworkUrl) {
-            btns += `<a href="${upworkUrl}" target="_blank" rel="noopener" class="sb-plat-btn sb-plat-upwork">Upwork</a>`;
+            btns += `<a href="${upworkUrl}" target="_blank" rel="noopener" class="sb-plat-btn sb-plat-upwork"><span style="font-size:1.1rem;">u</span> Upwork</a>`;
         }
         
-        platformBtns.innerHTML = btns || '<span style="color:#888;font-size:0.85rem;">Available through Agency</span>';
+        // Populate both desktop and mobile containers
+        const btnsAlt = modal.querySelector('.m-platform-btns-alt');
+        if (btnsAlt) {
+            btnsAlt.innerHTML = btns || '<span style="color:#888;font-size:0.85rem;">Available through Agency</span>';
+        }
+        
+        if (platformBtns) {
+            platformBtns.innerHTML = btns || '<span style="color:#888;font-size:0.85rem;">Available through Agency</span>';
+        }
     }
 
     modal.classList.add('open');
@@ -799,10 +814,28 @@ const initExpertModal = () => {
     const startBtn = document.getElementById('m-start-project-btn');
     const briefOverlay = document.getElementById('brief-overlay');
     if (startBtn && briefOverlay) {
-        startBtn.onclick = (e) => {
+        startBtn.onclick = async (e) => {
             e.preventDefault();
-            modal.classList.remove('active');
+
+            // Authentication Check
+            if (typeof supabaseClient === 'undefined') {
+                alert('Authentication system still loading. Please try again in a moment.');
+                return;
+            }
+
+            const { data: { session } } = await supabaseClient.auth.getSession();
+
+            if (!session) {
+                localStorage.setItem('pending_expert_id', currentExpertId);
+                alert('Please sign up or log in to start a project with our experts!');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // If authenticated, show project brief overlay
+            window.closeExpertModal?.();
             briefOverlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
         };
     }
 };
@@ -1439,7 +1472,9 @@ const initExpertsSwiper = () => {
 
 // ── ENSURE MODAL HTML EXISTS ON ANY PAGE ───────────────────────────────
 const ensureExpertModal = () => {
-    if (document.getElementById('expert-modal')) return;
+    const existing = document.getElementById('expert-modal');
+    if (existing && existing.querySelector('.m-platform-btns-alt')) return;
+    if (existing) existing.remove();
 
     // Inject backdrop
     if (!document.getElementById('modal-backdrop')) {
@@ -1524,13 +1559,19 @@ const ensureExpertModal = () => {
             </div>
         </div>
         <div class="sb-footer">
+            <div id="m-mobile-platforms" class="mobile-only-container" style="margin-bottom:15px; display:block;">
+                <p class="sb-or-label" style="margin-bottom:8px !important;">WORK WITH THEM ON</p>
+                <div class="sb-platform-btns m-platform-btns-alt"></div>
+            </div>
             <div class="sb-cta-block">
                 <p class="sb-cta-label">Start Your Project With Us</p>
                 <p class="sb-cta-sub">Work with this expert through our agency for a smooth, secure and quality experience.</p>
                 <a href="#" id="m-start-project-btn" class="btn btn-primary sb-start-btn">Start Project With Us &rarr;</a>
             </div>
-            <p class="sb-or-label">OR WORK WITH THEM ON</p>
-            <div class="sb-platform-btns" id="m-platform-btns"></div>
+            <div class="desktop-only">
+                <p class="sb-or-label">OR WORK WITH THEM ON</p>
+                <div class="sb-platform-btns" id="m-platform-btns"></div>
+            </div>
         </div>
     `;
     document.body.appendChild(el);
