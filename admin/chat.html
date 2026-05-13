@@ -733,13 +733,53 @@ function scrollBottom(){const el=document.getElementById('chat-messages');el.scr
 
 async function sendMsg(){
   const inp=document.getElementById('chat-input');
+  const btn=document.querySelector('.ibtn-send');
   const txt=inp.value.trim();
   if(!txt||!activeConvoId)return;
-  inp.value='';inp.style.height='auto';
-  const{data:msg}=await sb.from('messages').insert({conversation_id:activeConvoId,sender_id:adminUser.id,sender_role:'admin',content:txt,message_type:'normal'}).select().single();
-  if(msg)appendMsg({...msg,profiles:{full_name:adminProfile.full_name,role:'admin'}});
-  setTyping(false);
-  await sb.from('activity_logs').insert({actor_id:adminUser.id,actor_role:'admin',action:'replied to conversation',reference_id:activeConvoId,reference_type:'conversation'});
+
+  // Disable UI
+  inp.disabled = true;
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+
+  try {
+    console.log('Sending message to convo:', activeConvoId);
+    const { data: msg, error } = await sb.from('messages').insert({
+      conversation_id: activeConvoId,
+      sender_id: adminUser.id,
+      sender_role: 'admin',
+      content: txt,
+      message_type: 'normal'
+    }).select().single();
+
+    if (error) throw error;
+
+    if (msg) {
+      appendMsg({ ...msg, profiles: { full_name: adminProfile.full_name, role: 'admin' } });
+      inp.value = '';
+      inp.style.height = 'auto';
+    }
+    
+    setTyping(false);
+    
+    // Background logging (don't let it block the UI if it fails)
+    sb.from('activity_logs').insert({
+      actor_id: adminUser.id,
+      actor_role: 'admin',
+      action: 'replied to conversation',
+      reference_id: activeConvoId,
+      reference_type: 'conversation'
+    }).then(({error}) => { if(error) console.warn('Logging failed:', error); });
+
+  } catch (err) {
+    console.error('Send failed:', err);
+    alert('❌ Failed to send message: ' + (err.message || 'Unknown error'));
+  } finally {
+    inp.disabled = false;
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    inp.focus();
+  }
 }
 
 async function changeStatus(status){
