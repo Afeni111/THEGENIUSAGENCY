@@ -16,7 +16,7 @@
     .container {
         padding: 0 16px !important;
         max-width: 100% !important;
-        overflow: hidden !important; /* Prevents children from leaking out */
+        overflow: hidden !important;
     }
 
     /* ══════════════════════════════════════════════════
@@ -57,12 +57,6 @@
         border-radius: 50px !important;
     }
 
-    .mobile-close-btn {
-        font-size: 1.8rem !important;
-        top: 20px !important;
-        right: 20px !important;
-    }
-
     /* ══════════════════════════════════════════════════
        HERO SECTION
     ══════════════════════════════════════════════════ */
@@ -87,32 +81,22 @@
     }
 
     /* ══════════════════════════════════════════════════
-       ABOUT.HTML — HOW WE WORK (STRICT SLIDER FIX)
-       Prevents the whole page from sliding right
+       ABOUT.HTML — HOW WE WORK (CENTERED CONTENTS)
     ══════════════════════════════════════════════════ */
 
-    /* The section wrapper must hide overflow */
     section[style*="background: #0a0a0a"] {
         overflow: hidden !important;
         width: 100% !important;
-        padding: 40px 0 !important; /* Remove horizontal padding here */
+        padding: 40px 0 !important;
     }
 
-    /* The inner content wrapper */
-    section[style*="background: #0a0a0a"] > div {
-        max-width: 100% !important;
-        padding: 0 !important;
-        overflow: hidden !important;
-    }
-
-    /* The actual slider container */
     section[style*="background: #0a0a0a"] div[style*="display: flex; align-items: center; gap: 15px"] {
         flex-direction: row !important;
         display: flex !important;
         overflow-x: auto !important;
         scroll-snap-type: x mandatory !important;
         -webkit-overflow-scrolling: touch !important;
-        padding: 20px 20px 40px !important; /* Added 20px side padding for better feel */
+        padding: 20px 20px 40px !important;
         gap: 20px !important;
         width: 100% !important;
         max-width: 100vw !important;
@@ -121,19 +105,28 @@
         scrollbar-width: none !important;
     }
 
-    section[style*="background: #0a0a0a"] div[style*="display: flex; align-items: center; gap: 15px"]::-webkit-scrollbar {
-        display: none !important;
-    }
-
-    /* Each step item */
+    /* Target the cards within the slider */
     section[style*="background: #0a0a0a"] div[style*="text-align: center"] {
         flex: 0 0 280px !important;
         scroll-snap-align: center !important;
         background: rgba(255,255,255,0.03) !important;
-        padding: 30px 20px !important;
+        padding: 40px 20px !important;
         border-radius: 20px !important;
         border: 1px solid rgba(184,149,14,0.1) !important;
-        white-space: normal !important; /* Allow text wrapping inside cards */
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important; /* Forces centering of all children */
+        text-align: center !important;
+        white-space: normal !important;
+    }
+
+    /* Fix the description text specifically to be centered and full width */
+    section[style*="background: #0a0a0a"] div[style*="font-size: 0.8rem; color: #888"] {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        text-align: center !important;
+        line-height: 1.5 !important;
     }
 
     section[style*="background: #0a0a0a"] div[style*="color: #b8950e; font-size: 1.5rem"] {
@@ -141,24 +134,19 @@
     }
 
     /* ══════════════════════════════════════════════════
-       CONTACT.HTML — AIMS & OBJECTIVES (STRICT SLIDER FIX)
+       CONTACT.HTML — AIMS & OBJECTIVES
     ══════════════════════════════════════════════════ */
 
     div[style*="grid-template-columns: repeat(5, 1fr); gap: 20px"] {
         display: flex !important;
         overflow-x: auto !important;
         scroll-snap-type: x mandatory !important;
-        -webkit-overflow-scrolling: touch !important;
         gap: 15px !important;
         padding: 10px 20px 30px !important;
         width: 100% !important;
         max-width: 100vw !important;
         box-sizing: border-box !important;
         scrollbar-width: none !important;
-    }
-
-    div[style*="grid-template-columns: repeat(5, 1fr); gap: 20px"]::-webkit-scrollbar {
-        display: none !important;
     }
 
     div[style*="grid-template-columns: repeat(5, 1fr); gap: 20px"] > div {
@@ -181,15 +169,6 @@
 
     #why-choose-us div[style*="grid-template-columns: repeat(5, 1fr)"] {
         grid-template-columns: 1fr 1fr !important;
-    }
-
-    .reason {
-        padding: 20px 10px !important;
-    }
-
-    /* Project CTA Banner */
-    section.lux-richblack div[style*="background: var(--primary-yellow)"] {
-        padding: 40px 20px !important;
     }
 }
 
