@@ -132,6 +132,23 @@
     }
 
     /* ══════════════════════════════════════════════════
+       ABOUT.HTML — EXPERTS CAROUSEL (ONE BY ONE)
+    ══════════════════════════════════════════════════ */
+    
+    .expert-card {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+        scroll-snap-align: center !important;
+        box-sizing: border-box !important;
+    }
+
+    #expertsTrack {
+        gap: 0 !important; /* One by one means no gaps or controlled gaps */
+        display: flex !important;
+    }
+
+    /* ══════════════════════════════════════════════════
        CONTACT.HTML — AIMS & OBJECTIVES
     ══════════════════════════════════════════════════ */
 
@@ -157,10 +174,9 @@
     }
 
     /* ══════════════════════════════════════════════════
-       CONTACT.HTML — FAQ SECTION FIX
+       CONTACT.HTML — FAQ SECTION
     ══════════════════════════════════════════════════ */
 
-    /* Force FAQ grid to single column */
     div[style*="grid-template-columns: repeat(2, 1fr); gap: 20px"] {
         grid-template-columns: 1fr !important;
         gap: 16px !important;
@@ -170,15 +186,6 @@
         padding: 20px !important;
         gap: 15px !important;
         align-items: flex-start !important;
-    }
-
-    .faq-card h4 {
-        font-size: 0.95rem !important;
-        line-height: 1.3 !important;
-    }
-
-    .faq-card p {
-        font-size: 0.8rem !important;
     }
 
     /* ══════════════════════════════════════════════════
