@@ -7,6 +7,8 @@
 <link rel="icon" type="image/png" href="../Logo/thegeniusagency.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="admin-mobile.css">
+<script src="admin-mobile.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--gold:#F5C542;--gold-dark:#b8950e;--navy:#0a1628;--bg:var(--navy);--bg2:#0d1e36;--bg3:#122848;--border:rgba(245,197,66,0.15);--text:#f0f0f0;--muted:#8a9bb8;}
@@ -138,6 +140,27 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;}
 .no-chat-sel p{font-size:0.9rem;color:var(--muted);max-width:300px;line-height:1.6;}
 .spinner{width:32px;height:32px;border:3px solid rgba(245,197,66,0.15);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+@media (max-width: 992px) {
+  .convo-panel { margin-left: 0; width: 100%; border-right: none; height: 100%; z-index: 10; }
+  .chat-main { position: fixed; inset: 0; z-index: 20; background: #081220; display: none; margin-left: 0; }
+  body.viewing-chat .chat-main { display: flex; }
+  body.viewing-chat .convo-panel { display: none; }
+
+  .chat-topbar { padding: 0 12px; gap: 8px; height: 60px; }
+  .ct-actions { gap: 4px; }
+  .status-select, .ct-btn { padding: 6px 8px; font-size: 0.72rem; border-radius: 8px; height: 34px; }
+  .ct-btn:not(.ct-btn-primary) { display: none; }
+  
+  .chat-input-area { padding: 12px 16px; gap: 8px; }
+  .input-wrap { padding: 8px 12px; border-radius: 12px; }
+  #chat-input { font-size: 0.85rem; }
+  .ibtn { width: 36px; height: 36px; }
+
+  body.viewing-chat .msg-bubble-wrap { max-width: 85%; }
+}
+
+.back-btn { display: none; align-items: center; justify-content: center; width: 36px; height: 36px; background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; color: #fff; cursor: pointer; }
 </style>
     <script src="../js/analytics.js"></script>
 </head>
@@ -261,6 +284,9 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;}
 
   <div id="active-chat" style="display:none;flex-direction:column;height:100%;">
     <div class="chat-topbar">
+      <button class="back-btn" onclick="backToList()" title="Back to list">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
       <div class="ct-info">
         <div class="ct-name" id="ct-name">—</div>
         <div class="ct-status">
@@ -504,6 +530,16 @@ async function selectConvo(id){
   subscribeChat(id);
   markRead(id);
   console.log('Conversation loaded');
+  
+  if (window.innerWidth <= 992) {
+    document.body.classList.add('viewing-chat');
+  }
+}
+
+function backToList() {
+  document.body.classList.remove('viewing-chat');
+  activeConvoId = null;
+  renderConvoList();
 }
 
 async function loadConvoDetails(id){
