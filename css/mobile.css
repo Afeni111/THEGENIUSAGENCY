@@ -8,11 +8,59 @@
 
     /* ── GLOBAL ─────────────────────────────────────── */
     body {
-        overflow-x: hidden;
+        overflow-x: hidden !important;
+        width: 100% !important;
+        position: relative !important;
     }
 
     .container {
         padding: 0 16px !important;
+        max-width: 100% !important;
+        overflow: hidden !important; /* Prevents children from leaking out */
+    }
+
+    /* ══════════════════════════════════════════════════
+       MOBILE NAV OVERLAY
+    ══════════════════════════════════════════════════ */
+    .mobile-nav-overlay {
+        gap: 15px !important;
+        padding: 60px 20px 20px !important;
+        background: rgba(5, 10, 25, 0.98) !important;
+    }
+
+    .mobile-nav-link {
+        font-size: 0.9rem !important;
+        letter-spacing: 1.5px !important;
+        padding: 12px 20px !important;
+        border-radius: 12px !important;
+        width: 90% !important;
+        text-align: center !important;
+        border: 1px solid rgba(255,255,255,0.08) !important;
+        background: rgba(255,255,255,0.02) !important;
+        text-transform: uppercase !important;
+        font-weight: 600 !important;
+    }
+
+    .mobile-nav-link:hover,
+    .mobile-nav-link.active {
+        background: rgba(245,197,66,0.12) !important;
+        border-color: rgba(245,197,66,0.4) !important;
+        color: #F5C542 !important;
+    }
+
+    .mobile-nav-cta {
+        font-size: 0.8rem !important;
+        padding: 14px 25px !important;
+        width: 90% !important;
+        letter-spacing: 1px !important;
+        margin-top: 10px !important;
+        border-radius: 50px !important;
+    }
+
+    .mobile-close-btn {
+        font-size: 1.8rem !important;
+        top: 20px !important;
+        right: 20px !important;
     }
 
     /* ══════════════════════════════════════════════════
@@ -22,469 +70,138 @@
     header.hero {
         padding-left: 16px !important;
         padding-right: 16px !important;
-        /* Limit height so the video doesn't dominate the screen */
-        min-height: 0 !important;
-        height: auto !important;
-        max-height: 520px !important;
-        overflow: hidden !important;
+        max-height: 550px !important;
     }
 
-    /* The background video — crop it tightly on mobile */
     #hero-bg-video {
         object-position: center top !important;
-        height: 100% !important;
     }
 
-    /* Override the hardcoded inline width:50% and centering */
     .hero-main-content,
-    #hero-main-content,
-    header.hero .hero-main-content {
-        width: 100% !important;
-        max-width: 100% !important;
-        grid-template-columns: 1fr !important;
-        padding: 90px 0 24px !important;
-        gap: 0 !important;
-        overflow: visible !important;
-        text-align: center !important;
-    }
-
-    .hero-content {
-        min-height: auto !important;
-        padding: 0 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
+    #hero-main-content {
+        padding: 100px 0 30px !important;
     }
 
     .hero-title {
-        font-size: 2.2rem !important;
-        line-height: 1.1 !important;
-        margin-bottom: 10px !important;
-        word-break: break-word !important;
-        text-align: center !important;
+        font-size: 2.4rem !important;
     }
 
-    .hero-subtitle {
-        font-size: 0.9rem !important;
-        line-height: 1.6 !important;
-        margin-bottom: 18px !important;
-        text-align: center !important;
-    }
+    /* ══════════════════════════════════════════════════
+       ABOUT.HTML — HOW WE WORK (STRICT SLIDER FIX)
+       Prevents the whole page from sliding right
+    ══════════════════════════════════════════════════ */
 
-    .hero-badge {
-        font-size: 0.6rem !important;
-        padding: 6px 12px !important;
-        letter-spacing: 1px !important;
-        margin-bottom: 14px !important;
-        justify-content: center !important;
-    }
-
-    .hero-btns {
-        flex-direction: column !important;
-        gap: 10px !important;
+    /* The section wrapper must hide overflow */
+    section[style*="background: #0a0a0a"] {
+        overflow: hidden !important;
         width: 100% !important;
-        align-items: center !important;
+        padding: 40px 0 !important; /* Remove horizontal padding here */
     }
 
-    .hero-btns .btn {
-        width: 90% !important;
-        text-align: center !important;
-        justify-content: center !important;
-        padding: 13px 20px !important;
-        font-size: 0.82rem !important;
+    /* The inner content wrapper */
+    section[style*="background: #0a0a0a"] > div {
+        max-width: 100% !important;
+        padding: 0 !important;
+        overflow: hidden !important;
     }
 
-    .trust-bar {
-        margin-top: 16px !important;
+    /* The actual slider container */
+    section[style*="background: #0a0a0a"] div[style*="display: flex; align-items: center; gap: 15px"] {
+        flex-direction: row !important;
         display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 20px 20px 40px !important; /* Added 20px side padding for better feel */
+        gap: 20px !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+        justify-content: flex-start !important;
+        scrollbar-width: none !important;
     }
 
-    .trust-label {
-        font-size: 0.6rem !important;
-        text-align: center !important;
-    }
-
-    .trust-logos {
-        gap: 12px !important;
-        flex-wrap: wrap !important;
-        justify-content: center !important;
-    }
-
-    /* Hide the bottom motto pill — clips on mobile */
-    header.hero > div[style*="bottom:30px"],
-    header.hero > div[style*="bottom: 30px"] {
+    section[style*="background: #0a0a0a"] div[style*="display: flex; align-items: center; gap: 15px"]::-webkit-scrollbar {
         display: none !important;
     }
 
-    /* Hide hero right-side expert card slider */
-    .hero-visuals,
-    .slider-container,
-    .hero-indicators {
+    /* Each step item */
+    section[style*="background: #0a0a0a"] div[style*="text-align: center"] {
+        flex: 0 0 280px !important;
+        scroll-snap-align: center !important;
+        background: rgba(255,255,255,0.03) !important;
+        padding: 30px 20px !important;
+        border-radius: 20px !important;
+        border: 1px solid rgba(184,149,14,0.1) !important;
+        white-space: normal !important; /* Allow text wrapping inside cards */
+    }
+
+    section[style*="background: #0a0a0a"] div[style*="color: #b8950e; font-size: 1.5rem"] {
         display: none !important;
     }
 
     /* ══════════════════════════════════════════════════
-       SERVICES SECTION — "WHAT WE DO"
-       CENTER: heading, description, 4-icon grid
+       CONTACT.HTML — AIMS & OBJECTIVES (STRICT SLIDER FIX)
     ══════════════════════════════════════════════════ */
 
-    /* Dual header: 2-col → 1-col, centered */
-    #services .container > div[style*="grid-template-columns: 1.2fr 1.5fr"] {
-        grid-template-columns: 1fr !important;
-        gap: 32px !important;
-        margin-bottom: 40px !important;
-        text-align: center !important;
+    div[style*="grid-template-columns: repeat(5, 1fr); gap: 20px"] {
+        display: flex !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory !important;
+        -webkit-overflow-scrolling: touch !important;
+        gap: 15px !important;
+        padding: 10px 20px 30px !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+        scrollbar-width: none !important;
     }
 
-    /* Left side (heading + text): center everything */
-    #services .container > div[style*="grid-template-columns: 1.2fr 1.5fr"] > div:first-child {
-        align-items: center !important;
-        text-align: center !important;
+    div[style*="grid-template-columns: repeat(5, 1fr); gap: 20px"]::-webkit-scrollbar {
+        display: none !important;
     }
 
-    /* "WHAT WE DO" label — center */
-    #services h4.text-yellow {
-        justify-content: center !important;
+    div[style*="grid-template-columns: repeat(5, 1fr); gap: 20px"] > div {
+        flex: 0 0 280px !important;
+        scroll-snap-align: center !important;
     }
 
-    /* Section heading and paragraph */
-    #services h2 {
+    /* ══════════════════════════════════════════════════
+       OTHER SECTIONS
+    ══════════════════════════════════════════════════ */
+
+    #services h2, #why-choose-us h2, #process h2, #experts h2, #portfolio h2 {
         font-size: 2rem !important;
-        line-height: 1.15 !important;
-        text-align: center !important;
-        max-width: 100% !important;
-    }
-
-    #services p[style*="max-width: 450px"] {
-        max-width: 100% !important;
         text-align: center !important;
     }
 
-    /* 4 mini-feature columns → 2×2 centered grid */
     #services div[style*="grid-template-columns: repeat(4, 1fr)"] {
-        grid-template-columns: repeat(2, 1fr) !important;
-        border-left: none !important;
-        padding-left: 0 !important;
-        gap: 20px !important;
-    }
-
-    /* Each feature item: center icon + text */
-    #services div[style*="grid-template-columns: repeat(4, 1fr)"] > div {
-        align-items: center !important;
-        text-align: center !important;
-        border-right: none !important;
-        padding: 16px 8px !important;
-    }
-
-    /* Service cards grid → 1-col */
-    .services-grid {
-        grid-template-columns: 1fr !important;
-        gap: 16px !important;
-    }
-
-    .svc-card {
-        padding: 24px 18px !important;
-    }
-
-    /* CTA banner → stack vertically, center */
-    .cta-banner-floating {
-        flex-direction: column !important;
-        text-align: center !important;
-        gap: 16px !important;
-        padding: 24px 16px !important;
-        align-items: center !important;
-    }
-
-    .cta-banner-content {
-        flex-direction: column !important;
-        align-items: center !important;
-    }
-
-    /* ══════════════════════════════════════════════════
-       WHY CHOOSE US SECTION
-       CENTER: label, heading, description, all reason cards
-    ══════════════════════════════════════════════════ */
-
-    /* Outer flex → vertical stack, centered */
-    #why-choose-us .container > div[style*="display: flex; gap: 40px"] {
-        flex-direction: column !important;
-        gap: 32px !important;
-        align-items: center !important;
-        text-align: center !important;
-    }
-
-    /* Left panel: remove right border, center */
-    #why-choose-us div[style*="flex: 1.2"] {
-        border-right: none !important;
-        padding-right: 0 !important;
-        min-width: 0 !important;
-        width: 100% !important;
-        align-items: center !important;
-        text-align: center !important;
-    }
-
-    /* "WHY CHOOSE US" label */
-    #why-choose-us div[style*="WHY CHOOSE US"],
-    #why-choose-us div[style*="font-size: 0.75rem; letter-spacing: 1px"] {
-        text-align: center !important;
-        width: 100% !important;
-    }
-
-    /* Gold underline bar — center it */
-    #why-choose-us div[style*="height: 2px; width: 35px; background: var(--primary-yellow); margin-bottom: 25px"] {
-        margin-left: auto !important;
-        margin-right: auto !important;
-    }
-
-    /* Section heading */
-    #why-choose-us h2 {
-        font-size: 1.9rem !important;
-        text-align: center !important;
-    }
-
-    /* Description paragraph */
-    #why-choose-us p[style*="max-width: 90%"] {
-        max-width: 100% !important;
-        text-align: center !important;
-    }
-
-    /* 5-column reasons grid → 2-col */
-    #why-choose-us div[style*="grid-template-columns: repeat(5, 1fr)"] {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 24px 16px !important;
-        width: 100% !important;
-    }
-
-    /* Each reason card: center the icon and text */
-    .reason {
-        border-right: none !important;
-        padding: 16px 8px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        text-align: center !important;
-    }
-
-    /* 20% Offer banner: side-by-side → vertical stack, centered */
-    #why-choose-us div[style*="flex-wrap: nowrap"] {
-        flex-wrap: wrap !important;
-        flex-direction: column !important;
-        gap: 20px !important;
-        padding: 28px 20px !important;
-        align-items: center !important;
-        text-align: center !important;
-    }
-
-    #why-choose-us div[style*="flex: 1; border-left:"],
-    #why-choose-us div[style*="flex: 1; border-left: 1px solid rgba(255,255,255,0.07)"] {
-        border-left: none !important;
-        border-right: none !important;
-        padding: 20px 0 !important;
-        border-top: 1px solid rgba(255,255,255,0.08) !important;
-        border-bottom: 1px solid rgba(255,255,255,0.08) !important;
-        width: 100% !important;
-        text-align: center !important;
-    }
-
-    #why-choose-us div[style*="flex: 1; padding-left: 30px"] {
-        padding-left: 0 !important;
-        text-align: center !important;
-        width: 100% !important;
-    }
-
-    /* Checklist items in 20% section — center */
-    #why-choose-us div[style*="display: flex; align-items: center; gap: 10px"] {
-        justify-content: center !important;
-    }
-
-    /* Big "20%" number */
-    #why-choose-us h2[style*="font-size: 6.5rem"] {
-        font-size: 4.5rem !important;
-    }
-
-    #why-choose-us h2[style*="font-size: 2.6rem"] {
-        font-size: 1.8rem !important;
-        text-align: center !important;
-    }
-
-    /* "View Coupon" button — center */
-    #why-choose-us a[href*="coupon"],
-    #why-choose-us button[onclick*="coupon"] {
-        display: block !important;
-        text-align: center !important;
-    }
-
-    /* ══════════════════════════════════════════════════
-       PROCESS SECTION
-       CENTER: label, heading, step icons + text
-    ══════════════════════════════════════════════════ */
-
-    #process .container > div:first-child {
-        text-align: center !important;
-    }
-
-    /* "OUR PROCESS" label */
-    #process div[style*="OUR PROCESS"],
-    #process div[style*="font-size: 0.75rem"][style*="letter-spacing"] {
-        text-align: center !important;
-        width: 100% !important;
-    }
-
-    /* Gold line under label */
-    #process div[style*="height: 2px; width: 35px"] {
-        margin-left: auto !important;
-        margin-right: auto !important;
-    }
-
-    #process h2 {
-        font-size: 1.8rem !important;
-        text-align: center !important;
-    }
-
-    /* Horizontal 5-step timeline → vertical, centered */
-    .process-timeline {
-        flex-direction: column !important;
-        gap: 32px !important;
-        align-items: center !important;
-    }
-
-    .process-timeline > div {
-        flex: 0 0 auto !important;
-        width: 100% !important;
-        text-align: center !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-    }
-
-    /* Each step icon circle — center */
-    .process-timeline > div > div:first-child {
-        margin: 0 auto 16px auto !important;
-    }
-
-    /* Testimonial + consultation section — stack vertically */
-    #process > .container > div[style*="display: flex; gap: 30px; margin-top: 100px"] {
-        flex-direction: column !important;
-        margin-top: 40px !important;
-        gap: 20px !important;
-    }
-
-    #process .glass-card {
-        min-width: 0 !important;
-        padding: 28px 20px !important;
-    }
-
-    #process h2[style*="font-size: 2rem"] {
-        font-size: 1.5rem !important;
-        text-align: center !important;
-    }
-
-    /* ══════════════════════════════════════════════════
-       PROJECT CTA BANNER
-    ══════════════════════════════════════════════════ */
-
-    section.lux-richblack div[style*="background: var(--primary-yellow); border-radius: 16px"] {
-        flex-direction: column !important;
-        gap: 24px !important;
-        padding: 28px 20px !important;
-    }
-
-    section.lux-richblack h2[style*="font-size: 2.2rem"] {
-        font-size: 1.5rem !important;
-        line-height: 1.2 !important;
-    }
-
-    section.lux-richblack div[style*="flex: 1; min-width: 320px; background: var(--primary-black)"] {
-        min-width: 0 !important;
-        padding: 24px 20px !important;
-    }
-
-    /* ══════════════════════════════════════════════════
-       EXPERTS SWIPER
-    ══════════════════════════════════════════════════ */
-
-    #experts h2 {
-        font-size: 1.9rem !important;
-        text-align: center !important;
-        margin-bottom: 32px !important;
-    }
-
-    #experts .container > p {
-        text-align: center !important;
-    }
-
-    /* ══════════════════════════════════════════════════
-       PORTFOLIO SECTION
-    ══════════════════════════════════════════════════ */
-
-    #portfolio h2 {
-        font-size: 1.9rem !important;
-        text-align: center !important;
-    }
-
-    #homepage-portfolio,
-    .grid-3#homepage-portfolio {
-        grid-template-columns: 1fr !important;
-        gap: 20px !important;
-    }
-
-    /* ══════════════════════════════════════════════════
-       FOOTER
-    ══════════════════════════════════════════════════ */
-
-    footer#contact {
-        padding: 50px 0 20px !important;
-    }
-
-    footer#contact > div > div[style*="grid-template-columns: repeat(auto-fit"] {
         grid-template-columns: 1fr 1fr !important;
-        gap: 30px !important;
     }
 
-    footer#contact div[style*="border-top: 1px solid"] {
-        flex-direction: column !important;
-        text-align: center !important;
-        gap: 10px !important;
+    #why-choose-us div[style*="grid-template-columns: repeat(5, 1fr)"] {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    .reason {
+        padding: 20px 10px !important;
+    }
+
+    /* Project CTA Banner */
+    section.lux-richblack div[style*="background: var(--primary-yellow)"] {
+        padding: 40px 20px !important;
     }
 }
 
 /* ══════════════════════════════════════════════════
-   EXTRA SMALL SCREENS (< 480px)
+   SMALL PHONES (< 400px)
 ══════════════════════════════════════════════════ */
-@media (max-width: 480px) {
-
-    header.hero {
-        max-height: 460px !important;
-    }
-
+@media (max-width: 400px) {
     .hero-title {
-        font-size: 1.9rem !important;
+        font-size: 2.1rem !important;
     }
-
-    .hero-btns .btn {
-        font-size: 0.78rem !important;
-        padding: 12px 16px !important;
-    }
-
-    /* Footer → single column */
-    footer#contact > div > div[style*="grid-template-columns: repeat(auto-fit"] {
-        grid-template-columns: 1fr !important;
-    }
-
-    /* Why choose us 5-col → 1-col on tiny screens */
+    
     #why-choose-us div[style*="grid-template-columns: repeat(5, 1fr)"] {
         grid-template-columns: 1fr !important;
-    }
-
-    #why-choose-us h2[style*="font-size: 6.5rem"] {
-        font-size: 3.5rem !important;
-    }
-
-    .process-timeline > div > div:first-child {
-        width: 60px !important;
-        height: 60px !important;
-        font-size: 1.4rem !important;
     }
 }
