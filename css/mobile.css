@@ -81,7 +81,7 @@
     }
 
     /* ══════════════════════════════════════════════════
-       ABOUT.HTML — HOW WE WORK (CENTERED CONTENTS)
+       ABOUT.HTML — HOW WE WORK
     ══════════════════════════════════════════════════ */
 
     section[style*="background: #0a0a0a"] {
@@ -105,7 +105,6 @@
         scrollbar-width: none !important;
     }
 
-    /* Target the cards within the slider */
     section[style*="background: #0a0a0a"] div[style*="text-align: center"] {
         flex: 0 0 280px !important;
         scroll-snap-align: center !important;
@@ -115,12 +114,11 @@
         border: 1px solid rgba(184,149,14,0.1) !important;
         display: flex !important;
         flex-direction: column !important;
-        align-items: center !important; /* Forces centering of all children */
+        align-items: center !important;
         text-align: center !important;
         white-space: normal !important;
     }
 
-    /* Fix the description text specifically to be centered and full width */
     section[style*="background: #0a0a0a"] div[style*="font-size: 0.8rem; color: #888"] {
         max-width: 100% !important;
         width: 100% !important;
@@ -149,9 +147,38 @@
         scrollbar-width: none !important;
     }
 
+    div[style*="grid-template-columns: repeat(5, 1fr); gap: 20px"]::-webkit-scrollbar {
+        display: none !important;
+    }
+
     div[style*="grid-template-columns: repeat(5, 1fr); gap: 20px"] > div {
         flex: 0 0 280px !important;
         scroll-snap-align: center !important;
+    }
+
+    /* ══════════════════════════════════════════════════
+       CONTACT.HTML — FAQ SECTION FIX
+    ══════════════════════════════════════════════════ */
+
+    /* Force FAQ grid to single column */
+    div[style*="grid-template-columns: repeat(2, 1fr); gap: 20px"] {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    .faq-card {
+        padding: 20px !important;
+        gap: 15px !important;
+        align-items: flex-start !important;
+    }
+
+    .faq-card h4 {
+        font-size: 0.95rem !important;
+        line-height: 1.3 !important;
+    }
+
+    .faq-card p {
+        font-size: 0.8rem !important;
     }
 
     /* ══════════════════════════════════════════════════
