@@ -252,17 +252,14 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;}
     </a>
   </div>
 
-  <div class="sidebar-bottom">
-    <div class="admin-pill">
-      <div class="admin-avatar" id="admin-avatar">A</div>
-      <div class="admin-info">
-        <div class="admin-name" id="admin-name">Admin</div>
-        <div class="admin-role">MASTER ADMIN</div>
-      </div>
-      <button class="btn-so" onclick="doSignOut()" title="Sign out">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      </button>
     </div>
+  </div>
+  <div style="margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.05);font-size:0.7rem;color:rgba(255,255,255,0.4);">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+      <div id="status-indicator" style="width:7px;height:7px;border-radius:50%;background:#555;"></div>
+      <span id="admin-status-text">Checking status...</span>
+    </div>
+    <div id="admin-id-text" style="opacity:0.3;font-family:monospace;font-size:0.55rem;word-break:break-all;"></div>
   </div>
 </aside>
 
@@ -406,6 +403,20 @@ async function init(){
   adminUser=session.user;adminProfile=p;
   document.getElementById('admin-name').textContent=p.full_name||'Admin';
   document.getElementById('admin-avatar').textContent=(p.full_name||'A').split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);
+  
+  // Update diagnostic UI
+  const statusDot = document.getElementById('status-indicator');
+  const statusText = document.getElementById('admin-status-text');
+  const idText = document.getElementById('admin-id-text');
+  if (p && p.role === 'admin') {
+    statusDot.style.background = '#22c55e';
+    statusText.textContent = `Verified Admin: ${p.full_name}`;
+  } else {
+    statusDot.style.background = '#ef4444';
+    statusText.textContent = `Role Issue: ${p?.role || 'No Profile'}`;
+  }
+  idText.textContent = adminUser.id;
+
   await loadConvos();
   subscribeConvoList();
   const params=new URLSearchParams(location.search);
@@ -582,29 +593,23 @@ async function loadMessages(id){
 }
 
 function renderMsg(m){
-  const isSelf=m.sender_id===adminUser.id;
-  const conv=allConvos.find(c=>c.id===activeConvoId);
-  let name='';
-  let role=m.sender_role;
+  if(m.message_type==='system') return `<div class="msg-system"><div class="msg-system-dot"></div><span>${m.content}</span></div>`;
+  
+  // Robust self-detection
+  const isSelf = m.sender_id === adminUser.id || m.sender_role === 'admin';
+  const conv = allConvos.find(c => c.id === activeConvoId);
+  
+  let name = '';
+  let role = m.sender_role || (isSelf ? 'admin' : 'client');
   
   if(isSelf){
-    name=conv?.assigned_expert?.name || 'The Genius Agency';
-    role='expert';
-  } else if(m.sender_role==='client'){
-    name=conv?.profiles?.full_name || conv?.profiles?.email || 'Client';
+    name = adminProfile?.full_name || conv?.assigned_expert?.name || 'Admin';
   } else {
-    name=m.profiles?.full_name || 'User';
+    name = m.profiles?.full_name || conv?.profiles?.full_name || 'Client';
   }
   
-  const time=ft(m.created_at);
-  if(m.message_type==='system') {
-    if(m.content === '✅ Offer accepted! Proceeding to payment...') {
-      // Background cleanup
-      sb.from('messages').delete().eq('id', m.id).then(()=>{});
-      return ''; 
-    }
-    return`<div class="msg-system"><div class="msg-system-dot"></div><span>${m.content}</span></div>`;
-  }
+  const time = ft(m.created_at);
+  
   if(m.message_type==='offer'||m.event==='offer'){
     let od={};
     try {
@@ -654,10 +659,12 @@ function renderMsg(m){
       </div>
     </div>`;
   }
-  const fileUrl=m.payload?.file_url || m.metadata?.file_url;
-  const fileName=m.payload?.file_name || m.metadata?.file_name;
-  const ext=fileUrl?fileName?.split('.').pop()?.toLowerCase():'';
-  const imgs=['jpg','jpeg','png','gif','webp'];
+
+  const fileUrl = m.payload?.file_url || m.metadata?.file_url;
+  const fileName = m.payload?.file_name || m.metadata?.file_name;
+  const ext = fileUrl ? fileName?.split('.').pop()?.toLowerCase() : '';
+  const imgs = ['jpg','jpeg','png','gif','webp'];
+
   return`<div class="msg-row ${isSelf?'msg-self':''}">
     ${!isSelf?`<div class="msg-avatar">${av(name)}</div>`:''}
     <div class="msg-bubble-wrap">
@@ -754,14 +761,25 @@ async function sendMsg(){
     if (error) throw error;
 
     if (msg) {
-      appendMsg({ ...msg, profiles: { full_name: (adminProfile?.full_name || 'Admin'), role: 'admin' } });
+      appendMsg({ ...msg, profiles: { full_name: adminProfile.full_name, role: 'admin' } });
       inp.value = '';
       inp.style.height = 'auto';
     }
     setTyping(false);
+    
+    // Log activity in background
+    sb.from('activity_logs').insert({
+      actor_id: adminUser.id,
+      actor_role: 'admin',
+      action: 'replied to conversation',
+      reference_id: activeConvoId,
+      reference_type: 'conversation'
+    });
+
   } catch (err) {
     console.error('Send message failed:', err);
     alert('❌ Failed to send message: ' + (err.message || 'Unknown error'));
+    // If it failed, don't clear the input so they don't lose their text
   } finally {
     inp.disabled = false;
     btn.disabled = false;
