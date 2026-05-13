@@ -191,7 +191,7 @@ function render(){
   tb.innerHTML=filtered.map(c=>`<tr>
     <td><span class="avatar">${av(c.full_name)}</span><span class="td-name">${c.full_name||'—'}</span></td>
     <td class="td-muted">${c.email}</td>
-    <td class="td-muted">${c.country||'—'}</td>
+    <td class="td-muted" onclick="editCountry('${c.id}', '${c.country||''}')" style="cursor:pointer; border-bottom: 1px dashed rgba(245,197,66,0.2); transition: all 0.2s;" onmouseover="this.style.color='#F5C542'" onmouseout="this.style.color='var(--muted)'" title="Click to edit country">${c.country||'—'}</td>
     <td>${c.is_blocked?'<span class="badge badge-blocked">Blocked</span>':c.is_flagged?'<span class="badge badge-flagged">Flagged</span>':'<span class="badge badge-active">Active</span>'}</td>
     <td class="td-muted">${fd(c.created_at)}</td>
     <td>
@@ -214,6 +214,19 @@ async function toggleBlock(id,val){
   if(val&&!confirm('Block this client?'))return;
   await sb.from('profiles').update({is_blocked:val}).eq('id',id);
   const idx=clients.findIndex(c=>c.id===id);if(idx>-1)clients[idx].is_blocked=val;render();
+}
+async function editCountry(id, current){
+  const n = prompt('Enter country for this client:', current);
+  if(n !== null && n !== current){
+    const { error } = await sb.from('profiles').update({country: n}).eq('id', id);
+    if (error) {
+        alert('Error updating country: ' + error.message);
+    } else {
+        const idx = clients.findIndex(c => c.id === id);
+        if(idx > -1) clients[idx].country = n;
+        render();
+    }
+  }
 }
 init();
 </script>

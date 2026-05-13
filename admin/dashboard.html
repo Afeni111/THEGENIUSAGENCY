@@ -594,7 +594,7 @@ async function loadActivity(){
 }
 
 async function loadSignups(){
-  const{data}=await sb.from('profiles').select('full_name,email,role,created_at,country').order('created_at',{ascending:false});
+  const{data}=await sb.from('profiles').select('id,full_name,email,role,created_at,country').order('created_at',{ascending:false});
   const tb=document.getElementById('tbody-signups');
   const dTb=document.getElementById('tbody-full-directory');
   
@@ -618,7 +618,7 @@ async function loadSignups(){
       <td><span class="avatar-sm">${av(p.full_name)}</span><span class="td-name">${p.full_name}</span></td>
       <td class="td-muted">${p.email}</td>
       <td><span class="status-pill" style="background:rgba(255,255,255,0.05);color:var(--gold);">${p.role}</span></td>
-      <td class="td-muted">${p.country || '—'}</td>
+      <td class="td-muted" onclick="editCountry('${p.id}', '${p.country||''}')" style="cursor:pointer; border-bottom: 1px dashed rgba(245,197,66,0.2); transition: all 0.2s;" onmouseover="this.style.color='#F5C542'" onmouseout="this.style.color='var(--muted)'" title="Click to edit country">${p.country || '—'}</td>
       <td class="td-muted">${ft(p.created_at)}</td>
     </tr>`).join('');
 }
@@ -722,6 +722,18 @@ function showToast(title,body){
 }
 
 async function doSignOut(){await sb.auth.signOut();window.location.href='../login.html';}
+async function editCountry(id, current){
+  const n = prompt('Enter country for this client:', current);
+  if(n !== null && n !== current){
+    const { error } = await sb.from('profiles').update({country: n}).eq('id', id);
+    if (error) {
+        alert('Error updating country: ' + error.message);
+    } else {
+        // Find and update in the local data if possible, or just reload signups
+        loadSignups();
+    }
+  }
+}
 
 init();
 </script>
