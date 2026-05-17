@@ -6,242 +6,157 @@
     <title>Privacy Policy | THE GENIUS AGENCY</title>
     <link rel="icon" type="image/png" href="Logo/thegeniusagency.png">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/mobile.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
     <script src="js/analytics.js"></script>
     <style>
-        :root {
-            --primary-yellow: #F5C542;
-            --primary-navy: #0A1628;
-            --text-gray: #8A9BB8;
+        .legal-content-section {
+            padding: 160px 0 100px;
+            background: var(--bg-rich-black);
+            position: relative;
         }
-
-        body {
-            background-color: var(--primary-navy) !important;
-            background-image: 
-                radial-gradient(circle at 0% 0%, rgba(245, 197, 66, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(245, 197, 66, 0.03) 0%, transparent 50%) !important;
-            color: #fff !important;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-        }
-
-        .hero-section {
-            padding: 180px 0 80px;
-            text-align: center;
-            background: linear-gradient(180deg, rgba(13, 30, 54, 0.5) 0%, transparent 100%);
-            border-bottom: 1px solid rgba(245, 197, 66, 0.1);
-        }
-
-        .hero-title {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2.5rem, 8vw, 4.5rem);
-            font-weight: 800;
-            margin-bottom: 20px;
-            letter-spacing: -0.02em;
-        }
-
-        .hero-subtitle {
-            color: var(--primary-yellow);
-            font-weight: 700;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-        }
-
-        .content-container {
-            max-width: 900px;
-            margin: 60px auto 120px;
-            padding: 0 24px;
-        }
-
         .legal-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 24px;
-            padding: 40px;
+            padding: 60px;
             backdrop-filter: blur(10px);
-            box-shadow: 0 40px 100px rgba(0,0,0,0.4);
+            max-width: 900px;
+            margin: 0 auto;
         }
-
-        .legal-section {
+        .legal-title {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
             margin-bottom: 40px;
+            text-align: center;
         }
-
-        .legal-section:last-child {
-            margin-bottom: 0;
-        }
-
-        .section-number {
-            color: var(--primary-yellow);
-            font-weight: 800;
-            font-size: 1.2rem;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .section-title {
-            font-size: 1.6rem;
-            font-weight: 700;
+        .legal-title span { color: var(--gold-warm); }
+        .legal-section { margin-bottom: 45px; }
+        .legal-section h2 { 
+            font-size: 1.6rem; 
+            color: #fff; 
             margin-bottom: 20px;
-            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
-
-        .legal-text {
-            color: var(--text-gray);
-            line-height: 1.8;
-            font-size: 1.05rem;
-        }
-
-        .legal-text p {
-            margin-bottom: 16px;
-        }
-
-        .legal-list {
-            list-style: none;
-            padding: 0;
-            margin: 20px 0;
-        }
-
-        .legal-list li {
-            position: relative;
-            padding-left: 28px;
-            margin-bottom: 12px;
-            color: var(--text-gray);
-        }
-
-        .legal-list li::before {
+        .legal-section h2::before {
             content: "";
+            width: 30px;
+            height: 2px;
+            background: var(--gold-warm);
+        }
+        .legal-text { color: var(--text-warm-gray); line-height: 1.8; font-size: 1.05rem; }
+        .legal-text p { margin-bottom: 20px; }
+        .legal-list { list-style: none; padding-left: 0; margin-bottom: 20px; }
+        .legal-list li { position: relative; padding-left: 25px; margin-bottom: 12px; }
+        .legal-list li::before {
+            content: "✦";
             position: absolute;
             left: 0;
-            top: 10px;
-            width: 12px;
-            height: 2px;
-            background: var(--primary-yellow);
-            border-radius: 2px;
+            color: var(--gold-warm);
+            font-size: 0.8rem;
         }
-
-        .highlight-box {
-            background: rgba(245, 197, 66, 0.05);
-            border-left: 4px solid var(--primary-yellow);
-            padding: 24px;
-            border-radius: 0 12px 12px 0;
-            margin: 24px 0;
-        }
-
-        .highlight-title {
-            color: var(--primary-yellow);
-            font-weight: 700;
-            display: block;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-        }
-
         @media (max-width: 768px) {
-            .legal-card { padding: 30px 20px; }
-            .section-title { font-size: 1.4rem; }
-            .hero-section { padding: 140px 0 60px; }
+            .legal-card { padding: 30px 20px; border-radius: 0; border: none; background: transparent; }
+            .legal-title { font-size: 2.5rem; }
+            .legal-content-section { padding-top: 120px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Navigation (Standard Pill) -->
-    <nav class="nav-pill">
-        <a href="/" class="logo-wrap" style="display: flex; align-items: center; text-decoration: none; gap: 12px;">
-            <img src="Logo/thegeniusagency.png" alt="Logo" style="height: 42px;">
-            <div style="height: 24px; width: 1px; background: rgba(255,255,255,0.2);"></div>
-            <div class="logo-text" style="color: #fff; font-weight: 800; line-height: 1.1; font-size: 1.1rem;">
-                THE GENIUS<br><span style="color: var(--primary-yellow);">AGENCY</span>
+    <!-- Navigation (Exact Copy from Index) -->
+    <nav class="nav-pill" style="display: flex; justify-content: space-between; align-items: center;">
+        <a href="/" style="display: flex; align-items: center; text-decoration: none;">
+            <img src="Logo/thegeniusagency.png" alt="Logo" style="height: 38px;">
+            <div class="logo-divider"></div>
+            <div class="logo-text">
+                <span style="color: white; display: block; margin-bottom: 2px; font-size: 0.9em;">THE GENIUS</span>
+                <span style="color: var(--primary-yellow); display: block; font-size: 0.9em;">AGENCY</span>
             </div>
         </a>
 
-        <div class="nav-menu" style="display: flex; gap: 30px;">
+        <div class="nav-menu">
             <a href="/" class="nav-link">Home</a>
-            <a href="team.html" class="nav-link">Experts</a>
-            <a href="services.html" class="nav-link">Services</a>
-            <a href="portfolio.html" class="nav-link">Portfolios</a>
-            <a href="about.html" class="nav-link">About</a>
+            <a href="/team" class="nav-link">Experts</a>
+            <a href="/services" class="nav-link">Services</a>
+            <a href="/portfolio" class="nav-link">Portfolios</a>
+            <a href="/about" class="nav-link">About Us</a>
+            <a href="/contact" class="nav-link">Contact Us</a>
         </div>
 
-        <div id="user-nav-section">
-            <a href="login.html" id="nav-auth-link" class="btn-msg" style="background: var(--primary-yellow); color: #000; padding: 10px 24px; border-radius: 50px; font-weight: 700; text-decoration: none; font-size: 0.85rem;">CLIENT LOGIN</a>
+        <div style="display:flex;align-items:center;gap:15px;" id="user-nav-section">
+            <a href="/login" class="btn-msg" id="nav-auth-link" style="background: var(--primary-yellow); color: #000; font-weight: 700; padding: 10px 20px; border-radius: 50px; text-decoration: none;">
+                Client Log in / Sign up
+            </a>
         </div>
+
+        <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Open navigation menu">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
     </nav>
 
-    <header class="hero-section">
+    <!-- Mobile Navigation Overlay (Exact Copy from Index) -->
+    <div class="mobile-nav-overlay" id="mobile-nav">
+        <button class="mobile-close-btn" id="close-mobile-menu" aria-label="Close menu">&times;</button>
+        <a href="/" class="mobile-nav-link">Home</a>
+        <a href="/team" class="mobile-nav-link">Experts</a>
+        <a href="/services" class="mobile-nav-link">Services</a>
+        <a href="/portfolio" class="mobile-nav-link">Portfolios</a>
+        <a href="/about" class="mobile-nav-link">About Us</a>
+        <a href="/contact" class="mobile-nav-link">Contact Us</a>
+        <a href="/login" class="mobile-nav-cta">Client Log In / Sign Up</a>
+    </div>
+
+    <section class="legal-content-section">
         <div class="container">
-            <span class="hero-subtitle">Trust & Transparency</span>
-            <h1 class="hero-title">Privacy <span style="color: var(--primary-yellow);">Policy</span></h1>
-            <p style="color: var(--text-gray); max-width: 600px; margin: 0 auto; font-size: 1.1rem;">How we protect your data and manage information across our service channels.</p>
-        </div>
-    </header>
-
-    <main class="content-container">
-        <div class="legal-card">
+            <h1 class="legal-title">Privacy <span>Policy</span></h1>
             
-            <div class="legal-section">
-                <span class="section-number">01</span>
-                <h2 class="section-title">Third-Party Platform Use</h2>
-                <div class="legal-text">
-                    <p>When clients choose to work through Fiverr or Upwork, certain project communications, files, and payment records may be processed under those platforms' privacy policies. The Genius Agency may not control how those platforms manage user data.</p>
-                    <p>Users are advised to review the following policies based on their chosen channel:</p>
-                    <ul class="legal-list">
-                        <li><a href="https://www.fiverr.com/privacy-policy" target="_blank" style="color: var(--primary-yellow); text-decoration: none;">Fiverr Privacy Policy</a></li>
-                        <li><a href="https://www.upwork.com/legal/privacy-policy/" target="_blank" style="color: var(--primary-yellow); text-decoration: none;">Upwork Privacy Policy</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="legal-section">
-                <span class="section-number">02</span>
-                <h2 class="section-title">Payment Data</h2>
-                <div class="legal-text">
-                    <div class="highlight-box">
-                        <span class="highlight-title">Agency Direct</span>
-                        <p style="margin: 0; color: #fff;">Payment data is handled through our integrated secure payment processor. We do not store sensitive financial information like full credit card numbers on our servers.</p>
-                    </div>
-                    <div class="highlight-box" style="border-left-color: rgba(255,255,255,0.2);">
-                        <span class="highlight-title" style="color: #fff;">Fiverr / Upwork</span>
-                        <p style="margin: 0; color: var(--text-gray);">Payment data is handled entirely by those platforms. The Genius Agency has no access to or control over your financial records on third-party marketplaces.</p>
+            <div class="legal-card">
+                <div class="legal-section">
+                    <h2>Third-Party Platform Use</h2>
+                    <div class="legal-text">
+                        <p>When clients choose to work through Fiverr or Upwork, certain project communications, files, and payment records may be processed under those platforms' privacy policies. The Genius Agency may not control how those platforms manage user data.</p>
+                        <ul class="legal-list">
+                            <li><a href="https://www.fiverr.com/privacy-policy" target="_blank" style="color: var(--gold-warm); text-decoration: none;">Fiverr Privacy Policy</a></li>
+                            <li><a href="https://www.upwork.com/legal/privacy-policy/" target="_blank" style="color: var(--gold-warm); text-decoration: none;">Upwork Privacy Policy</a></li>
+                        </ul>
                     </div>
                 </div>
-            </div>
 
-            <div class="legal-section">
-                <span class="section-number">03</span>
-                <h2 class="section-title">Communication Records</h2>
-                <div class="legal-text">
-                    <p>We maintain records of project-related communications to ensure service quality and project continuity. The storage location depends on your service channel:</p>
-                    <ul class="legal-list">
-                        <li><strong>Agency Direct:</strong> Stored securely within our internal encrypted systems.</li>
-                        <li><strong>Marketplaces:</strong> Stored and managed under Fiverr/Upwork's respective infrastructure.</li>
-                    </ul>
+                <div class="legal-section">
+                    <h2>Payment Data</h2>
+                    <div class="legal-text">
+                        <p><strong>Agency Direct:</strong> Payment data is handled through our integrated secure payment processor. We do not store sensitive financial information like full credit card numbers on our servers.</p>
+                        <p><strong>Fiverr / Upwork:</strong> Payment data is handled entirely by those platforms. The Genius Agency has no access to or control over your financial records on third-party marketplaces.</p>
+                    </div>
+                </div>
+
+                <div class="legal-section">
+                    <h2>Information We Collect</h2>
+                    <div class="legal-text">
+                        <p>We collect only the information necessary to coordinate projects and communicate with you — including your name, email address, and project details submitted via our contact or onboarding forms.</p>
+                        <p>This information is used strictly for service delivery and internal administration. We never sell your personal data to third parties.</p>
+                    </div>
                 </div>
             </div>
-
-            <div class="legal-section">
-                <span class="section-number">04</span>
-                <h2 class="section-title">Information We Collect</h2>
-                <div class="legal-text">
-                    <p>We collect only the information necessary to coordinate projects and communicate with you — including your name, email address, and project details submitted via our contact or onboarding forms.</p>
-                    <p>This information is used strictly for service delivery and internal administration. We never sell your personal data to third parties.</p>
-                </div>
-            </div>
-
         </div>
-    </main>
+    </section>
 
-    <!-- FULL STANDARD FOOTER -->
+    <!-- FULL FOOTER (Exact Copy from Index) -->
     <footer style="background: #fff; padding: 100px 0 50px; border-top: 1px solid rgba(0,0,0,0.05); font-family: 'Inter', sans-serif;">
         <div style="max-width: 1300px; margin: 0 auto; padding: 0 25px;">
-            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 80px;">
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 80px;" id="footer-grid-main">
                 
                 <!-- Brand Col -->
-                <div>
+                <div style="display: flex; flex-direction: column;">
                     <a href="/" style="display: flex; align-items: center; text-decoration: none; gap: 15px; margin-bottom: 30px;">
                         <img src="Logo/thegeniusagency.png" alt="Logo" style="height: 55px;">
                         <div style="height: 35px; width: 1px; background: rgba(0,0,0,0.1);"></div>
@@ -249,7 +164,6 @@
                     </a>
                     <p style="color: #666; line-height: 1.8; font-size: 1.05rem; margin-bottom: 35px; max-width: 320px;">The premier global creative network connecting elite talent with ambitious brands.</p>
                     <div style="display: flex; gap: 15px;">
-                        <!-- Socials -->
                         <a href="https://www.instagram.com/thegeniusagency_/" target="_blank" style="width: 45px; height: 45px; border-radius: 12px; background: #f8f8f8; border: 1px solid rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; color: #111; transition: 0.3s; text-decoration: none;" onmouseover="this.style.background='#D4AF37'; this.style.color='#fff'" onmouseout="this.style.background='#f8f8f8'; this.style.color='#111'">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                         </a>
@@ -260,7 +174,7 @@
                 </div>
 
                 <!-- Navigation Col -->
-                <div>
+                <div style="display: flex; flex-direction: column;">
                     <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Navigation</h4>
                     <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
                         <li><a href="/" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">Home</a></li>
@@ -272,7 +186,7 @@
                 </div>
 
                 <!-- Categories Col -->
-                <div>
+                <div style="display: flex; flex-direction: column;">
                     <h4 style="color: #111; font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; letter-spacing: 0.5px;">Categories</h4>
                     <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px;">
                         <li><a href="/services" style="color: #555; text-decoration: none; font-size: 0.95rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#555'">App & Web Design</a></li>
@@ -312,6 +226,13 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/nav-auth.js"></script>
-    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+    <script>
+        const menuToggle = document.getElementById('mobile-menu-toggle');
+        const closeMenu  = document.getElementById('close-mobile-menu');
+        const navOverlay = document.getElementById('mobile-nav');
+        if (menuToggle) menuToggle.addEventListener('click', () => navOverlay.classList.add('active'));
+        if (closeMenu)  closeMenu.addEventListener('click', () => navOverlay.classList.remove('active'));
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
 </body>
 </html>
