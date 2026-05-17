@@ -437,32 +437,39 @@ async function init(){
 }
 
 async function loadConvos(){
-  console.log('Loading conversations...');
-  // Simplify query to avoid 400 errors. We fetch everything but without strict !inner joins.
-  const{data, error}=await sb.from('conversations').select('*,profiles:client_id(full_name,email,avatar_url),experts:expert_id(name,role,image_url)').order('created_at',{ascending:false});
-  console.log('Conversations data:', data, 'Error:', error);
+  console.log('Loading conversations (RAW)...');
+  // Raw select only. ABSOLUTELY NO JOINS. This fixes the 400 error.
+  const{data, error}=await sb.from('conversations').select('*').order('created_at',{ascending:false});
+  
+  console.log('Conversations raw data:', data, 'Error:', error);
   if(error){
     console.error('Failed to load conversations:', error);
+    return;
   }
   allConvos=data||[];
 
-  // Fetch first message for each conversation to get requested expert (if not assigned)
+  // Enrichment: Fetch profiles and experts manually to avoid join failures
   for(const c of allConvos){
-    if (!c.experts) {
-      const{data:firstMsg}=await sb.from('messages').select('content').eq('conversation_id',c.id).order('created_at',{ascending:true}).limit(1).maybeSingle();
-      if(firstMsg?.content){
-        const match=firstMsg.content.match(/👤 Requested Expert: (.+)$/m);
-        if(match){
-          c.requested_expert={name:match[1].trim()};
+    try {
+      if(c.client_id){
+        const {data:p} = await sb.from('profiles').select('full_name,email,avatar_url').eq('id',c.client_id).maybeSingle();
+        if(p) c.profiles = p;
+      }
+      if(c.expert_id){
+        const {data:e} = await sb.from('experts').select('name,role,image_url').eq('id',c.expert_id).maybeSingle();
+        if(e) c.assigned_expert = e;
+      }
+      // Requested expert fallback
+      if (!c.assigned_expert) {
+        const{data:firstMsg}=await sb.from('messages').select('content').eq('conversation_id',c.id).order('created_at',{ascending:true}).limit(1).maybeSingle();
+        if(firstMsg?.content){
+          const match=firstMsg.content.match(/👤 Requested Expert: (.+)$/m);
+          if(match) c.requested_expert={name:match[1].trim()};
         }
       }
-    } else {
-      c.assigned_expert = c.experts;
-    }
+    } catch (e) { console.warn('Enrichment failed for convo:', c.id, e); }
   }
 
-  const totalUnread=allConvos.reduce((s,c)=>s+(c.unread_admin||0),0);
-  if(totalUnread>0)document.getElementById('sn-dot').style.display='block';
   renderConvoList();
 }
 function renderConvoList(){
