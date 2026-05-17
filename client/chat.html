@@ -627,12 +627,15 @@ function renderMsg(m){
   const ext=hasFile?m.metadata.file_name?.split('.').pop()?.toLowerCase():'';
   const imgs=['jpg','jpeg','png','gif','webp'];
   // Build avatar - use expert image if available, otherwise initials
-  console.log('Message avatarUrl:',avatarUrl,'name:',name);
   const avatarHtml=!isSelf?(avatarUrl?`<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;image-rendering:high-quality;transform:scale(0.92) translateZ(0);backface-visibility:hidden;" onerror="console.error('Msg img failed:',this.src);this.style.display='none';this.parentNode.textContent='${av(name)}';">`:av(name)):'';
+  
   return`<div class="msg-row ${isSelf?'msg-self':''}">
     ${!isSelf?`<div class="msg-avatar">${avatarHtml}</div>`:''}
     <div class="msg-bubble-wrap">
-      <span class="msg-name" style="${isSelf?'text-align:right;':''}">${name} <span class="msg-role-tag">${role.toUpperCase()}</span></span>
+      <div class="msg-header" style="display:flex;align-items:center;gap:6px;margin-bottom:4px;${isSelf?'flex-direction:row-reverse;':''}">
+        <span class="msg-name" style="font-weight:700;">${name}</span>
+        <span class="msg-role-tag" style="background:rgba(245,197,66,0.1);color:var(--gold);padding:1px 6px;border-radius:4px;font-size:0.6rem;text-transform:uppercase;font-weight:800;">${role}</span>
+      </div>
       <div class="msg-bubble ${isSelf?'bubble-self':'bubble-other'}">
         ${hasFile&&imgs.includes(ext)?`<img src="${m.metadata.file_url}" class="msg-image" onclick="window.open('${m.metadata.file_url}','_blank')">`
           :hasFile?`<a href="${m.metadata.file_url}" class="msg-file-link">📎 ${m.metadata.file_name||'File'}</a>`

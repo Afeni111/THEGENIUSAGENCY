@@ -598,15 +598,16 @@ async function loadMessages(id){
 function renderMsg(m){
   if(m.message_type==='system') return `<div class="msg-system"><div class="msg-system-dot"></div><span>${m.content}</span></div>`;
   
-  // Robust self-detection
-  const isSelf = m.sender_id === adminUser.id || m.sender_role === 'admin';
   const conv = allConvos.find(c => c.id === activeConvoId);
+  const isSelf = m.sender_id === adminUser.id || m.sender_role === 'admin' || m.sender_role === 'expert';
   
   let name = '';
   let role = m.sender_role || (isSelf ? 'admin' : 'client');
   
   if(isSelf){
-    name = adminProfile?.full_name || conv?.assigned_expert?.name || 'Admin';
+    // If it's a shared account, we show the assigned expert's name if available
+    name = conv?.assigned_expert?.name || conv?.requested_expert?.name || adminProfile?.full_name || 'Admin';
+    role = conv?.assigned_expert || conv?.requested_expert ? 'expert' : 'admin';
   } else {
     name = m.profiles?.full_name || conv?.profiles?.full_name || 'Client';
   }
@@ -671,7 +672,10 @@ function renderMsg(m){
   return`<div class="msg-row ${isSelf?'msg-self':''}">
     ${!isSelf?`<div class="msg-avatar">${av(name)}</div>`:''}
     <div class="msg-bubble-wrap">
-      <span class="msg-name" style="${isSelf?'text-align:right;':''}">${name} <span class="msg-role-tag">${role.toUpperCase()}</span></span>
+      <div class="msg-header" style="display:flex;align-items:center;gap:6px;margin-bottom:4px;${isSelf?'flex-direction:row-reverse;':''}">
+        <span class="msg-name" style="font-weight:700;">${name}</span>
+        <span class="msg-role-tag" style="background:rgba(245,197,66,0.1);color:var(--gold);padding:1px 6px;border-radius:4px;font-size:0.6rem;text-transform:uppercase;font-weight:800;">${role}</span>
+      </div>
       <div class="msg-bubble ${isSelf?'bubble-self':'bubble-other'}">
         ${fileUrl&&imgs.includes(ext)?`<img src="${fileUrl}" class="msg-image" onclick="window.open('${fileUrl}','_blank')">`
           :fileUrl?`<a href="${fileUrl}" class="msg-file-link">📎 ${fileName||'File'}</a>`

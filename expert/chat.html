@@ -236,15 +236,20 @@ async function loadMessages(id){
 function renderMsg(m){
   const isSelf=m.sender_id===expertUser.id;
   const name=m.profiles?.full_name||'User';
+  const role=m.sender_role||(isSelf?'expert':'admin');
   const time=ft(m.created_at);
   if(m.message_type==='system')return`<div class="msg-system"><div class="msg-system-dot"></div><span>${m.content}</span></div>`;
   const hasFile=m.metadata?.file_url;
   const ext=hasFile?m.metadata.file_name?.split('.').pop()?.toLowerCase():'';
   const imgs=['jpg','jpeg','png','gif','webp'];
+  
   return`<div class="msg-row ${isSelf?'msg-self':''}">
     ${!isSelf?`<div class="msg-avatar">${av(name)}</div>`:''}
     <div class="msg-bubble-wrap">
-      ${!isSelf?`<span class="msg-name">${name} <span class="msg-role-tag">${m.sender_role}</span></span>`:''}
+      <div class="msg-header" style="display:flex;align-items:center;gap:6px;margin-bottom:4px;${isSelf?'flex-direction:row-reverse;':''}">
+        <span class="msg-name" style="font-weight:700;">${name}</span>
+        <span class="msg-role-tag" style="background:rgba(139,92,246,0.1);color:var(--purple);padding:1px 6px;border-radius:4px;font-size:0.55rem;text-transform:uppercase;font-weight:800;">${role}</span>
+      </div>
       <div class="msg-bubble ${isSelf?'bubble-self':'bubble-other'}">
         ${hasFile&&imgs.includes(ext)?`<img src="${m.metadata.file_url}" class="msg-image" onclick="window.open('${m.metadata.file_url}','_blank')">`
           :hasFile?`<a href="${m.metadata.file_url}" class="msg-file-link">📎 ${m.metadata.file_name||'File'}</a>`
