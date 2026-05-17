@@ -438,14 +438,14 @@ async function init(){
 
 async function loadConvos(){
   console.log('Loading conversations...');
-  // Load conversations with client profiles and expert names
-  const{data, error}=await sb.from('conversations').select('*,profiles!conversations_client_id_fkey(full_name,email,avatar_url),experts(name,role,image_url)').order('created_at',{ascending:false});
+  // Simplify query to avoid 400 errors. We fetch everything but without strict !inner joins.
+  const{data, error}=await sb.from('conversations').select('*,profiles:client_id(full_name,email,avatar_url),experts:expert_id(name,role,image_url)').order('created_at',{ascending:false});
   console.log('Conversations data:', data, 'Error:', error);
   if(error){
     console.error('Failed to load conversations:', error);
   }
   allConvos=data||[];
-  
+
   // Fetch first message for each conversation to get requested expert (if not assigned)
   for(const c of allConvos){
     if (!c.experts) {
@@ -460,12 +460,11 @@ async function loadConvos(){
       c.assigned_expert = c.experts;
     }
   }
-  
+
   const totalUnread=allConvos.reduce((s,c)=>s+(c.unread_admin||0),0);
   if(totalUnread>0)document.getElementById('sn-dot').style.display='block';
   renderConvoList();
 }
-
 function renderConvoList(){
   const q=document.getElementById('search-input').value.toLowerCase();
   filteredConvos=allConvos.filter(c=>{
