@@ -182,7 +182,7 @@ async function init(){
   document.getElementById('admin-name').textContent=p.full_name||'Admin';
   document.getElementById('admin-avatar').textContent=(p.full_name||'A').split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);
   
-  const{data}=await sb.from('projects').select('*,profiles!projects_client_id_fkey(full_name,email),experts(name,image_url)').order('updated_at',{ascending:false});
+  const{data}=await sb.from('projects').select('*,profiles!projects_client_id_fkey(full_name,email),experts(name,image_url),conversations(id)').order('updated_at',{ascending:false});
   projects=data||[];
   buildFilters();render();
 }
@@ -203,7 +203,9 @@ function render(){
   if(!filtered.length){g.innerHTML='<div class="empty">No projects found</div>';return;}
   g.innerHTML='<div class="projects-grid">'+filtered.map(p=>{
     const col=sc(p.status);
-    return`<div class="project-card" onclick="window.location.href='chat.html?cid=${p.id}'">
+    const convoId = p.conversations?.[0]?.id || '';
+    const chatUrl = convoId ? `chat.html?cid=${convoId}` : '#';
+    return`<div class="project-card" onclick="if('${convoId}') window.location.href='${chatUrl}'">
       <div class="pc-top">
         <div class="pc-title">${p.title||'Untitled Project'}</div>
         <span class="status-pill" style="background:${col}22;color:${col};">${sl(p.status)}</span>
@@ -217,7 +219,7 @@ function render(){
       <div class="pc-footer">
         <span class="pc-budget">${fc(p.budget)}</span>
         <div class="pc-actions">
-          <button class="btn-sm" onclick="event.stopPropagation();window.location.href='chat.html?cid=${p.id}'">View Chat</button>
+          <button class="btn-sm" onclick="event.stopPropagation(); if('${convoId}') window.location.href='${chatUrl}'">View Chat</button>
         </div>
       </div>
     </div>`;

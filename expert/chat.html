@@ -226,9 +226,9 @@ function clearSelection(){
 }
 
 async function loadMessages(id){
-  const{data:msgs}=await sb.from('messages').select('*,profiles!messages_sender_id_fkey(full_name,role)').eq('conversation_id',id).neq('sender_role','client').order('created_at',{ascending:true});
+  const{data:msgs}=await sb.from('messages').select('*,profiles!messages_sender_id_fkey(full_name,role)').eq('conversation_id',id).order('created_at',{ascending:true});
   const el=document.getElementById('chat-messages');
-  if(!msgs?.length){el.innerHTML='<div class="msg-system"><div class="msg-system-dot"></div><span>Start communicating with admin below</span></div>';return;}
+  if(!msgs?.length){el.innerHTML='<div class="msg-system"><div class="msg-system-dot"></div><span>Start communicating below</span></div>';return;}
   el.innerHTML=msgs.map(m=>renderMsg(m)).join('');
   el.scrollTop=el.scrollHeight;
 }
@@ -259,7 +259,7 @@ function subscribeChat(id){
   chatChannel=sb.channel('expert-chat:'+id)
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'conversation_id=eq.'+id},async(p)=>{
       const m=p.new;
-      if(m.sender_id===expertUser.id||m.sender_role==='client')return;
+      if(m.sender_id===expertUser.id)return;
       const{data:prof}=await sb.from('profiles').select('full_name,role').eq('id',m.sender_id).single();
       const el=document.getElementById('chat-messages');
       el.insertAdjacentHTML('beforeend',renderMsg({...m,profiles:prof}));

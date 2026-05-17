@@ -438,41 +438,26 @@ async function init(){
 
 async function loadConvos(){
   console.log('Loading conversations...');
-  // Load conversations with client profiles
-  const{data, error}=await sb.from('conversations').select('*,profiles!conversations_client_id_fkey(full_name,email,avatar_url)').order('created_at',{ascending:false});
+  // Load conversations with client profiles and expert names
+  const{data, error}=await sb.from('conversations').select('*,profiles!conversations_client_id_fkey(full_name,email,avatar_url),experts(name,role,image_url)').order('created_at',{ascending:false});
   console.log('Conversations data:', data, 'Error:', error);
   if(error){
     console.error('Failed to load conversations:', error);
   }
   allConvos=data||[];
   
-  // Fetch first message for each conversation to get requested expert
+  // Fetch first message for each conversation to get requested expert (if not assigned)
   for(const c of allConvos){
-    const{data:firstMsg}=await sb.from('messages').select('content').eq('conversation_id',c.id).order('created_at',{ascending:true}).limit(1).maybeSingle();
-    if(firstMsg?.content){
-      // Extract expert name from message content
-      const match=firstMsg.content.match(/👤 Requested Expert: (.+)$/m);
-      if(match){
-        c.requested_expert={name:match[1].trim()};
+    if (!c.experts) {
+      const{data:firstMsg}=await sb.from('messages').select('content').eq('conversation_id',c.id).order('created_at',{ascending:true}).limit(1).maybeSingle();
+      if(firstMsg?.content){
+        const match=firstMsg.content.match(/👤 Requested Expert: (.+)$/m);
+        if(match){
+          c.requested_expert={name:match[1].trim()};
+        }
       }
-    }
-    // Also check if expert is already assigned via expert_id
-    if(c.expert_id){
-      const{data:expert}=await sb.from('experts').select('name,role').eq('id',c.expert_id).single();
-      if(expert) c.assigned_expert=expert;
-    }
-    
-    // Fallback: If no expert assigned, use admin name if set
-    if(!c.assigned_expert && c.admin_id) {
-       // We'll try to use the current admin's name if it matches
-       if(c.admin_id === adminUser.id) {
-         c.assigned_expert = { name: adminProfile.full_name };
-       }
-    }
-    
-    // Final fallback for requested expert
-    if(!c.assigned_expert && c.requested_expert) {
-        c.assigned_expert = { name: c.requested_expert.name };
+    } else {
+      c.assigned_expert = c.experts;
     }
   }
   
@@ -493,7 +478,8 @@ function renderConvoList(){
   el.innerHTML=filteredConvos.map(c=>{
     const name=c.profiles?.full_name||c.profiles?.email||'Unknown';
     const col=sc(c.status);
-    const expertTag=c.requested_expert?`<span style="background:rgba(245,197,66,0.15);border:1px solid rgba(245,197,66,0.3);color:var(--gold);padding:1px 6px;border-radius:10px;font-size:0.6rem;font-weight:700;">👤 ${c.requested_expert.name}</span>`:'';
+    const expertName = c.assigned_expert?.name || c.requested_expert?.name;
+    const expertTag=expertName?`<span style="background:rgba(245,197,66,0.15);border:1px solid rgba(245,197,66,0.3);color:var(--gold);padding:1px 6px;border-radius:10px;font-size:0.6rem;font-weight:700;">👤 ${expertName}</span>`:'';
     
     let lastMsg = c.last_message;
     let preview = '';

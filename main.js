@@ -999,6 +999,9 @@ const initBriefSubmission = () => {
             budget: document.getElementById('brief-budget').value || null
         };
 
+        const expert = (window.experts || experts).find(e => e.id === currentExpertId);
+        const expertName = expert ? expert.name : 'General Agency';
+
         try {
             // Check for user session - safely
             let user = null;
@@ -1057,9 +1060,21 @@ const initBriefSubmission = () => {
             try {
                 if (sb) {
                     console.log('INSERTING with user.id:', user.id, 'email:', user.email);
+                    
+                    // Map expert name to ID for foreign key
+                    let dbExpertId = null;
+                    if (currentExpertId && !currentExpertId.startsWith('exp-')) {
+                        dbExpertId = currentExpertId; // It's a real UUID
+                    } else if (expert) {
+                        // If it's a hardcoded ID, try to find the DB ID if we loaded them
+                        // (loadDynamicExperts should have updated the experts list with DB IDs)
+                        dbExpertId = expert.id && !expert.id.startsWith('exp-') ? expert.id : null;
+                    }
+
                     // Create conversation
                     const { data: convo, error: convoErr } = await sb.from('conversations').insert({
                         client_id: user.id,
+                        expert_id: dbExpertId,
                         status: 'new_lead'
                     }).select().single();
 
