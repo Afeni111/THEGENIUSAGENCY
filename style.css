@@ -588,6 +588,22 @@ h2 {
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-bottom: 2px solid rgba(212, 175, 55, 0.35);
     backdrop-filter: blur(12px);
+    transition: opacity 0.3s ease;
+}
+
+/* Auth state management */
+.nav-pill.na-resolving #user-nav-section,
+.nav-pill.na-resolving #nav-auth-link {
+    opacity: 0 !important;
+}
+
+#user-nav-section, #nav-auth-link {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#user-nav-section.na-visible, #nav-auth-link.na-visible {
+    opacity: 1;
 }
 
 .nav-pill .logo-text {

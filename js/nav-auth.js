@@ -125,58 +125,55 @@
   async function init(){
     if(typeof supabase==='undefined')return;
     const sb=supabase.createClient(SB_URL,SB_KEY);
-    window.supabaseClient=sb; // Expose globally for other scripts
-    const{data:{session}}=await sb.auth.getSession();
-    const authLink=document.getElementById('nav-auth-link');
+    window.supabaseClient=sb; 
+    
+    // Start resolving - hide until ready to prevent flashing
     const userNavSection=document.getElementById('user-nav-section');
+    const authLink=document.getElementById('nav-auth-link');
+    const navPill = document.querySelector('.nav-pill');
+    if(navPill) navPill.classList.add('na-resolving');
+
+    const{data:{session}}=await sb.auth.getSession();
 
     if(!session){
-      // Not logged in — reveal the default links
       if(userNavSection) userNavSection.classList.add('na-visible');
       else if(authLink) authLink.classList.add('na-visible');
+      if(navPill) navPill.classList.remove('na-resolving');
       return;
     }
 
     const{data:profile,error:profileError}=await sb.from('profiles').select('full_name,email,avatar_url,role').eq('id',session.user.id).single();
-    console.log('nav-auth profile:',profile,'error:',profileError,'session:',session);
+    
     if(!profile){
       if(userNavSection) userNavSection.classList.add('na-visible');
       else if(authLink) authLink.classList.add('na-visible');
+      if(navPill) navPill.classList.remove('na-resolving');
       return;
     }
 
     injectStyles();
 
-    // Fetch unread message count for client
     let unreadCounts={messages:0,notifications:0};
     if(profile.role==='client'){
       try{
         const{data:convos}=await sb.from('conversations').select('unread_client').eq('client_id',session.user.id);
-        if(convos){
-          unreadCounts.messages=convos.reduce((sum,c)=>sum+(c.unread_client||0),0);
-        }
-      }catch(e){/*ignore errors*/}
+        if(convos) unreadCounts.messages=convos.reduce((sum,c)=>sum+(c.unread_client||0),0);
+      }catch(e){}
     }
 
+    const dropdown=buildDropdown(profile,unreadCounts);
     if(userNavSection){
-      // Replace entire user-nav-section with avatar dropdown
-      const dropdown=buildDropdown(profile,unreadCounts);
       userNavSection.innerHTML='';
       userNavSection.appendChild(dropdown);
       userNavSection.classList.add('na-visible');
     } else if(authLink){
-      // Fallback: just replace auth link
-      const dropdown=buildDropdown(profile,unreadCounts);
       authLink.replaceWith(dropdown);
-      // For fallback we just ensure it's visible if it wasn't already
-      dropdown.style.visibility = 'visible';
-      dropdown.style.opacity = '1';
     }
+    
+    if(navPill) navPill.classList.remove('na-resolving');
 
-    // Close menu when clicking outside
     document.addEventListener('click', () => {
-      const menus = document.querySelectorAll('.na-dropdown');
-      menus.forEach(m => m.classList.remove('open'));
+      document.querySelectorAll('.na-dropdown').forEach(m => m.classList.remove('open'));
     });
   }
 

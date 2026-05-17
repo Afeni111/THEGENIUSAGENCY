@@ -410,6 +410,9 @@ td{font-size:0.78rem;color:var(--text);padding:9px 0;border-top:1px solid var(--
   </div>
 </div>
 
+    <!-- REALTIME MANAGER -->
+    <script src="../js/realtime-manager.js"></script>
+
 <script>
 const SB_URL='https://tjxyxasorunhrtvstwpa.supabase.co';
 const SB_KEY='sb_publishable_d3YtyYkTynAVyTEVIN19dQ_-4wZkGHV';
@@ -460,6 +463,9 @@ async function init(){
     document.getElementById('admin-avatar').textContent=av(p.full_name);
     document.getElementById('topbar-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
     
+    // Initialize Realtime Manager
+    if(window.initRealtimeManager) window.initRealtimeManager(sb);
+
     // Initialize notifications now that adminUser is set
     initNotifUI();
     
@@ -518,8 +524,11 @@ async function loadStats(){
   const unread=(convos||[]).reduce((s,c)=>s+(c.unread_admin||0),0);
   document.getElementById('stat-unread').textContent=unread;
   if(unread>0){
-    const b=document.getElementById('badge-msgs');b.textContent=unread;b.style.display='inline';
-    const nb=document.getElementById('notif-badge');nb.textContent=unread;nb.style.display='flex';
+    const b=document.getElementById('badge-msgs');if(b){b.textContent=unread;b.style.display='inline';}
+    const nb=document.getElementById('notif-badge');if(nb){nb.textContent=unread;nb.style.display='flex';}
+  } else {
+    const b=document.getElementById('badge-msgs');if(b)b.style.display='none';
+    const nb=document.getElementById('notif-badge');if(nb)nb.style.display='none';
   }
 
   window._projectsForChart=projects||[];
@@ -636,6 +645,7 @@ function buildCharts(){
     return payments.filter(p=>p.status==='successful'&&new Date(p.created_at).getMonth()===d.getMonth()&&new Date(p.created_at).getFullYear()===d.getFullYear()).reduce((s,p)=>s+Number(p.amount),0);
   });
   const rCtx=document.getElementById('revenueChart').getContext('2d');
+  if(!rCtx) return;
   const grad=rCtx.createLinearGradient(0,0,0,180);
   grad.addColorStop(0,'rgba(245,197,66,0.3)');grad.addColorStop(1,'rgba(245,197,66,0)');
   new Chart(rCtx,{type:'line',data:{labels,datasets:[{data:revenueData,borderColor:'#F5C542',backgroundColor:grad,borderWidth:2,fill:true,tension:0.4,pointBackgroundColor:'#F5C542',pointRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#555',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},y:{ticks:{color:'#555',font:{size:10},callback:v=>'$'+v.toLocaleString()},grid:{color:'rgba(255,255,255,0.04)'}}}}});
@@ -644,19 +654,37 @@ function buildCharts(){
   const sLabels=Object.keys(statusCounts).map(statusLabel);
   const sData=Object.values(statusCounts);
   const sColors=Object.keys(statusCounts).map(statusColor);
-  new Chart(document.getElementById('statusChart'),{type:'doughnut',data:{labels:sLabels,datasets:[{data:sData,backgroundColor:sColors.map(c=>c+'88'),borderColor:sColors,borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#888',font:{size:10},boxWidth:10}}},cutout:'65%'}});
+  const sCtx = document.getElementById('statusChart');
+  if(sCtx) new Chart(sCtx,{type:'doughnut',data:{labels:sLabels,datasets:[{data:sData,backgroundColor:sColors.map(c=>c+'88'),borderColor:sColors,borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#888',font:{size:10},boxWidth:10}}},cutout:'65%'}});
 }
 
 function subscribeRealtime(){
-  sb.channel('admin-realtime').on('postgres_changes',{event:'INSERT',schema:'public',table:'conversations'},(p)=>{
-    showToast('🌟 New Lead!','A new client started a conversation.');
-    loadStats();loadConvos();
-  }).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},(p)=>{
-    if(p.new.sender_role!=='admin')loadStats();
-  }).on('postgres_changes',{event:'INSERT',schema:'public',table:'payments'},(p)=>{
-    showToast('💳 Payment Received!',`Amount: ${fc(p.new.amount)}`);
-    loadStats();loadPayments();
-  }).subscribe();
+  if(!window.rtm) return;
+  
+  // Listen for EVERYTHING to refresh the dashboard
+  const refreshAll = () => {
+    loadStats(); loadConvos(); loadLeads(); loadPayments(); loadActivity(); loadSignups();
+  };
+
+  window.rtm.subscribe('conversations', '*', (p) => {
+    if(p.eventType === 'INSERT') showToast('🌟 New Lead!', 'A new client started a conversation.');
+    refreshAll();
+  });
+
+  window.rtm.subscribe('messages', 'INSERT', (p) => {
+    if(p.new.sender_role !== 'admin') {
+        loadStats(); loadConvos();
+        if(window.rtm.notify) window.rtm.notify('New Message Received', { body: p.new.content });
+    }
+  });
+
+  window.rtm.subscribe('payments', 'INSERT', (p) => {
+    showToast('💳 Payment Received!', `Amount: ${fc(p.new.amount)}`);
+    refreshAll();
+  });
+
+  window.rtm.subscribe('projects', '*', refreshAll);
+  window.rtm.subscribe('profiles', 'INSERT', refreshAll);
 }
 
 async function toggleNotif(){
