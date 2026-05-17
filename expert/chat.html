@@ -137,12 +137,39 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
       <button class="ch-back" onclick="clearSelection()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
         Back
-      </button>
       <div class="ch-info">
         <div class="ch-title" id="ch-title">Project</div>
         <div class="ch-sub" id="ch-sub">Admin chat</div>
       </div>
+      <button class="ch-back" id="rate-client-btn" style="display:none; color:var(--gold); border:1px solid rgba(245,197,66,0.2);" onclick="openReviewModal()">⭐ Rate Client</button>
+      </div>
+
+      <button class="ch-back" id="rate-client-btn" style="display:none; color:var(--gold); border:1px solid rgba(245,197,66,0.2);" onclick="openReviewModal()">⭐ Rate Client</button>
     </div>
+...
+<!-- REVIEW CLIENT MODAL -->
+<div class="modal-overlay" id="review-modal" style="display:none;">
+  <div style="background:#121212; border:1px solid rgba(245,197,66,0.3); border-radius:20px; padding:32px; width:100%; max-width:400px; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.4);">
+    <div style="font-size: 2.5rem; margin-bottom: 15px;">👤</div>
+    <h2 style="margin-bottom: 10px; color:#fff;">Rate Client</h2>
+    <p style="color:var(--muted); font-size:0.85rem; margin-bottom:20px;">Share your experience working with this client.</p>
+    
+    <div class="star-rating" style="display:flex; justify-content:center; gap:10px; margin-bottom:24px;">
+      <span class="star-r active" data-value="1" style="font-size:2.2rem; cursor:pointer; color:var(--gold);">★</span>
+      <span class="star-r active" data-value="2" style="font-size:2.2rem; cursor:pointer; color:var(--gold);">★</span>
+      <span class="star-r active" data-value="3" style="font-size:2.2rem; cursor:pointer; color:var(--gold);">★</span>
+      <span class="star-r active" data-value="4" style="font-size:2.2rem; cursor:pointer; color:var(--gold);">★</span>
+      <span class="star-r active" data-value="5" style="font-size:2.2rem; cursor:pointer; color:var(--gold);">★</span>
+    </div>
+    
+    <textarea id="client-review-text" style="width:100%; height:100px; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:12px; color:#fff; padding:15px; margin-bottom:20px; font-family:inherit; outline:none; resize:none;" placeholder="Add a note about the client..."></textarea>
+    
+    <div style="display:flex; gap:12px;">
+      <button class="ch-back" style="flex:1; justify-content:center;" onclick="document.getElementById('review-modal').style.display='none'">Cancel</button>
+      <button class="ibtn-send" style="flex:2; border-radius:10px; font-weight:700; height:40px;" id="submit-client-review-btn" onclick="submitClientReview()">Submit Rating</button>
+    </div>
+  </div>
+</div>
     <div class="restriction-notice">
       <strong>Expert Mode:</strong> You are communicating with the admin team only. Clients cannot see these messages directly.
     </div>
@@ -213,10 +240,83 @@ async function selectConvo(id){
   const c=convos.find(x=>x.id===id)||{};
   document.getElementById('ch-title').textContent=c.projects?.title||'Project';
   document.getElementById('ch-sub').textContent='Status: '+(c.status||'—');
+  
+  // Show Rate Client button only if project is completed
+  const rateBtn = document.getElementById('rate-client-btn');
+  if(rateBtn) rateBtn.style.display = (c.status === 'completed' || c.status === 'auto_completed') ? 'block' : 'none';
+
   if(chatChannel)sb.removeChannel(chatChannel);
   await loadMessages(id);
   subscribeChat(id);
   loadConvos();
+}
+
+/* REVIEW CLIENT */
+let selectedRating = 5;
+function openReviewModal(){
+  document.getElementById('review-modal').style.display='flex';
+  selectedRating = 5;
+  updateStars();
+}
+
+function updateStars(){
+  document.querySelectorAll('.star-r').forEach(s => {
+    s.classList.toggle('active', parseInt(s.dataset.value) <= selectedRating);
+    s.style.color = parseInt(s.dataset.value) <= selectedRating ? 'var(--gold)' : 'rgba(255,255,255,0.1)';
+  });
+}
+
+document.addEventListener('click', e => {
+  if(e.target.classList.contains('star-r')){
+    selectedRating = parseInt(e.target.dataset.value);
+    updateStars();
+  }
+});
+
+async function submitClientReview() {
+  const text = document.getElementById('client-review-text').value;
+  const btn = document.getElementById('submit-client-review-btn');
+  const conv = convos.find(c => c.id === activeConvoId);
+  
+  if(!conv?.project_id) {
+    alert('Project ID not found. Ensure the project is formally started.');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  try {
+    const { error } = await sb.from('reviews').insert({
+      project_id: conv.project_id,
+      client_id: conv.client_id,
+      expert_id: expertRecord.id,
+      rating: selectedRating,
+      review_text: `[EXPERT REVIEW] ${text}`,
+      is_auto_completed: false
+    });
+
+    if (error) throw error;
+
+    alert('Client rating submitted successfully!');
+    document.getElementById('review-modal').style.display='none';
+    
+    // Send system message
+    await sb.from('messages').insert({
+      conversation_id: activeConvoId,
+      sender_id: expertUser.id,
+      sender_role: 'expert',
+      content: `⭐ Expert left a ${selectedRating}-star review for the client.`,
+      message_type: 'system'
+    });
+
+  } catch (err) {
+    console.error('Review error:', err);
+    alert('Error: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit Rating';
+  }
 }
 
 function clearSelection(){

@@ -310,6 +310,7 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;}
         </div>
       </div>
       <div class="ct-actions">
+        <button class="ct-btn" id="rate-client-btn" style="display:none; background:rgba(245,197,66,0.1); color:var(--gold); border-color:rgba(245,197,66,0.3);" onclick="openReviewModal()">⭐ Rate Client</button>
         <select class="status-select" id="status-select" onchange="changeStatus(this.value)">
           <option value="active">Active</option>
           <option value="new_lead">New Lead</option>
@@ -385,6 +386,30 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;}
     </div>
     <div class="modal-actions" style="margin-top:16px;">
       <button class="btn-cancel" onclick="closeModal('assign-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEW CLIENT MODAL -->
+<div class="modal-overlay" id="review-modal" style="display:none;">
+  <div class="modal" style="max-width:400px; text-align:center;">
+    <div style="font-size: 2.5rem; margin-bottom: 15px;">👤</div>
+    <h2 style="margin-bottom: 10px; color:#fff;">Rate Client</h2>
+    <p style="color:var(--muted); font-size:0.85rem; margin-bottom:20px;">Share your experience working with this client.</p>
+    
+    <div class="star-rating" style="display:flex; justify-content:center; gap:10px; margin-bottom:24px;">
+      <span class="star-r active" data-value="1" style="font-size:2.2rem; cursor:pointer; color:var(--gold);">★</span>
+      <span class="star-r active" data-value="2" style="font-size:2.2rem; cursor:pointer; color:var(--gold);">★</span>
+      <span class="star-r active" data-value="3" style="font-size:2.2rem; cursor:pointer; color:var(--gold);">★</span>
+      <span class="star-r active" data-value="4" style="font-size:2.2rem; cursor:pointer; color:var(--gold);">★</span>
+      <span class="star-r active" data-value="5" style="font-size:2.2rem; cursor:pointer; color:var(--gold);">★</span>
+    </div>
+    
+    <textarea id="client-review-text" style="width:100%; height:100px; background:rgba(0,0,0,0.2); border:1px solid var(--border); border-radius:12px; color:#fff; padding:15px; margin-bottom:20px; font-family:inherit; outline:none; resize:none;" placeholder="Add a private note or review about the client..."></textarea>
+    
+    <div class="modal-actions">
+      <button class="btn-cancel" style="flex:1;" onclick="closeModal('review-modal')">Cancel</button>
+      <button class="btn-send-offer" style="flex:2;" id="submit-client-review-btn" onclick="submitClientReview()">Submit Rating</button>
     </div>
   </div>
 </div>
@@ -574,8 +599,80 @@ async function loadConvoDetails(id){
   document.getElementById('ct-status').style.color=col;
   document.getElementById('status-select').value=c.status||'new_lead';
   
+  // Show Rate Client button only if project is completed
+  const rateBtn = document.getElementById('rate-client-btn');
+  if(rateBtn) rateBtn.style.display = (c.status === 'completed' || c.status === 'auto_completed') ? 'block' : 'none';
+
   // Store requested expert for assign modal
   window.requestedExpertName=c.requested_expert?.name||null;
+}
+
+/* REVIEW CLIENT */
+let selectedRating = 5;
+function openReviewModal(){
+  document.getElementById('review-modal').style.display='flex';
+  selectedRating = 5;
+  updateStars();
+}
+
+function updateStars(){
+  document.querySelectorAll('.star-r').forEach(s => {
+    s.classList.toggle('active', parseInt(s.dataset.value) <= selectedRating);
+    s.style.color = parseInt(s.dataset.value) <= selectedRating ? 'var(--gold)' : 'rgba(255,255,255,0.1)';
+  });
+}
+
+document.addEventListener('click', e => {
+  if(e.target.classList.contains('star-r')){
+    selectedRating = parseInt(e.target.dataset.value);
+    updateStars();
+  }
+});
+
+async function submitClientReview() {
+  const text = document.getElementById('client-review-text').value;
+  const btn = document.getElementById('submit-client-review-btn');
+  const conv = allConvos.find(c => c.id === activeConvoId);
+  
+  if(!conv?.project_id) {
+    alert('Project ID not found. Ensure the project is formally started.');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  try {
+    const { error } = await sb.from('reviews').insert({
+      project_id: conv.project_id,
+      client_id: conv.client_id,
+      expert_id: conv.expert_id || '00000000-0000-0000-0000-000000000000', // System default if no expert
+      rating: selectedRating,
+      review_text: `[EXPERT REVIEW] ${text}`,
+      is_auto_completed: false
+    });
+
+    if (error) throw error;
+
+    alert('Client rating submitted successfully!');
+    closeModal('review-modal');
+    
+    // Send system message
+    await sb.from('messages').insert({
+      conversation_id: activeConvoId,
+      sender_id: adminUser.id,
+      sender_role: 'admin',
+      content: `⭐ Expert left a ${selectedRating}-star review for the client.`,
+      message_type: 'system'
+    });
+
+  } catch (err) {
+    console.error('Review error:', err);
+    alert('Error: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit Rating';
+  }
 }
 
 async function loadMessages(id){
