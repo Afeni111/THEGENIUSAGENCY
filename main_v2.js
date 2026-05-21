@@ -1532,7 +1532,7 @@ const ensureExpertModal = () => {
             </div>
         </div>
         <div class="sb-footer">
-            <div id="m-mobile-platforms" class="mobile-only-container" style="margin-bottom:15px; display:block;">
+            <div id="m-mobile-platforms" class="mobile-only-container" style="margin-bottom:15px;">
                 <p class="sb-or-label" style="margin-bottom:8px !important;">WORK WITH THEM ON</p>
                 <div class="sb-platform-btns m-platform-btns-alt"></div>
             </div>
