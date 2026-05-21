@@ -931,6 +931,20 @@ async function acceptDelivery(deliveryId){
   await sb.from('conversations').update({status:'completed'}).eq('id',activeConvId);
   await sb.from('messages').insert({conversation_id:activeConvId,sender_id:currentUser.id,sender_role:'client',content:'🎉 Delivery accepted! Project completed. Thank you!',message_type:'completion'});
   
+  // Notify Admin via Email
+  const conv = allConvos.find(c => c.id === activeConvId);
+  fetch('/api/notifications/notify-admin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      type: 'project_completed',
+      data: {
+        project_title: conv?.projects?.title || 'Unknown Project',
+        client_name: currentProfile.full_name
+      }
+    })
+  }).catch(err => console.error('Admin notification failed:', err));
+
   // Show Review Modal
   document.getElementById('review-modal-overlay').style.display = 'flex';
 }
@@ -973,6 +987,20 @@ async function submitReview() {
     btn.disabled = false;
     btn.textContent = 'Submit Review';
   } else {
+    // Notify Admin via Email
+    fetch('/api/notifications/notify-admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'new_review',
+        data: {
+          project_title: conv?.projects?.title || 'Unknown Project',
+          rating: selectedRating,
+          review_text: text
+        }
+      })
+    }).catch(err => console.error('Admin notification failed:', err));
+
     document.getElementById('review-modal-overlay').style.display = 'none';
     alert('Thank you for your feedback! Your review has been saved.');
     // Optional: add a system message that review was left

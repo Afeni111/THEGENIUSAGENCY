@@ -101,6 +101,63 @@ const templates = {
                 <a href="https://thegeniusagency.co/admin/projects.html" style="background: #ef4444; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 50px; font-weight: bold;">Check Status Now</a>
             </div>
         `
+    }),
+    new_inquiry: (data) => ({
+        subject: `📋 New Project Inquiry: ${data.type}`,
+        text: `A new project inquiry has been received.\n\nClient: ${data.name}\nEmail: ${data.email}\nType: ${data.type}\nBudget: ${data.budget}\nDeadline: ${data.deadline}`,
+        html: `
+            <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                <h2 style="color: #F5C542;">New Project Lead</h2>
+                <div style="background: #fdf6e3; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #F5C542;">
+                    <p><strong>Name:</strong> ${data.name}</p>
+                    <p><strong>Email:</strong> ${data.email}</p>
+                    <p><strong>Project Type:</strong> ${data.type}</p>
+                    <p><strong>Budget:</strong> ${data.budget}</p>
+                    <p><strong>Deadline:</strong> ${data.deadline}</p>
+                </div>
+                <p><strong>Description:</strong><br>${data.desc}</p>
+                <a href="https://thegeniusagency.co/admin/chat.html?cid=${data.conversation_id}" style="background: #F5C542; color: #000; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Review Inquiry</a>
+            </div>
+        `
+    }),
+    expert_delivery: (data) => ({
+        subject: `✅ Expert Delivered Work: ${data.project_title}`,
+        text: `An expert has delivered work for project: ${data.project_title}.\n\nExpert: ${data.expert_name}`,
+        html: `
+            <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                <h2 style="color: #06b6d4;">Work Delivered</h2>
+                <p>Expert <strong>${data.expert_name}</strong> has submitted work for <strong>${data.project_title}</strong>.</p>
+                <p>Please review the delivery before the client approves it.</p>
+                <a href="https://thegeniusagency.co/admin/chat.html?cid=${data.conversation_id}" style="background: #06b6d4; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Review Delivery</a>
+            </div>
+        `
+    }),
+    project_completed: (data) => ({
+        subject: `🎉 Project Completed: ${data.project_title}`,
+        text: `Client has accepted the delivery for project: ${data.project_title}.\n\nClient: ${data.client_name}`,
+        html: `
+            <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                <h2 style="color: #22c55e;">Project Success!</h2>
+                <p>Client <strong>${data.client_name}</strong> has accepted the delivery for <strong>${data.project_title}</strong>.</p>
+                <p>The project is now officially completed.</p>
+                <a href="https://thegeniusagency.co/admin/orders.html" style="background: #22c55e; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">View Order</a>
+            </div>
+        `
+    }),
+    new_review: (data) => ({
+        subject: `⭐ New Review: ${data.rating} Stars for ${data.project_title}`,
+        text: `A new review has been left for project: ${data.project_title}.\n\nRating: ${data.rating} Stars\nReview: ${data.review_text}`,
+        html: `
+            <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                <h2 style="color: #F5C542;">New Client Review</h2>
+                <div style="font-size: 1.5rem; margin-bottom: 10px;">${'★'.repeat(data.rating)}${'☆'.repeat(5-data.rating)}</div>
+                <p><strong>Project:</strong> ${data.project_title}</p>
+                <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <p style="margin: 0; font-style: italic;">"${data.review_text || 'No comment left.'}"</p>
+                </div>
+                <a href="https://thegeniusagency.co/admin/dashboard.html" style="background: #F5C542; color: #000; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Go to Dashboard</a>
+            </div>
+        `
     })
 };
 

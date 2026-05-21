@@ -1676,6 +1676,19 @@
 
                         if (msgErr) throw msgErr;
 
+                        // Notify Admin via Email
+                        fetch('/api/notifications/notify-admin', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                type: 'new_inquiry',
+                                data: {
+                                    name, email, type, budget, deadline, desc,
+                                    conversation_id: convo.id
+                                }
+                            })
+                        }).catch(err => console.error('Admin notification failed:', err));
+
                         alert('Your custom project inquiry has been successfully submitted!');
                         window.location.href = 'client/chat.html';
 

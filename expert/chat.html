@@ -388,6 +388,22 @@ async function sendMsg(){
   inp.value='';inp.style.height='auto';
   setTyping(false);
   await sb.from('messages').insert({conversation_id:activeConvoId,sender_id:expertUser.id,sender_role:'expert',content:txt,message_type:'normal'});
+  
+  // Notify Admin via Email (if the message is likely a delivery or important)
+  const conv = convos.find(c => c.id === activeConvoId);
+  fetch('/api/notifications/notify-admin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      type: 'expert_delivery',
+      data: {
+        project_title: conv?.projects?.title || 'Unknown Project',
+        expert_name: expertProfile.full_name,
+        conversation_id: activeConvoId
+      }
+    })
+  }).catch(err => console.error('Admin notification failed:', err));
+
   const el=document.getElementById('chat-messages');
   el.insertAdjacentHTML('beforeend',renderMsg({sender_id:expertUser.id,sender_role:'expert',content:txt,message_type:'normal',created_at:new Date().toISOString(),profiles:{full_name:expertProfile.full_name,role:'expert'}}));
   el.scrollTop=el.scrollHeight;
