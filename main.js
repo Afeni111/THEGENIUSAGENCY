@@ -153,46 +153,6 @@ let experts = [
         ]
     },
     {
-        id: "exp-8", categories: ["Programming & Tech"], name: "Steve M.", role: "Software Development & Automation", desc: "Hi, I’m Steve M., a professional software developer specializing in web application development, automation systems, and technical support.", image: "Freelancer Photos/steve.png", link: "https://www.fiverr.com/steve_moub", fiverrLink: "https://www.fiverr.com/steve_moub", platform: "fiverr", rating: "4.9", reviews: "28", stars: "⭐⭐⭐⭐⭐",
-        projects: "30", yearsExp: "5",
-        bio: "Hi, I’m Steve M., a professional software developer specializing in web application development, automation systems, and technical support solutions. I help businesses and startups create secure, scalable, and user-friendly digital platforms that improve productivity and business performance. My expertise includes custom web applications, workflow automation, REST API integration, bug fixing, database management, and system optimization. I focus on delivering clean, efficient, and reliable solutions tailored to meet client goals and modern industry standards.",
-        services_desc: "Full-stack software engineering including custom web applications, REST API development, and intelligent automation workflows. I specialize in CRM integrations and architecting scalable digital infrastructure for modern businesses.",
-        services: ["Custom Web Application Development", "Workflow Automation Systems", "REST API Development", "Bug Fixing & Troubleshooting", "Admin Dashboard Development", "Database Integration & Management", "Business Process Automation", "Website Maintenance & Support", "Software Performance Optimization", "Third-Party API Integration"],
-        location: "United Kingdom", responseTime: "Within 5 mins", languages: "English", availability: "Available for new projects",
-        skills: ["Web Application", "Automation", "Bug Fixing"],
-        portfolio: ["portfolios/WORDPRESS WEDSITE/screencapture-marketing-mavericks-org-2025-07-24-18_27_06.png", "portfolios/WORDPRESS WEDSITE/screencapture-damashiidigital-2025-07-24-18_26_36.png", "portfolios/SHOPIFY SALES/recording (1).mkv", "portfolios/WORDPRESS WEDSITE/screencapture-defaren-org-2025-07-24-18_27_35.png"],
-        testimonials: [
-            { name: "James R.", flag: flag("GB"), time: "1 week ago", text: "Steve built a fully automated pipeline for our business. Saved us hours every single day.", rating: "5.0" },
-            { name: "Tyler M.", flag: flag("US"), time: "2 weeks ago", text: "Exceptional web app delivered on time. The code quality and architecture are outstanding.", rating: "5.0" },
-            { name: "Sophie L.", flag: flag("FR"), time: "1 month ago", text: "Steve integrated our third-party APIs flawlessly. Very professional and communicative.", rating: "5.0" },
-            { name: "Carlos R.", flag: flag("ES"), time: "2 months ago", text: "The automation scripts he wrote transformed our workflow. Incredibly reliable developer.", rating: "5.0" },
-            { name: "Hannah S.", flag: flag("GB"), time: "3 months ago", text: "Outstanding system architecture. Our app scaled perfectly thanks to Steve's work.", rating: "5.0" },
-            { name: "Nathan W.", flag: flag("US"), time: "4 months ago", text: "Fast, clean, and reliable. Steve solved complex problems with elegant solutions every time.", rating: "5.0" },
-            { name: "Camille D.", flag: flag("FR"), time: "5 months ago", text: "Brilliant developer. He delivered a complex automation system ahead of schedule.", rating: "5.0" },
-            { name: "Diego M.", flag: flag("ES"), time: "6 months ago", text: "Steve's web app transformed how we operate. Clean code and excellent communication throughout.", rating: "5.0" },
-            { name: "Oliver T.", flag: flag("GB"), time: "7 months ago", text: "Highly skilled and professional. The API integration he built works flawlessly under load.", rating: "5.0" },
-            { name: "Ashley B.", flag: flag("US"), time: "8 months ago", text: "Steve exceeded every expectation. The system he architected is robust and scalable.", rating: "5.0" },
-            { name: "Léa F.", flag: flag("FR"), time: "9 months ago", text: "Very impressed with the quality and speed. He understood our requirements immediately.", rating: "5.0" },
-            { name: "Pablo G.", flag: flag("ES"), time: "10 months ago", text: "Exceptional technical skills. The automation workflow he built saves us 15+ hours a week.", rating: "5.0" },
-            { name: "Liam H.", flag: flag("GB"), time: "11 months ago", text: "Outstanding full-stack developer. Delivered exactly what we needed with zero issues.", rating: "5.0" },
-            { name: "Megan C.", flag: flag("US"), time: "12 months ago", text: "Steve is incredibly responsive and technically sharp. Best developer we've worked with.", rating: "5.0" },
-            { name: "Julien P.", flag: flag("FR"), time: "13 months ago", text: "The web application he built for us is fast, reliable and beautifully structured.", rating: "5.0" },
-            { name: "Ana S.", flag: flag("ES"), time: "14 months ago", text: "Professional and detail-oriented. He refactored our entire backend and improved performance massively.", rating: "5.0" },
-            { name: "George E.", flag: flag("GB"), time: "15 months ago", text: "Delivered a complex SaaS feature set on time and within budget. Truly exceptional.", rating: "5.0" },
-            { name: "Jordan K.", flag: flag("US"), time: "16 months ago", text: "Steve built our internal dashboard from scratch — it's fast, clean and easy to use.", rating: "5.0" },
-            { name: "Manon B.", flag: flag("FR"), time: "17 months ago", text: "Very talented developer. He solved in hours what had been a problem for weeks.", rating: "5.0" },
-            { name: "Sergio v.", flag: flag("ES"), time: "18 months ago", text: "Reliable, fast and highly skilled. Would not hesitate to hire Steve again.", rating: "5.0" },
-            { name: "Ethan W.", flag: flag("GB"), time: "19 months ago", text: "Flawless API work and top-tier code quality. Very professional throughout the project.", rating: "5.0" },
-            { name: "Brittany N.", flag: flag("US"), time: "20 months ago", text: "Our automation runs perfectly thanks to Steve. The ROI has been incredible.", rating: "5.0" },
-            { name: "Élodie R.", flag: flag("FR"), time: "21 months ago", text: "Steve brought structure and clarity to a very complex project. Highly recommended.", rating: "5.0" },
-            { name: "Miguel T.", flag: flag("ES"), time: "22 months ago", text: "Excellent communicator and outstanding developer. The project was delivered perfectly.", rating: "5.0" },
-            { name: "Harry L.", flag: flag("GB"), time: "23 months ago", text: "Steve's technical knowledge is impressive. He built something we thought would take months in weeks.", rating: "5.0" },
-            { name: "Chris D.", flag: flag("US"), time: "24 months ago", text: "Great experience working with Steve. His automation scripts saved our team countless hours.", rating: "5.0" },
-            { name: "Claire M.", flag: flag("FR"), time: "25 months ago", text: "Professional, fast, and highly skilled. We will absolutely work with Steve again.", rating: "5.0" },
-            { name: "Laura G.", flag: flag("ES"), time: "26 months ago", text: "The system Steve built handles all our data processing seamlessly. Brilliant work.", rating: "5.0" }
-        ]
-    },
-    {
         id: "exp-7", categories: ["Digital Marketing", "Programming & Tech"], name: "Jeremiah A.", role: "Digital Marketing & Software Development", desc: "Hello, I’m Jeremiah A., a software developer and digital marketing specialist dedicated to helping businesses grow their online presence.", image: "Freelancer Photos/Jeremiah A.jpg", link: "https://www.upwork.com/freelancers/~01681e8c5abb66f8c8?mp_source=share", platform: "upwork", rating: "5.0", reviews: "30", stars: "⭐⭐⭐⭐⭐",
         projects: "28", yearsExp: "5",
         bio: "Hello, I’m Jeremiah A., a software developer and digital marketing specialist dedicated to helping businesses grow their online presence through technology and smart marketing strategies. I specialize in web and app development, Android and iOS applications, digital marketing campaigns, SEO optimization, and online branding. I combine technical innovation with creative marketing approaches to build solutions that increase visibility, improve customer engagement, and drive business growth.",
@@ -342,7 +302,7 @@ async function loadDynamicExperts() {
 
             // Re-sort
             // Re-sort to requested order: Jeremiah, Bukola, Cecilia, Steve, etc.
-            const order = ["exp-7", "exp-6", "exp-2", "exp-8", "exp-1", "exp-3", "exp-4", "exp-5"];
+            const order = ["exp-7", "exp-6", "exp-2", "exp-1", "exp-3", "exp-4", "exp-5"];
             experts.sort((a, b) => {
                 const ai = order.indexOf(a.id);
                 const bi = order.indexOf(b.id);
@@ -363,7 +323,7 @@ async function loadDynamicExperts() {
 }
 
 // Sort experts by desired sequence: Jeremiah, Bukola, Cecilia, Steve, etc.
-const desiredOrder = ["exp-7", "exp-6", "exp-2", "exp-8", "exp-1", "exp-3", "exp-4", "exp-5"];
+const desiredOrder = ["exp-7", "exp-6", "exp-2", "exp-1", "exp-3", "exp-4", "exp-5"];
 experts.sort((a, b) => desiredOrder.indexOf(a.id) - desiredOrder.indexOf(b.id));
 
 const portfolioItems = [
@@ -1255,7 +1215,7 @@ const initExpertsDirectory = () => {
             list.sort((a, b) => String(a.name).localeCompare(String(b.name)));
         } else {
             // Default: Custom Agency Order (Jeremiah, Bukola, Cecilia, Steve, etc.)
-            const order = ["exp-7", "exp-6", "exp-2", "exp-8", "exp-1", "exp-3", "exp-4", "exp-5"];
+            const order = ["exp-7", "exp-6", "exp-2", "exp-1", "exp-3", "exp-4", "exp-5"];
             list.sort((a, b) => {
                 const ai = order.indexOf(a.id);
                 const bi = order.indexOf(b.id);
