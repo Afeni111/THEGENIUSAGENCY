@@ -720,6 +720,21 @@ async function sendMsg(){
   if(msg)appendMsg({...msg,profiles:{full_name:currentProfile.full_name,role:'client'}});
   setTyping(false);
   await sb.from('conversations').update({last_message:txt,last_message_at:new Date().toISOString()}).eq('id',activeConvId);
+  
+  // Notify Admin via Email
+  fetch('/api/notifications/notify-admin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      type: 'new_message',
+      data: {
+        client_name: currentProfile.full_name,
+        content: txt,
+        conversation_id: activeConvId
+      }
+    })
+  }).catch(err => console.error('Admin notification failed:', err));
+
   // update sidebar preview
   const row=document.getElementById('conv-row-'+activeConvId);
   if(row){const prev=row.querySelector('.conv-preview');if(prev)prev.textContent=txt;}
@@ -885,6 +900,21 @@ function initPaystack(amount, offer_id, btn, originalText){
           content:`✅ Payment Successful! $${Number(amount).toLocaleString()} paid. Offer accepted and project started.`,
           message_type:'system'
         });
+
+        // Notify Admin via Email
+        fetch('/api/notifications/notify-admin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'offer_accepted',
+            data: {
+              amount: amount,
+              project_title: conv?.projects?.title || `Offer OFF-${offer_id.slice(0,6)}`,
+              offer_id: offer_id
+            }
+          })
+        }).catch(err => console.error('Admin notification failed:', err));
+
         alert('Payment successful! Your project has started.');
       } catch (err) { console.error('Success callback error:', err); }
     },
@@ -962,6 +992,20 @@ async function requestRevision(deliveryId){
   if(deliveryId)await sb.from('deliveries').update({status:'revision_requested'}).eq('id',deliveryId);
   await sb.from('conversations').update({status:'revision'}).eq('id',activeConvId);
   await sb.from('messages').insert({conversation_id:activeConvId,sender_id:currentUser.id,sender_role:'client',content:'↩ Revision requested: '+reason,message_type:'revision_request'});
+
+  // Notify Admin via Email
+  const conv = allConvos.find(c => c.id === activeConvId);
+  fetch('/api/notifications/notify-admin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      type: 'revision_requested',
+      data: {
+        project_title: conv?.projects?.title || 'Unknown Project',
+        reason: reason
+      }
+    })
+  }).catch(err => console.error('Admin notification failed:', err));
 }
 
 init();

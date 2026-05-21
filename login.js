@@ -231,6 +231,21 @@ if (authForm) {
                         { id: userId, full_name: name, email, role: 'client', country: country }
                     ]);
                     if (dbError) console.warn('Could not insert to profiles table:', dbError.message);
+
+                    // Notify Admin via Email
+                    fetch('/api/notifications/notify-admin', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            type: 'new_signup',
+                            data: {
+                                id: userId,
+                                full_name: name,
+                                email: email,
+                                role: 'client'
+                            }
+                        })
+                    }).catch(err => console.error('Admin notification failed:', err));
                 }
 
                 // If no session after signup, email confirmation is required

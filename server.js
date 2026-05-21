@@ -32,11 +32,13 @@ const briefsRouter = require('./routes/briefs');
 const offersRouter = require('./routes/offers');
 const paystackRouter = require('./routes/paystack');
 const projectsRouter = require('./routes/projects');
+const notificationsRouter = require('./routes/notifications');
 
 app.use('/api/briefs', briefsRouter);
 app.use('/api/offers', offersRouter);
 app.use('/api/paystack', paystackRouter);
 app.use('/api/projects', projectsRouter);
+app.use('/api/notifications', notificationsRouter);
 
 // Health Check
 app.get('/api/health', (req, res) => {
