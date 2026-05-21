@@ -871,12 +871,22 @@ function initPaystack(amount, offer_id, btn, originalText){
           statusEl.style.color = '#22c55e';
         }
         const conv = allConvos.find(c => c.id === activeConvId);
+        
+        // Calculate Deadline
+        let deadline = null;
+        if (conv?.delivery_days) {
+          const d = new Date();
+          d.setDate(d.getDate() + Number(conv.delivery_days));
+          deadline = d.toISOString();
+        }
+
         const { data: projData } = await sb.from('projects').insert({
           client_id: currentUser.id,
           expert_id: conv?.expert_id || null,
           title: `Project via Offer OFF-${offer_id.slice(0,6)}`,
           status: 'in_progress',
           budget: amount,
+          deadline: deadline,
           payment_status: 'successful',
           payment_source: 'agency_direct'
         }).select().single();

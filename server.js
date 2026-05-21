@@ -75,4 +75,10 @@ function startServer(port, attemptsLeft = 10) {
     });
 }
 
-startServer(DEFAULT_PORT);
+// Export for Vercel
+module.exports = app;
+
+// Start Server (only if not running as a Vercel function)
+if (require.main === module) {
+    startServer(DEFAULT_PORT);
+}
