@@ -123,58 +123,70 @@
   }
 
   async function init(){
-    if(typeof supabase==='undefined')return;
-    const sb=supabase.createClient(SB_URL,SB_KEY);
-    window.supabaseClient=sb; 
-    
-    // Start resolving - hide until ready to prevent flashing
     const userNavSection=document.getElementById('user-nav-section');
     const authLink=document.getElementById('nav-auth-link');
     const navPill = document.querySelector('.nav-pill');
-    if(navPill) navPill.classList.add('na-resolving');
 
-    const{data:{session}}=await sb.auth.getSession();
-
-    if(!session){
+    const showDefault = () => {
       if(userNavSection) userNavSection.classList.add('na-visible');
       else if(authLink) authLink.classList.add('na-visible');
       if(navPill) navPill.classList.remove('na-resolving');
-      return;
-    }
+    };
 
-    const{data:profile,error:profileError}=await sb.from('profiles').select('full_name,email,avatar_url,role').eq('id',session.user.id).single();
-    
-    if(!profile){
-      if(userNavSection) userNavSection.classList.add('na-visible');
-      else if(authLink) authLink.classList.add('na-visible');
+    try {
+      if(typeof supabase==='undefined') {
+        showDefault();
+        return;
+      }
+      
+      const sb=supabase.createClient(SB_URL,SB_KEY);
+      window.supabaseClient=sb; 
+      
+      // Start resolving - hide until ready to prevent flashing
+      if(navPill) navPill.classList.add('na-resolving');
+
+      const{data:{session}, error: sessionError}=await sb.auth.getSession();
+
+      if(!session || sessionError){
+        showDefault();
+        return;
+      }
+
+      const{data:profile,error:profileError}=await sb.from('profiles').select('full_name,email,avatar_url,role').eq('id',session.user.id).single();
+      
+      if(!profile || profileError){
+        showDefault();
+        return;
+      }
+
+      injectStyles();
+
+      let unreadCounts={messages:0,notifications:0};
+      if(profile.role==='client'){
+        try{
+          const{data:convos}=await sb.from('conversations').select('unread_client').eq('client_id',session.user.id);
+          if(convos) unreadCounts.messages=convos.reduce((sum,c)=>sum+(c.unread_client||0),0);
+        }catch(e){}
+      }
+
+      const dropdown=buildDropdown(profile,unreadCounts);
+      if(userNavSection){
+        userNavSection.innerHTML='';
+        userNavSection.appendChild(dropdown);
+        userNavSection.classList.add('na-visible');
+      } else if(authLink){
+        authLink.replaceWith(dropdown);
+      }
+      
       if(navPill) navPill.classList.remove('na-resolving');
-      return;
+
+      document.addEventListener('click', () => {
+        document.querySelectorAll('.na-dropdown').forEach(m => m.classList.remove('open'));
+      });
+    } catch (err) {
+      console.error('Auth Init Error:', err);
+      showDefault();
     }
-
-    injectStyles();
-
-    let unreadCounts={messages:0,notifications:0};
-    if(profile.role==='client'){
-      try{
-        const{data:convos}=await sb.from('conversations').select('unread_client').eq('client_id',session.user.id);
-        if(convos) unreadCounts.messages=convos.reduce((sum,c)=>sum+(c.unread_client||0),0);
-      }catch(e){}
-    }
-
-    const dropdown=buildDropdown(profile,unreadCounts);
-    if(userNavSection){
-      userNavSection.innerHTML='';
-      userNavSection.appendChild(dropdown);
-      userNavSection.classList.add('na-visible');
-    } else if(authLink){
-      authLink.replaceWith(dropdown);
-    }
-    
-    if(navPill) navPill.classList.remove('na-resolving');
-
-    document.addEventListener('click', () => {
-      document.querySelectorAll('.na-dropdown').forEach(m => m.classList.remove('open'));
-    });
   }
 
   if(document.readyState==='loading'){

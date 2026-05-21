@@ -61,19 +61,6 @@ body {
     overflow-x: hidden;
 }
 
-/* ── NAV AUTH: visible by default ── */
-#user-nav-section, #nav-auth-link {
-    visibility: visible;
-    opacity: 1;
-    transition: opacity 0.2s ease;
-}
-
-#user-nav-section.na-visible, #nav-auth-link.na-visible {
-    visibility: visible;
-    opacity: 1;
-    pointer-events: auto;
-}
-
 /* Subtle grain/noise overlay (no external assets) */
 body::before {
     content: "";
@@ -602,8 +589,12 @@ h2 {
     transition: opacity 0.3s ease;
 }
 
-#user-nav-section.na-visible, #nav-auth-link.na-visible {
-    opacity: 1;
+#user-nav-section.na-visible, 
+#nav-auth-link.na-visible,
+#user-nav-section.na-visible #nav-auth-link {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
 }
 
 .nav-pill .logo-text {
