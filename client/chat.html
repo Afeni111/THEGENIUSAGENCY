@@ -849,7 +849,7 @@ function initPaystack(amount, offer_id, btn, originalText){
         await sb.from('offers').update({status:'paid'}).eq('id',offer_id);
         const actions = document.getElementById(`offer-actions-${offer_id}`);
         if(actions) actions.style.display = 'none';
-        const statusEl = document.getElementById(`offer-status-${offerId}`);
+        const statusEl = document.getElementById(`offer-status-${offer_id}`);
         if(statusEl) {
           statusEl.textContent = 'PAID';
           statusEl.style.background = 'rgba(34,197,94,0.15)';
@@ -862,13 +862,13 @@ function initPaystack(amount, offer_id, btn, originalText){
           title: `Project via Offer OFF-${offer_id.slice(0,6)}`,
           status: 'in_progress',
           budget: amount,
-          payment_status: 'paid',
-          payment_source: 'paystack'
+          payment_status: 'successful',
+          payment_source: 'agency_direct'
         }).select().single();
         const newProjectId = projData?.id;
         await sb.from('payments').insert({
           client_id:currentUser.id,
-          offer_id:offerId,
+          offer_id:offer_id,
           project_id: newProjectId,
           amount,
           currency: 'USD',
