@@ -328,8 +328,7 @@ async function loadInbox(){
       (experts||[]).forEach(e=>{
         let photoPath = `../Freelancer%20Photos/${e.name}.png`;
         const n = (e.name||'').toLowerCase();
-        if (n.includes('steve')) photoPath = '../Freelancer%20Photos/steve.png';
-        else if (n.includes('beatrice')) photoPath = '../Freelancer%20Photos/Beatrice%20O..png';
+        if (n.includes('beatrice')) photoPath = '../Freelancer%20Photos/Beatrice%20O..png';
         else if (n.includes('bukola')) photoPath = '../Freelancer%20Photos/Bukola%20A..png';
         else if (n.includes('cecilia')) photoPath = '../Freelancer%20Photos/Cecilia%20Abisola.png';
         else if (n.includes('jeremiah')) photoPath = '../Freelancer%20Photos/Jeremiah%20A.jpg';

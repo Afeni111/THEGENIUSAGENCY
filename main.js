@@ -234,11 +234,9 @@ async function loadDynamicExperts() {
                     // Logic: Overall rating must be between 4.8 and 5.0
                     let dbRating = parseFloat(dbMatch.rating || ex.rating);
                     
-                    // Force specific ratings for Steve and Jeremiah as requested
+                    // Force specific ratings for Jeremiah as requested
                     if (ex.name.toLowerCase().includes('jeremiah')) {
                         dbRating = 5.0;
-                    } else if (ex.name.toLowerCase().includes('steve')) {
-                        dbRating = 4.9;
                     } else if (dbRating > 4.79) {
                         const variations = ["5.0", "4.9", "4.8", "5.0", "4.9", "4.8"];
                         const seed = dbMatch.name.length + (parseInt(dbMatch.reviews || 0, 10) % 7);
@@ -301,7 +299,7 @@ async function loadDynamicExperts() {
             experts = [...experts, ...brandNewExperts];
 
             // Re-sort
-            // Re-sort to requested order: Jeremiah, Bukola, Cecilia, Steve, etc.
+            // Re-sort to requested order: Jeremiah, Bukola, Cecilia, etc.
             const order = ["exp-7", "exp-6", "exp-2", "exp-1", "exp-3", "exp-4", "exp-5"];
             experts.sort((a, b) => {
                 const ai = order.indexOf(a.id);
@@ -322,7 +320,7 @@ async function loadDynamicExperts() {
     }
 }
 
-// Sort experts by desired sequence: Jeremiah, Bukola, Cecilia, Steve, etc.
+// Sort experts by desired sequence: Jeremiah, Bukola, Cecilia, etc.
 const desiredOrder = ["exp-7", "exp-6", "exp-2", "exp-1", "exp-3", "exp-4", "exp-5"];
 experts.sort((a, b) => desiredOrder.indexOf(a.id) - desiredOrder.indexOf(b.id));
 
@@ -1214,7 +1212,7 @@ const initExpertsDirectory = () => {
         if (state.sort === 'name') {
             list.sort((a, b) => String(a.name).localeCompare(String(b.name)));
         } else {
-            // Default: Custom Agency Order (Jeremiah, Bukola, Cecilia, Steve, etc.)
+            // Default: Custom Agency Order (Jeremiah, Bukola, Cecilia, etc.)
             const order = ["exp-7", "exp-6", "exp-2", "exp-1", "exp-3", "exp-4", "exp-5"];
             list.sort((a, b) => {
                 const ai = order.indexOf(a.id);
