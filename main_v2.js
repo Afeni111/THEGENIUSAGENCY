@@ -1415,7 +1415,7 @@ const initExpertsSwiper = () => {
                 <p style="color: var(--primary-yellow); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px;">${exp.categories[0]}</p>
                 <p style="color: #888; font-size: 0.9rem; margin-bottom: 30px; line-height: 1.6;">${exp.desc}</p>
                 <div style="margin-top: auto; width: 100%;">
-                    <button onclick="window.openExpertModal('${exp.id}')" class="btn btn-outline" style="width: 100%; padding: 12px 20px; font-size: 0.85rem; letter-spacing: 0.5px; border-radius: 100px;">View Full Profile</button>
+                    <button onclick="event.stopPropagation(); window.openExpertModal('${exp.id}')" class="btn btn-outline" style="width: 100%; padding: 12px 20px; font-size: 0.85rem; letter-spacing: 0.5px; border-radius: 100px;">View Full Profile</button>
                 </div>
             </div>
         </div>
