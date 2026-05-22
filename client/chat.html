@@ -851,84 +851,91 @@ async function acceptOffer(offerId,amount){
 }
 
 function initPaystack(amount, offer_id, btn, originalText){
+  // Success handler function
+  const successHandler = async (resp) => {
+    try {
+      await sb.from('offers').update({status:'paid'}).eq('id',offer_id);
+      const actions = document.getElementById(`offer-actions-${offer_id}`);
+      if(actions) actions.style.display = 'none';
+      const statusEl = document.getElementById(`offer-status-${offer_id}`);
+      if(statusEl) {
+        statusEl.textContent = 'PAID';
+        statusEl.style.background = 'rgba(34,197,94,0.15)';
+        statusEl.style.color = '#22c55e';
+      }
+      const conv = allConvos.find(c => c.id === activeConvId);
+      
+      // Calculate Deadline
+      let deadline = null;
+      if (conv?.delivery_days) {
+        const d = new Date();
+        d.setDate(d.getDate() + Number(conv.delivery_days));
+        deadline = d.toISOString();
+      }
+
+      const { data: projData } = await sb.from('projects').insert({
+        client_id: currentUser.id,
+        expert_id: conv?.expert_id || null,
+        title: `Project via Offer OFF-${offer_id.slice(0,6)}`,
+        status: 'in_progress',
+        budget: amount,
+        deadline: deadline,
+        payment_status: 'successful',
+        payment_source: 'agency_direct'
+      }).select().single();
+      const newProjectId = projData?.id;
+      await sb.from('payments').insert({
+        client_id:currentUser.id,
+        offer_id:offer_id,
+        project_id: newProjectId,
+        amount,
+        currency: 'USD',
+        source:'agency_direct',
+        status:'successful',
+        paystack_reference:resp.reference
+      });
+      await sb.from('conversations').update({status:'in_progress', project_id: newProjectId}).eq('id',activeConvId);
+      if(conv) { conv.status = 'in_progress'; conv.project_id = newProjectId; }
+      await sb.from('messages').insert({
+        conversation_id:activeConvId,
+        sender_id:currentUser.id,
+        sender_role:'client',
+        content:`✅ Payment Successful! $${Number(amount).toLocaleString()} paid. Offer accepted and project started.`,
+        message_type:'system'
+      });
+
+      // Notify Admin via Email
+      fetch('/api/notifications/notify-admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'offer_accepted',
+          data: {
+            amount: amount,
+            project_title: conv?.projects?.title || `Offer OFF-${offer_id.slice(0,6)}`,
+            offer_id: offer_id
+          }
+        })
+      }).catch(err => console.error('Admin notification failed:', err));
+
+      alert('Payment successful! Your project has started.');
+    } catch (err) { console.error('Success callback error:', err); }
+  };
+
+  const cancelHandler = () => {
+    if(btn) { btn.disabled = false; btn.innerHTML = originalText; }
+  };
+
   const handler=PaystackPop?.setup({
     key:'pk_live_5bf7f0c00259d6b3407a7442c1efe9b3595e28c4',
     email:currentProfile.email,
     amount:Math.round(Number(amount)*100),
     currency:'USD',
     ref:'TGA_'+Date.now(),
-    callback:async(resp)=>{
-      try {
-        await sb.from('offers').update({status:'paid'}).eq('id',offer_id);
-        const actions = document.getElementById(`offer-actions-${offer_id}`);
-        if(actions) actions.style.display = 'none';
-        const statusEl = document.getElementById(`offer-status-${offer_id}`);
-        if(statusEl) {
-          statusEl.textContent = 'PAID';
-          statusEl.style.background = 'rgba(34,197,94,0.15)';
-          statusEl.style.color = '#22c55e';
-        }
-        const conv = allConvos.find(c => c.id === activeConvId);
-        
-        // Calculate Deadline
-        let deadline = null;
-        if (conv?.delivery_days) {
-          const d = new Date();
-          d.setDate(d.getDate() + Number(conv.delivery_days));
-          deadline = d.toISOString();
-        }
-
-        const { data: projData } = await sb.from('projects').insert({
-          client_id: currentUser.id,
-          expert_id: conv?.expert_id || null,
-          title: `Project via Offer OFF-${offer_id.slice(0,6)}`,
-          status: 'in_progress',
-          budget: amount,
-          deadline: deadline,
-          payment_status: 'successful',
-          payment_source: 'agency_direct'
-        }).select().single();
-        const newProjectId = projData?.id;
-        await sb.from('payments').insert({
-          client_id:currentUser.id,
-          offer_id:offer_id,
-          project_id: newProjectId,
-          amount,
-          currency: 'USD',
-          source:'agency_direct',
-          status:'successful',
-          paystack_reference:resp.reference
-        });
-        await sb.from('conversations').update({status:'in_progress', project_id: newProjectId}).eq('id',activeConvId);
-        if(conv) { conv.status = 'in_progress'; conv.project_id = newProjectId; }
-        await sb.from('messages').insert({
-          conversation_id:activeConvId,
-          sender_id:currentUser.id,
-          sender_role:'client',
-          content:`✅ Payment Successful! $${Number(amount).toLocaleString()} paid. Offer accepted and project started.`,
-          message_type:'system'
-        });
-
-        // Notify Admin via Email
-        fetch('/api/notifications/notify-admin', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'offer_accepted',
-            data: {
-              amount: amount,
-              project_title: conv?.projects?.title || `Offer OFF-${offer_id.slice(0,6)}`,
-              offer_id: offer_id
-            }
-          })
-        }).catch(err => console.error('Admin notification failed:', err));
-
-        alert('Payment successful! Your project has started.');
-      } catch (err) { console.error('Success callback error:', err); }
-    },
-    onClose:()=>{
-      if(btn) { btn.disabled = false; btn.innerHTML = originalText; }
-    }
+    callback: successHandler,
+    onSuccess: successHandler,
+    onClose: cancelHandler,
+    onCancel: cancelHandler
   });
   handler?.openIframe();
 }
