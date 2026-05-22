@@ -561,6 +561,15 @@ function renderMsg(m){
     const isActionable = !isSelf && od.offer_id && status === 'sent';
     const pi = od.payment_info || {};
     
+    // Status color mapping
+    const statusConfig = {
+      sent: { bg: 'rgba(245,197,66,0.1)', col: 'var(--gold)', label: 'Proposal' },
+      pending_confirmation: { bg: 'rgba(59,130,246,0.1)', col: '#3b82f6', label: 'Pending' },
+      accepted: { bg: 'rgba(34,197,94,0.1)', col: '#22c55e', label: 'Paid' },
+      declined: { bg: 'rgba(239,68,68,0.1)', col: '#ef4444', label: 'Declined' }
+    };
+    const currentStatus = statusConfig[status] || statusConfig.sent;
+
     let paymentDetailsHtml = '';
     if (pi.account_number) {
       paymentDetailsHtml = `
@@ -593,8 +602,8 @@ function renderMsg(m){
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             Proposal
           </div>
-          <div id="offer-status-${od.offer_id}" style="font-size:0.6rem;font-weight:800;padding:3px 10px;border-radius:50px;background:${status==='sent'?'rgba(245,197,66,0.1)':'rgba(34,197,94,0.1)'};color:${status==='sent'?'var(--gold)':'#22c55e'};text-transform:uppercase;">
-            ${status}
+          <div id="offer-status-${od.offer_id}" style="font-size:0.6rem;font-weight:800;padding:3px 10px;border-radius:50px;background:${currentStatus.bg};color:${currentStatus.col};text-transform:uppercase;">
+            ${currentStatus.label}
           </div>
         </div>
         
@@ -631,6 +640,7 @@ function renderMsg(m){
           </button>
         </div>
         
+        ${status === 'pending_confirmation' ? `<div style="text-align:center;padding:12px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:10px;font-size:0.8rem;font-weight:800;color:#3b82f6;text-transform:uppercase;margin-top:15px;display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Awaiting Verification</div>` : ''}
         ${status === 'accepted' ? `<div style="text-align:center;padding:12px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:10px;font-size:0.8rem;font-weight:800;color:#22c55e;text-transform:uppercase;margin-top:15px;display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Payment Confirmed</div>` : ''}
         ${status === 'declined' ? `<div style="text-align:center;padding:12px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;font-size:0.8rem;font-weight:800;color:#ef4444;text-transform:uppercase;margin-top:15px;">Offer Declined</div>` : ''}
 
@@ -964,7 +974,7 @@ async function confirmManualPayment(offerId, amount) {
       metadata: { file_url: receiptUrl, file_name: 'Payment_Receipt' }
     });
 
-    // 5. Notify Admin via Email
+    // 6. Notify Admin via Email
     fetch('/api/notifications/notify-admin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -981,11 +991,20 @@ async function confirmManualPayment(offerId, amount) {
     }).catch(err => console.error('Admin notification failed:', err));
 
     alert('Receipt uploaded! Our team will verify the payment and start your project shortly.');
+    
+    // REFRESH UI to show "Pending" state and clear "Uploading" button
+    await loadMessages(activeConvId);
+    await loadInbox();
+
   } catch(err) {
     console.error('Confirmation error:', err);
-    alert('Error: ' + err.message);
-    btn.disabled = false;
-    btn.innerHTML = originalHtml;
+    alert('Error: ' + (err.message || 'The upload failed. Please try again.'));
+  } finally {
+    // ALWAYS reset button state
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalHtml;
+    }
   }
 }
 
