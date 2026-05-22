@@ -621,8 +621,10 @@ function renderMsg(m){
         ${paymentDetailsHtml}
 
         <div id="offer-actions-${od.offer_id}" style="display:${isActionable?'flex':'none'}; flex-direction:column; gap:10px; margin-top:20px;">
-          <button onclick="confirmManualPayment('${od.offer_id}','${od.amount}')" style="background:linear-gradient(135deg,var(--gold),#d4a81a);color:#000;border:none;padding:12px;border-radius:8px;font-weight:900;font-size:0.85rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px; width:100%;">
-            I Have Made The Payment
+          <input type="file" id="receipt-upload-${od.offer_id}" style="display:none;" accept="image/*,.pdf" onchange="confirmManualPayment('${od.offer_id}','${od.amount}')">
+          <button onclick="document.getElementById('receipt-upload-${od.offer_id}').click()" style="background:linear-gradient(135deg,var(--gold),#d4a81a);color:#000;border:none;padding:12px;border-radius:8px;font-weight:900;font-size:0.85rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px; width:100%;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload Receipt & Accept
           </button>
           <button onclick="rejectOffer('${od.offer_id}')" style="background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.1);padding:10px;border-radius:8px;font-weight:700;font-size:0.75rem;cursor:pointer; width:100%;">
             Reject Offer
@@ -910,10 +912,31 @@ function copyToClipboard(text, btn) {
 }
 
 async function confirmManualPayment(offerId, amount) {
-  if(!confirm('By clicking this, you confirm that you have transferred the funds to the bank details provided. Proceed?')) return;
+  const fileInput = document.getElementById(`receipt-upload-${offerId}`);
+  const file = fileInput?.files[0];
   
+  if (!file) {
+    alert('Please select your payment receipt/screenshot first.');
+    return;
+  }
+
+  if(!confirm('Click OK to upload your receipt and accept this offer. Your project will start immediately after upload.')) return;
+  
+  // Show loading state on button
+  const btn = fileInput.nextElementSibling;
+  const originalHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loading-spinner"></span> Uploading...';
+
   try {
-    // 1. Update offer status in the message content
+    // 1. Upload receipt to storage
+    const path = `receipts/${activeConvId}/${Date.now()}_${file.name}`;
+    const { data: uploadData, error: uploadErr } = await sb.storage.from('messages').upload(path, file);
+    if (uploadErr) throw uploadErr;
+    const { data: urlData } = sb.storage.from('messages').getPublicUrl(path);
+    const receiptUrl = urlData.publicUrl;
+
+    // 2. Find the message that contains this offer to update its status
     const { data: msgs } = await sb.from('messages').select('*').eq('conversation_id', activeConvId).eq('message_type', 'offer');
     const targetMsg = msgs?.find(m => {
       try { return JSON.parse(m.content).offer_id === offerId; } catch(e) { return false; }
@@ -921,52 +944,70 @@ async function confirmManualPayment(offerId, amount) {
 
     if (targetMsg) {
       const content = JSON.parse(targetMsg.content);
-      content.status = 'accepted'; // We mark as accepted once they confirm transfer
+      content.status = 'accepted';
       await sb.from('messages').update({ content: JSON.stringify(content) }).eq('id', targetMsg.id);
     }
 
-    // 2. Update conversation status
-    await sb.from('conversations').update({ status: 'payment_pending' }).eq('id', activeConvId);
-
-    // 3. UI Update
-    const actions = document.getElementById(`offer-actions-${offerId}`);
-    if(actions) actions.style.display = 'none';
-    const statusEl = document.getElementById(`offer-status-${offerId}`);
-    if(statusEl) {
-      statusEl.textContent = 'ACCEPTED';
-      statusEl.style.background = 'rgba(34,197,94,0.15)';
-      statusEl.style.color = '#22c55e';
+    // 3. Create the Project (Set to In Progress immediately)
+    const conv = allConvos.find(c => c.id === activeConvId);
+    let deadline = null;
+    if (conv?.delivery_days) {
+      const d = new Date();
+      d.setDate(d.getDate() + Number(conv.delivery_days));
+      deadline = d.toISOString();
     }
 
-    // 4. Send system notification
+    const { data: projData, error: projErr } = await sb.from('projects').insert({
+      client_id: currentUser.id,
+      expert_id: conv?.expert_id || null,
+      title: `Project via Offer OFF-${offerId.slice(0,6)}`,
+      status: 'in_progress',
+      budget: amount,
+      deadline: deadline,
+      payment_status: 'successful',
+      payment_source: 'manual_transfer',
+      receipt_url: receiptUrl // Store the proof of payment
+    }).select().single();
+    
+    if (projErr) throw projErr;
+    const newProjectId = projData?.id;
+
+    // 4. Update conversation status
+    await sb.from('conversations').update({ status: 'in_progress', project_id: newProjectId }).eq('id', activeConvId);
+    if(conv) { conv.status = 'in_progress'; conv.project_id = newProjectId; }
+
+    // 5. Send system notification into chat
     await sb.from('messages').insert({
       conversation_id: activeConvId,
       sender_id: currentUser.id,
       sender_role: 'client',
-      content: `💰 Client confirmed payment of $${Number(amount).toLocaleString()}. Awaiting verification.`,
-      message_type: 'system'
+      content: `💰 Client paid $${Number(amount).toLocaleString()} and uploaded receipt: [Proof of Payment](${receiptUrl}). Project is now IN PROGRESS.`,
+      message_type: 'system',
+      metadata: { file_url: receiptUrl, file_name: 'Payment_Receipt' }
     });
 
-    // 5. Notify Admin via Email
-    const conv = allConvos.find(c => c.id === activeConvId);
+    // 6. Notify Admin via Email
     fetch('/api/notifications/notify-admin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         type: 'offer_accepted',
         data: {
-          project_title: conv?.projects?.title || `Offer OFF-${offerId.slice(0,6)}`,
+          project_title: projData.title,
           offer_id: offerId,
           amount: amount,
-          client_name: currentProfile.full_name
+          client_name: currentProfile.full_name,
+          receipt_url: receiptUrl
         }
       })
     }).catch(err => console.error('Admin notification failed:', err));
 
-    alert('Payment notification sent. Our team will verify the transfer and start your project shortly.');
+    alert('Success! Your receipt has been uploaded and your project is now in progress.');
   } catch(err) {
     console.error('Confirmation error:', err);
     alert('Error: ' + err.message);
+    btn.disabled = false;
+    btn.innerHTML = originalHtml;
   }
 }
 
