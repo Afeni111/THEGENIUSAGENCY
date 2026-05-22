@@ -944,70 +944,34 @@ async function confirmManualPayment(offerId, amount) {
 
     if (targetMsg) {
       const content = JSON.parse(targetMsg.content);
-      content.status = 'accepted';
+      content.status = 'pending_confirmation';
+      content.receipt_url = receiptUrl;
       await sb.from('messages').update({ content: JSON.stringify(content) }).eq('id', targetMsg.id);
     }
 
-    // 3. Create or Update the Project
+    // 3. Update conversation status to pending
+    await sb.from('conversations').update({ status: 'payment_pending' }).eq('id', activeConvId);
     const conv = allConvos.find(c => c.id === activeConvId);
-    let deadline = null;
-    if (conv?.delivery_days) {
-      const d = new Date();
-      d.setDate(d.getDate() + Number(conv.delivery_days));
-      deadline = d.toISOString();
-    }
+    if(conv) { conv.status = 'payment_pending'; }
 
-    let projectId = conv?.project_id;
-    let projTitle = `Project via Offer OFF-${offerId.slice(0,6)}`;
-
-    if (!projectId) {
-      const { data: projData, error: projErr } = await sb.from('projects').insert({
-        client_id: currentUser.id,
-        expert_id: conv?.expert_id || null,
-        title: projTitle,
-        status: 'in_progress',
-        budget: amount,
-        deadline: deadline,
-        payment_status: 'successful',
-        payment_source: 'manual_transfer',
-        receipt_url: receiptUrl
-      }).select().single();
-      
-      if (projErr) throw projErr;
-      projectId = projData.id;
-      projTitle = projData.title;
-    } else {
-      // Update existing project if one was already linked
-      await sb.from('projects').update({
-        status: 'in_progress',
-        budget: amount,
-        payment_status: 'successful',
-        receipt_url: receiptUrl
-      }).eq('id', projectId);
-    }
-
-    // 4. Update conversation status
-    await sb.from('conversations').update({ status: 'in_progress', project_id: projectId }).eq('id', activeConvId);
-    if(conv) { conv.status = 'in_progress'; conv.project_id = projectId; }
-
-    // 5. Send system notification into chat
+    // 4. Send system notification into chat
     await sb.from('messages').insert({
       conversation_id: activeConvId,
       sender_id: currentUser.id,
       sender_role: 'client',
-      content: `💰 Client paid $${Number(amount).toLocaleString()} and uploaded receipt: [Proof of Payment](${receiptUrl}). Project is now IN PROGRESS.`,
+      content: `⏳ Client uploaded receipt and is awaiting verification: [View Proof](${receiptUrl})`,
       message_type: 'system',
       metadata: { file_url: receiptUrl, file_name: 'Payment_Receipt' }
     });
 
-    // 6. Notify Admin via Email
+    // 5. Notify Admin via Email
     fetch('/api/notifications/notify-admin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         type: 'offer_accepted',
         data: {
-          project_title: projData.title,
+          project_title: `Offer OFF-${offerId.slice(0,6)}`,
           offer_id: offerId,
           amount: amount,
           client_name: currentProfile.full_name,
@@ -1016,7 +980,7 @@ async function confirmManualPayment(offerId, amount) {
       })
     }).catch(err => console.error('Admin notification failed:', err));
 
-    alert('Success! Your receipt has been uploaded and your project is now in progress.');
+    alert('Receipt uploaded! Our team will verify the payment and start your project shortly.');
   } catch(err) {
     console.error('Confirmation error:', err);
     alert('Error: ' + err.message);
