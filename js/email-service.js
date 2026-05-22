@@ -158,6 +158,21 @@ const templates = {
                 <a href="https://thegeniusagency.co/admin/dashboard.html" style="background: #F5C542; color: #000; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Go to Dashboard</a>
             </div>
         `
+    }),
+    offer_rejected: (data) => ({
+        subject: `❌ Offer Rejected: ${data.project_title}`,
+        text: `A client has rejected an offer.\n\nProject: ${data.project_title}\nOffer ID: ${data.offer_id}`,
+        html: `
+            <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                <h2 style="color: #ef4444;">Offer Rejected</h2>
+                <p>A client has just rejected an offer.</p>
+                <div style="background: #fef2f2; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ef4444;">
+                    <p style="margin: 5px 0;"><strong>Project:</strong> ${data.project_title}</p>
+                    <p style="margin: 5px 0;"><strong>Offer ID:</strong> ${data.offer_id}</p>
+                </div>
+                <a href="https://thegeniusagency.co/admin/chat.html?cid=${data.conversation_id}" style="background: #ef4444; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Go to Chat</a>
+            </div>
+        `
     })
 };
 

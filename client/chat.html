@@ -713,6 +713,15 @@ async function sendMsg(){
   const inp=document.getElementById('chat-input');
   const txt=inp.value.trim();
   if(!txt)return;
+  
+  // Check if this is the first message from the client
+  const { count } = await sb.from('messages')
+    .select('*', { count: 'exact', head: true })
+    .eq('conversation_id', activeConvId)
+    .eq('sender_role', 'client');
+  
+  const isFirstMessage = !count || count === 0;
+
   inp.value='';inp.style.height='auto';
   const{data:msg}=await sb.from('messages').insert({conversation_id:activeConvId,sender_id:currentUser.id,sender_role:'client',content:txt,message_type:'normal'}).select().single();
   if(msg)appendMsg({...msg,profiles:{full_name:currentProfile.full_name,role:'client'}});
@@ -724,8 +733,16 @@ async function sendMsg(){
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      type: 'new_message',
-      data: {
+      type: isFirstMessage ? 'new_inquiry' : 'new_message',
+      data: isFirstMessage ? {
+        name: currentProfile.full_name,
+        email: currentProfile.email,
+        type: 'Custom Inquiry',
+        budget: 'N/A',
+        deadline: 'N/A',
+        desc: txt,
+        conversation_id: activeConvId
+      } : {
         client_name: currentProfile.full_name,
         content: txt,
         conversation_id: activeConvId
@@ -832,6 +849,20 @@ async function rejectOffer(offerId) {
       content: `❌ Client rejected the offer (Ref: OFF-${offerId.slice(0,6)})`,
       message_type: 'system'
     });
+
+    // Notify Admin via Email
+    fetch('/api/notifications/notify-admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'offer_rejected',
+        data: {
+          project_title: conv?.projects?.title || `Offer OFF-${offerId.slice(0,6)}`,
+          offer_id: offerId,
+          conversation_id: activeConvId
+        }
+      })
+    }).catch(err => console.error('Admin notification failed:', err));
 
     alert('Offer rejected.');
   } catch(err) {
