@@ -3,7 +3,7 @@
   "trailingSlash": false,
   "functions": {
     "server.js": {
-      "runtime": "vercel-nodejs@18.x"
+      "runtime": "nodejs18.x"
     }
   },
   "crons": [
