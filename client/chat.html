@@ -851,6 +851,7 @@ async function rejectOffer(offerId) {
     });
 
     // Notify Admin via Email
+    const conv = allConvos.find(c => c.id === activeConvId);
     fetch('/api/notifications/notify-admin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
