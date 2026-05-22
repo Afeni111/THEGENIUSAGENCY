@@ -929,7 +929,7 @@ async function confirmManualPayment(offerId, amount) {
   btn.innerHTML = '<span class="loading-spinner"></span> Uploading...';
 
   try {
-    // 1. Upload receipt to storage
+    // 1. Upload receipt to storage (Using verified 'messages' bucket)
     const path = `receipts/${activeConvId}/${Date.now()}_${file.name}`;
     const { data: uploadData, error: uploadErr } = await sb.storage.from('messages').upload(path, file);
     if (uploadErr) throw uploadErr;
@@ -948,7 +948,7 @@ async function confirmManualPayment(offerId, amount) {
       await sb.from('messages').update({ content: JSON.stringify(content) }).eq('id', targetMsg.id);
     }
 
-    // 3. Create the Project (Set to In Progress immediately)
+    // 3. Create or Update the Project
     const conv = allConvos.find(c => c.id === activeConvId);
     let deadline = null;
     if (conv?.delivery_days) {
@@ -957,24 +957,38 @@ async function confirmManualPayment(offerId, amount) {
       deadline = d.toISOString();
     }
 
-    const { data: projData, error: projErr } = await sb.from('projects').insert({
-      client_id: currentUser.id,
-      expert_id: conv?.expert_id || null,
-      title: `Project via Offer OFF-${offerId.slice(0,6)}`,
-      status: 'in_progress',
-      budget: amount,
-      deadline: deadline,
-      payment_status: 'successful',
-      payment_source: 'manual_transfer',
-      receipt_url: receiptUrl // Store the proof of payment
-    }).select().single();
-    
-    if (projErr) throw projErr;
-    const newProjectId = projData?.id;
+    let projectId = conv?.project_id;
+    let projTitle = `Project via Offer OFF-${offerId.slice(0,6)}`;
+
+    if (!projectId) {
+      const { data: projData, error: projErr } = await sb.from('projects').insert({
+        client_id: currentUser.id,
+        expert_id: conv?.expert_id || null,
+        title: projTitle,
+        status: 'in_progress',
+        budget: amount,
+        deadline: deadline,
+        payment_status: 'successful',
+        payment_source: 'manual_transfer',
+        receipt_url: receiptUrl
+      }).select().single();
+      
+      if (projErr) throw projErr;
+      projectId = projData.id;
+      projTitle = projData.title;
+    } else {
+      // Update existing project if one was already linked
+      await sb.from('projects').update({
+        status: 'in_progress',
+        budget: amount,
+        payment_status: 'successful',
+        receipt_url: receiptUrl
+      }).eq('id', projectId);
+    }
 
     // 4. Update conversation status
-    await sb.from('conversations').update({ status: 'in_progress', project_id: newProjectId }).eq('id', activeConvId);
-    if(conv) { conv.status = 'in_progress'; conv.project_id = newProjectId; }
+    await sb.from('conversations').update({ status: 'in_progress', project_id: projectId }).eq('id', activeConvId);
+    if(conv) { conv.status = 'in_progress'; conv.project_id = projectId; }
 
     // 5. Send system notification into chat
     await sb.from('messages').insert({
