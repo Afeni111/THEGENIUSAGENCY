@@ -1400,9 +1400,16 @@ const initVideoModal = () => {
     window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
 };
 
+let expertsSwiper = null;
 const initExpertsSwiper = () => {
     const track = document.getElementById('experts-track');
     if (!track) return;
+
+    // Destroy existing instance if it exists
+    if (expertsSwiper) {
+        expertsSwiper.destroy(true, true);
+        expertsSwiper = null;
+    }
 
     track.innerHTML = experts.map(exp => `
         <div class="swiper-slide premium-expert-card">
@@ -1415,7 +1422,11 @@ const initExpertsSwiper = () => {
                 <p style="color: var(--primary-yellow); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px;">${exp.categories[0]}</p>
                 <p style="color: #888; font-size: 0.9rem; margin-bottom: 30px; line-height: 1.6;">${exp.desc}</p>
                 <div style="margin-top: auto; width: 100%;">
-                    <button onclick="event.stopPropagation(); window.openExpertModal('${exp.id}')" class="btn btn-outline" style="width: 100%; padding: 12px 20px; font-size: 0.85rem; letter-spacing: 0.5px; border-radius: 100px;">View Full Profile</button>
+                    <button onclick="event.preventDefault(); event.stopPropagation(); window.openExpertModal('${exp.id}')" 
+                            class="btn btn-outline swiper-no-swiping" 
+                            style="width: 100%; padding: 12px 20px; font-size: 0.85rem; letter-spacing: 0.5px; border-radius: 100px; cursor: pointer; position: relative; z-index: 10;">
+                        View Full Profile
+                    </button>
                 </div>
             </div>
         </div>
@@ -1423,17 +1434,19 @@ const initExpertsSwiper = () => {
 
     // Check if Swiper is loaded
     if (typeof Swiper !== 'undefined') {
-        new Swiper('.experts-swiper', {
+        expertsSwiper = new Swiper('.experts-swiper', {
             slidesPerView: 'auto',
             centeredSlides: true,
             centerInsufficientSlides: true,
             spaceBetween: 40,
             loop: true,
-            autoplay: { delay: 4000 },
+            autoplay: { delay: 4000, disableOnInteraction: true },
             speed: 650,
             pagination: { el: '.swiper-pagination', clickable: true },
             navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
             slideToClickedSlide: false,
+            noSwiping: true,
+            noSwipingClass: 'swiper-no-swiping',
             breakpoints: {
                 0: { spaceBetween: 20 },
                 768: { spaceBetween: 30 },
