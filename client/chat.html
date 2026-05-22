@@ -801,9 +801,19 @@ function bindInputEvents(){
 async function rejectOffer(offerId) {
   if(!confirm('Are you sure you want to reject this offer?')) return;
   try {
-    const {error} = await sb.from('offers').update({ status: 'declined' }).eq('id', offerId);
-    if(error) throw error;
-    
+    // 1. Find the message that contains this offer
+    const { data: msgs } = await sb.from('messages').select('*').eq('conversation_id', activeConvId).eq('message_type', 'offer');
+    const targetMsg = msgs?.find(m => {
+      try { return JSON.parse(m.content).offer_id === offerId; } catch(e) { return false; }
+    });
+
+    if (targetMsg) {
+      // 2. Update the JSON content to include status: 'declined'
+      const content = JSON.parse(targetMsg.content);
+      content.status = 'declined';
+      await sb.from('messages').update({ content: JSON.stringify(content) }).eq('id', targetMsg.id);
+    }
+
     // Update UI locally
     const actions = document.getElementById(`offer-actions-${offerId}`);
     if(actions) actions.style.display = 'none';
@@ -819,7 +829,7 @@ async function rejectOffer(offerId) {
       conversation_id: activeConvId,
       sender_id: currentUser.id,
       sender_role: 'client',
-      content: `❌ Client rejected the offer (Ref: ${offerId.slice(0,8)})`,
+      content: `❌ Client rejected the offer (Ref: OFF-${offerId.slice(0,6)})`,
       message_type: 'system'
     });
 
