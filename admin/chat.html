@@ -350,26 +350,69 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;}
 
 <!-- OFFER MODAL -->
 <div class="modal-overlay" id="offer-modal" style="display:none;">
-  <div class="modal">
+  <div class="modal" style="max-width: 600px;">
     <div class="modal-title">📋 Send Custom Offer</div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Amount (USD)</label>
-        <input type="number" class="form-input" id="offer-amount" placeholder="e.g. 500">
+    
+    <div style="background: rgba(245,197,66,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(245,197,66,0.1); margin-bottom: 20px;">
+      <div style="font-size: 0.75rem; font-weight: 800; color: var(--gold); text-transform: uppercase; margin-bottom: 8px;">Project Details</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Amount (USD)</label>
+          <input type="number" class="form-input" id="offer-amount" placeholder="e.g. 500">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Delivery Days</label>
+          <input type="number" class="form-input" id="offer-days" placeholder="e.g. 7">
+        </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Delivery Days</label>
-        <input type="number" class="form-input" id="offer-days" placeholder="e.g. 7">
+        <label class="form-label">Revisions</label>
+        <input type="number" class="form-input" id="offer-revisions" placeholder="e.g. 2" value="2">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Offer Description</label>
+        <textarea class="form-input" id="offer-desc" placeholder="What's included in this offer..."></textarea>
       </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">Revisions</label>
-      <input type="number" class="form-input" id="offer-revisions" placeholder="e.g. 2" value="2">
+
+    <div style="padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+      <div style="font-size: 0.75rem; font-weight: 800; color: #fff; text-transform: uppercase; margin-bottom: 12px;">Payment Instructions (Manual Transfer)</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Bank Name *</label>
+          <input type="text" class="form-input" id="offer-bank-name" placeholder="e.g. Zenith Bank">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Account Name *</label>
+          <input type="text" class="form-input" id="offer-account-name" placeholder="Full account name">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Account Number *</label>
+          <input type="text" class="form-input" id="offer-account-number" placeholder="Number">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Account Type</label>
+          <input type="text" class="form-input" id="offer-account-type" placeholder="e.g. USD / Checking">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Routing Number</label>
+          <input type="text" class="form-input" id="offer-routing" placeholder="Optional">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Swift / BIC Code</label>
+          <input type="text" class="form-input" id="offer-swift" placeholder="Optional">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bank Address</label>
+        <textarea class="form-input" id="offer-bank-address" rows="2" placeholder="Optional address"></textarea>
+      </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">Description</label>
-      <textarea class="form-input" id="offer-desc" placeholder="What's included in this offer..."></textarea>
-    </div>
+
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('offer-modal')">Cancel</button>
       <button class="btn-send-offer" onclick="submitOffer()">Send Offer</button>
@@ -924,7 +967,18 @@ async function submitOffer(){
   const days=document.getElementById('offer-days').value;
   const revisions=document.getElementById('offer-revisions').value;
   const desc=document.getElementById('offer-desc').value;
+  
+  // Bank Details
+  const bankName = document.getElementById('offer-bank-name').value;
+  const accountName = document.getElementById('offer-account-name').value;
+  const accountNumber = document.getElementById('offer-account-number').value;
+  const accountType = document.getElementById('offer-account-type').value;
+  const routing = document.getElementById('offer-routing').value;
+  const swift = document.getElementById('offer-swift').value;
+  const address = document.getElementById('offer-bank-address').value;
+
   if(!amount||!days){alert('Amount and delivery days are required.');return;}
+  if(!bankName||!accountName||!accountNumber){alert('Bank Name, Account Name, and Account Number are mandatory.');return;}
   if(!activeConvoId){alert('No active conversation selected.');return;}
   
   try {
@@ -944,7 +998,23 @@ async function submitOffer(){
 
     if(offErr) throw offErr;
 
-    const offData = {offer_id:offer?.id, amount, delivery_days:days, description:desc, title: 'Custom Project Offer'};
+    const offData = {
+      offer_id:offer?.id, 
+      amount, 
+      delivery_days:days, 
+      revisions:revisions,
+      description:desc, 
+      title: 'Custom Project Offer',
+      payment_info: {
+        bank_name: bankName,
+        account_name: accountName,
+        account_number: accountNumber,
+        account_type: accountType,
+        routing_number: routing,
+        swift_code: swift,
+        bank_address: address
+      }
+    };
     const {data:msg, error:msgErr} = await sb.from('messages').insert({
       conversation_id:activeConvoId,
       sender_id:adminUser.id,
@@ -968,9 +1038,11 @@ async function submitOffer(){
     closeModal('offer-modal');
     
     // Reset form
-    document.getElementById('offer-amount').value = '';
-    document.getElementById('offer-days').value = '';
-    document.getElementById('offer-desc').value = '';
+    const inputs = ['offer-amount', 'offer-days', 'offer-revisions', 'offer-desc', 'offer-bank-name', 'offer-account-name', 'offer-account-number', 'offer-account-type', 'offer-routing', 'offer-swift', 'offer-bank-address'];
+    inputs.forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.value = (id === 'offer-revisions') ? '2' : '';
+    });
   } catch(err) {
     console.error('Submit offer error:', err);
     alert('Failed to send offer: ' + (err.message || 'Unknown error'));
