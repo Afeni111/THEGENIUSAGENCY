@@ -835,9 +835,9 @@ function bindInputEvents(){
     const files=Array.from(e.target.files);
     for(const file of files){
       const path=`${activeConvId}/${Date.now()}_${file.name}`;
-      const{data:up}=await sb.storage.from('messages').upload(path,file,{upsert:true});
+      const{data:up}=await sb.storage.from('uploads').upload(path,file,{upsert:true});
       if(up){
-        const{data:url}=sb.storage.from('messages').getPublicUrl(path);
+        const{data:url}=sb.storage.from('uploads').getPublicUrl(path);
         const{data:msg}=await sb.from('messages').insert({conversation_id:activeConvId,sender_id:currentUser.id,sender_role:'client',content:`[FILE:${file.name}]`,message_type:'normal',metadata:{file_url:url.publicUrl,file_name:file.name}}).select().single();
         if(msg)appendMsg({...msg,profiles:{full_name:currentProfile.full_name,role:'client'}});
       }
@@ -931,9 +931,9 @@ async function confirmManualPayment(offerId, amount) {
   try {
     // 1. Upload receipt to storage (Using verified 'messages' bucket)
     const path = `receipts/${activeConvId}/${Date.now()}_${file.name}`;
-    const { data: uploadData, error: uploadErr } = await sb.storage.from('messages').upload(path, file);
+    const { data: uploadData, error: uploadErr } = await sb.storage.from('uploads').upload(path, file);
     if (uploadErr) throw uploadErr;
-    const { data: urlData } = sb.storage.from('messages').getPublicUrl(path);
+    const { data: urlData } = sb.storage.from('uploads').getPublicUrl(path);
     const receiptUrl = urlData.publicUrl;
 
     // 2. Find the message that contains this offer to update its status
