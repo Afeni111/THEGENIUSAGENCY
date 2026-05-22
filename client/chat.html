@@ -932,10 +932,12 @@ function initPaystack(amount, offer_id, btn, originalText){
     amount:Math.round(Number(amount)*100),
     currency:'USD',
     ref:'TGA_'+Date.now(),
-    callback: successHandler,
-    onSuccess: successHandler,
-    onClose: cancelHandler,
-    onCancel: cancelHandler
+    callback: function(response) {
+      successHandler(response);
+    },
+    onClose: function() {
+      cancelHandler();
+    }
   });
   handler?.openIframe();
 }
