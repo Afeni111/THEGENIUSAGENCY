@@ -764,8 +764,31 @@ function renderMsg(m){
       }
     } catch(e) { console.error('Parse offer error:', e); }
     const status = od.status || 'sent';
-    const statusColor = status === 'sent' ? 'var(--gold)' : status === 'accepted' ? '#22c55e' : '#ef4444';
-    const statusBg = status === 'sent' ? 'rgba(245,197,66,0.1)' : status === 'accepted' ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)';
+    const statusColor = status === 'sent' ? 'var(--gold)' : status === 'accepted' ? '#22c55e' : status === 'pending_confirmation' ? '#3b82f6' : '#ef4444';
+    const statusBg = status === 'sent' ? 'rgba(245,197,66,0.1)' : status === 'accepted' ? 'rgba(34,197,94,0.1)' : status === 'pending_confirmation' ? 'rgba(59,130,246,0.1)' : 'rgba(239,68,68,0.1)';
+    const receiptUrl = od.receipt_url;
+
+    let adminActionsHtml = '';
+    if (status === 'pending_confirmation' && receiptUrl) {
+      adminActionsHtml = `
+        <div style="background:rgba(245,197,66,0.05); border:1px solid rgba(245,197,66,0.2); border-radius:12px; padding:15px; margin-top:15px;">
+          <div style="font-size:0.65rem; font-weight:800; color:var(--gold); text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Verification Required
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <button onclick="window.open('${receiptUrl}', '_blank')" style="background:rgba(255,255,255,0.05); color:#fff; border:1px solid rgba(255,255,255,0.1); padding:10px; border-radius:8px; font-weight:700; font-size:0.75rem; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              View Proof
+            </button>
+            <button id="approve-btn-${m.id}" onclick="approvePayment('${od.offer_id}', '${od.amount}', '${m.id}')" style="background:var(--gold); color:#000; border:none; padding:10px; border-radius:8px; font-weight:900; font-size:0.75rem; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              Approve Payment
+            </button>
+          </div>
+        </div>
+      `;
+    }
 
     return`<div style="display:flex;justify-content:${isSelf?'flex-end':'flex-start'};margin:12px 0;">
       <div class="msg-offer-card" style="background:rgba(255,255,255,0.04);border:1px solid rgba(245,197,66,0.2);border-radius:16px;padding:18px 22px;width:400px;box-shadow:0 15px 40px rgba(0,0,0,0.25);backdrop-filter:blur(10px);position:relative;overflow:hidden;">
@@ -775,7 +798,7 @@ function renderMsg(m){
             Proposal
           </div>
           <div style="font-size:0.6rem;font-weight:800;padding:3px 10px;border-radius:50px;background:${statusBg};color:${statusColor};text-transform:uppercase;">
-            ${status}
+            ${status === 'pending_confirmation' ? 'PENDING' : status}
           </div>
         </div>
         
@@ -798,6 +821,9 @@ function renderMsg(m){
             </div>
           </div>
         </div>
+
+        ${adminActionsHtml}
+        ${status === 'accepted' ? `<div style="text-align:center;padding:12px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:10px;font-size:0.8rem;font-weight:800;color:#22c55e;text-transform:uppercase;margin-top:15px;display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Project Started</div>` : ''}
 
         <div style="font-size:0.55rem;color:rgba(255,255,255,0.15);margin-top:14px;text-align:center;font-weight:600;">Ref: OFF-${od.offer_id?.slice(0,6)} • ${time}</div>
       </div>
@@ -1082,6 +1108,95 @@ async function openAssignModal(){
       </div>
     </div>`;
   }).join('');
+}
+
+async function approvePayment(offerId, amount, msgId) {
+  if(!confirm(`Verify and approve payment of $${Number(amount).toLocaleString()}? This will officially start the project.`)) return;
+  
+  const btn = document.getElementById(`approve-btn-${msgId}`);
+  if(btn) { btn.disabled = true; btn.innerHTML = 'Approving...'; }
+
+  try {
+    const conv = allConvos.find(c => c.id === activeConvoId);
+    if(!conv) throw new Error('Conversation data not found.');
+
+    // 1. Update the offer message content to 'accepted'
+    const { data: msgData } = await sb.from('messages').select('content').eq('id', msgId).single();
+    if (msgData) {
+      const content = JSON.parse(msgData.content);
+      content.status = 'accepted';
+      await sb.from('messages').update({ content: JSON.stringify(content) }).eq('id', msgId);
+    }
+
+    // 2. Calculate Deadline
+    let deadline = null;
+    if (conv.delivery_days || conv.last_message) {
+        // Try to get days from offer content if not in convo
+        const days = JSON.parse(msgData.content).delivery_days;
+        if(days) {
+            const d = new Date();
+            d.setDate(d.getDate() + Number(days));
+            deadline = d.toISOString();
+        }
+    }
+
+    // 3. Create the Project
+    const { data: projData, error: projErr } = await sb.from('projects').insert({
+      client_id: conv.client_id,
+      expert_id: conv.expert_id || null,
+      title: `Project via Offer OFF-${offerId.slice(0,6)}`,
+      status: 'in_progress',
+      budget: amount,
+      deadline: deadline,
+      payment_status: 'successful',
+      payment_source: 'manual_transfer',
+      receipt_url: JSON.parse(msgData.content).receipt_url
+    }).select().single();
+
+    if (projErr) throw projErr;
+
+    // 4. Update conversation status
+    await sb.from('conversations').update({ 
+      status: 'in_progress', 
+      project_id: projData.id 
+    }).eq('id', activeConvoId);
+
+    // 5. Send system confirmation into chat
+    await sb.from('messages').insert({
+      conversation_id: activeConvoId,
+      sender_id: adminUser.id,
+      sender_role: 'admin',
+      content: `✅ Payment verified by Admin. Project is now officially IN PROGRESS.`,
+      message_type: 'system'
+    });
+
+    // 6. Notify Client via Email
+    const { data: clientProf } = await sb.from('profiles').select('email, full_name').eq('id', conv.client_id).single();
+    if (clientProf?.email) {
+      fetch('/api/notifications/notify-admin', { // Using same endpoint for outgoing too
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'project_started', // Ensure this template exists in email-service.js
+          data: {
+            client_name: clientProf.full_name,
+            client_email: clientProf.email,
+            project_title: projData.title,
+            amount: amount
+          }
+        })
+      }).catch(err => console.error('Client notification failed:', err));
+    }
+
+    alert('Payment approved! Project has been started.');
+    await loadMessages(activeConvoId); // Refresh chat view
+    await loadConvos(); // Refresh sidebar
+
+  } catch (err) {
+    console.error('Approval error:', err);
+    alert('Error: ' + err.message);
+    if(btn) { btn.disabled = false; btn.innerHTML = 'Approve Payment'; }
+  }
 }
 
 async function assignExpert(expertId,expertName){

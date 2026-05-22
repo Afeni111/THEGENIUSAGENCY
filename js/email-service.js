@@ -173,6 +173,23 @@ const templates = {
                 <a href="https://thegeniusagency.co/admin/chat.html?cid=${data.conversation_id}" style="background: #ef4444; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Go to Chat</a>
             </div>
         `
+    }),
+    project_started: (data) => ({
+        subject: `🚀 Project Started: ${data.project_title}`,
+        text: `Great news ${data.client_name}! Your payment has been verified and your project "${data.project_title}" is now officially IN PROGRESS.`,
+        html: `
+            <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                <h2 style="color: #10b981;">Project Started!</h2>
+                <p>Hello ${data.client_name},</p>
+                <p>Your payment of <strong>$${Number(data.amount).toLocaleString()}</strong> has been verified. Your project is now officially <strong>In Progress</strong>.</p>
+                <div style="background: #f0fdf4; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #10b981;">
+                    <p style="margin: 5px 0;"><strong>Project:</strong> ${data.project_title}</p>
+                    <p style="margin: 5px 0;"><strong>Status:</strong> In Progress</p>
+                </div>
+                <p>You can track progress and communicate with your expert through your dashboard.</p>
+                <a href="https://thegeniusagency.co/client/dashboard.html" style="background: #10b981; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">View Dashboard</a>
+            </div>
+        `
     })
 };
 
