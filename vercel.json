@@ -1,11 +1,4 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "functions": {
-    "server.js": {
-      "runtime": "nodejs18.x"
-    }
-  },
   "crons": [
     {
       "path": "/api/cron/deadline-check",
