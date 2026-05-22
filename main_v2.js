@@ -464,7 +464,8 @@ const openExpertModal = (id) => {
     initExpertModal();
     initExpertTabs();
     
-    const expert = (window.experts || experts).find(e => e.id === id);
+    const allExperts = Array.isArray(experts) ? experts : [];
+    const expert = allExperts.find(e => e.id === id);
     if (!expert) return;
     currentExpertId = id;
 
@@ -957,7 +958,8 @@ const initBriefSubmission = () => {
             budget: document.getElementById('brief-budget').value || null
         };
 
-        const expert = (window.experts || experts).find(e => e.id === currentExpertId);
+        const allExperts = Array.isArray(experts) ? experts : [];
+        const expert = allExperts.find(e => e.id === currentExpertId);
         const expertName = expert ? expert.name : 'General Agency';
 
         try {
