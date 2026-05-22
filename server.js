@@ -47,12 +47,22 @@ app.get('/api/health', (req, res) => {
 
 // Root Route - Fallback to index.html (only for non-file, non-api paths)
 const fs = require('fs');
-app.get('*path', (req, res) => {
+app.get('*', (req, res) => {
     if (req.path.startsWith('/api')) return;
-    const filePath = path.join(__dirname, req.path);
+    
+    let filePath = path.join(__dirname, req.path);
+    
+    // 1. Try the exact path
     if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
         return res.sendFile(filePath);
     }
+    
+    // 2. Try appending .html (fixes /terms -> terms.html)
+    if (fs.existsSync(filePath + '.html')) {
+        return res.sendFile(filePath + '.html');
+    }
+    
+    // 3. Fallback to index.html
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
