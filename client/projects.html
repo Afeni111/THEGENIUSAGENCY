@@ -260,8 +260,39 @@ async function init(){
   const{data:p}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
   if(!p||p.role!=='client'){window.location.href='../login.html';return;}
 
-  const{data:convos}=await sb.from('conversations').select('*,projects(title,status,budget,deadline,progress)').eq('client_id',currentUser.id).order('updated_at',{ascending:false});
-  allConvos=convos||[];
+  // ROBUST MANUAL JOIN STRATEGY
+  try {
+    console.log('--- Loading Client Orders ---');
+    
+    // 1. Fetch Conversations
+    const {data: convos, error: convErr} = await sb.from('conversations')
+      .select('*')
+      .eq('client_id', currentUser.id)
+      .order('updated_at', {ascending:false});
+    
+    if (convErr) throw convErr;
+
+    // 2. Fetch Projects
+    const {data: projects, error: projErr} = await sb.from('projects')
+      .select('*')
+      .eq('client_id', currentUser.id);
+    
+    if (projErr) console.warn('Projects fetch error:', projErr);
+
+    // 3. Manual Join
+    allConvos = convos.map(c => {
+      return {
+        ...c,
+        projects: projects?.find(p => p.id === c.project_id || p.conversation_id === c.id) || null
+      };
+    });
+
+    console.log(`Mapped ${allConvos.length} conversations for client projects.`);
+
+  } catch (err) {
+    console.error('Fatal load error:', err);
+    allConvos = [];
+  }
 
   // Update profile icons and dropdown info
   const avatarInitials = av(p.full_name || p.email);

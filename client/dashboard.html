@@ -451,10 +451,38 @@ function progressForStatus(s){
 }
 
 async function loadProjects(){
-  // Temporarily simplified query to test
-const{data:convos}=await sb.from('conversations').select('*').eq('client_id',currentUser.id).order('updated_at',{ascending:false});
-console.log('Conversations loaded:',convos);
-  allConvos=convos||[];
+  try {
+    console.log('--- Loading Client Projects ---');
+    
+    // 1. Fetch Conversations
+    const {data: convos, error: convErr} = await sb.from('conversations')
+      .select('*')
+      .eq('client_id', currentUser.id)
+      .order('updated_at', {ascending:false});
+    
+    if (convErr) throw convErr;
+
+    // 2. Fetch Projects
+    const {data: projects, error: projErr} = await sb.from('projects')
+      .select('*')
+      .eq('client_id', currentUser.id);
+    
+    if (projErr) console.warn('Projects fetch error:', projErr);
+
+    // 3. Manual Join
+    allConvos = convos.map(c => {
+      return {
+        ...c,
+        projects: projects?.find(p => p.id === c.project_id || p.conversation_id === c.id) || null
+      };
+    });
+
+    console.log(`Mapped ${allConvos.length} conversations for client.`);
+
+  } catch (err) {
+    console.error('Fatal load error:', err);
+    allConvos = [];
+  }
   
   let unreadMessagesTotal = 0;
 
