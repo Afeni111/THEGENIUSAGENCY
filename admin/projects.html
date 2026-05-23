@@ -182,25 +182,39 @@ async function init(){
   document.getElementById('admin-name').textContent=p.full_name||'Admin';
   document.getElementById('admin-avatar').textContent=(p.full_name||'A').split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);
   
-  // Resilient Fetch: Try complex join first, then fallback to simple if needed
-  let {data, error} = await sb.from('projects')
-    .select('*, profiles(full_name,email), experts(name,image_url), conversations(id)')
-    .order('updated_at',{ascending:false});
-  
-  if (error) {
-    console.warn('Complex join failed, falling back to simple fetch:', error.message);
-    const {data: simpleData, error: simpleError} = await sb.from('projects')
-      .select('*')
-      .order('updated_at',{ascending:false});
-    
-    if (simpleError) {
-      console.error('Final fetch error:', simpleError);
-      projects = [];
-    } else {
-      projects = simpleData || [];
-    }
-  } else {
-    projects=data||[];
+  // ROBUST MANUAL JOIN STRATEGY
+  try {
+    // 1. Fetch Projects
+    const {data: rawProjects, error: projErr} = await sb.from('projects').select('*').order('created_at',{ascending:false});
+    if (projErr) throw projErr;
+
+    // 2. Fetch Profiles (Clients)
+    const {data: profiles, error: profErr} = await sb.from('profiles').select('id, full_name, email');
+    if (profErr) console.warn('Profiles fetch error:', profErr);
+
+    // 3. Fetch Experts
+    const {data: experts, error: expErr} = await sb.from('experts').select('id, name, image_url');
+    if (expErr) console.warn('Experts fetch error:', expErr);
+
+    // 4. Fetch Conversations (for chat links)
+    const {data: convos, error: convErr} = await sb.from('conversations').select('id, project_id');
+    if (convErr) console.warn('Conversations fetch error:', convErr);
+
+    // 5. Map everything together
+    projects = rawProjects.map(proj => {
+      return {
+        ...proj,
+        profiles: profiles?.find(prof => prof.id === proj.client_id) || null,
+        experts: experts?.find(exp => exp.id === proj.expert_id) || null,
+        conversations: convos?.filter(conv => conv.project_id === proj.id) || []
+      };
+    });
+
+    console.log(`Successfully mapped ${projects.length} projects.`);
+
+  } catch (err) {
+    console.error('Fatal data load error:', err);
+    projects = [];
   }
 
   buildFilters();render();
@@ -222,9 +236,8 @@ function render(){
   if(!filtered.length){g.innerHTML='<div class="empty">No projects found</div>';return;}
   g.innerHTML='<div class="projects-grid">'+filtered.map(p=>{
     const col=sc(p.status);
-    const convoId = p.conversations?.[0]?.id || '';
-    const chatUrl = convoId ? `chat.html?cid=${convoId}` : '#';
-    return`<div class="project-card" onclick="if('${convoId}') window.location.href='${chatUrl}'">
+    const detailsUrl = `project-details.html?id=${p.id}`;
+    return`<div class="project-card" onclick="window.location.href='${detailsUrl}'">
       <div class="pc-top">
         <div class="pc-title">${p.title||'Untitled Project'}</div>
         <span class="status-pill" style="background:${col}22;color:${col};">${sl(p.status)}</span>
@@ -238,7 +251,7 @@ function render(){
       <div class="pc-footer">
         <span class="pc-budget">${fc(p.budget)}</span>
         <div class="pc-actions">
-          <button class="btn-sm" onclick="event.stopPropagation(); if('${convoId}') window.location.href='${chatUrl}'">View Chat</button>
+          <button class="btn-sm" onclick="event.stopPropagation(); window.location.href='${detailsUrl}'">View Details</button>
         </div>
       </div>
     </div>`;
