@@ -1150,6 +1150,7 @@ async function approvePayment(offerId, amount, msgId) {
       deadline: deadline,
       payment_status: 'successful',
       payment_source: 'manual_transfer',
+      payment_method: 'bank_transfer',
       receipt_url: JSON.parse(msgData.content).receipt_url
     }).select().single();
 
