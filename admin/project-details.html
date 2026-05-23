@@ -127,24 +127,47 @@ async function init() {
     const { data: { session } } = await sb.auth.getSession();
     if (!session) { window.location.href = '../login.html'; return; }
 
-    const { data: proj, error } = await sb.from('projects')
-        .select('*, profiles(full_name, email), experts(name)')
-        .eq('id', projId)
-        .single();
+    try {
+        console.log('--- Fetching Project Details ---');
+        // 1. Fetch Project
+        const { data: proj, error } = await sb.from('projects').select('*').eq('id', projId).single();
+        if (error || !proj) throw new Error('Project not found');
 
-    if (error || !proj) { alert('Project not found'); window.location.href = 'projects.html'; return; }
-    
-    projectData = proj;
-    renderDetails();
-    startCountdown(proj.deadline);
-    document.getElementById('loading-screen').style.display = 'none';
+        // 2. Fetch Profile (Client)
+        const { data: profile } = await sb.from('profiles').select('full_name, email').eq('id', proj.client_id).single();
+        
+        // 3. Fetch Expert
+        const { data: expert } = await sb.from('experts').select('name').eq('id', proj.expert_id).single();
+
+        projectData = {
+            ...proj,
+            client: profile,
+            expert: expert
+        };
+
+        console.log('Project Data Loaded:', projectData);
+
+        renderDetails();
+        
+        // ONLY start timer if project is not finished
+        if (proj.status !== 'delivered' && proj.status !== 'completed') {
+            startCountdown(proj.deadline);
+        }
+
+    } catch (err) {
+        console.error('Init Error:', err);
+        alert('Error: ' + err.message);
+        window.location.href = 'projects.html';
+    } finally {
+        document.getElementById('loading-screen').style.display = 'none';
+    }
 }
 
 function renderDetails() {
     document.getElementById('proj-title').textContent = projectData.title || 'Untitled Project';
-    document.getElementById('proj-client').textContent = `CLIENT: ${projectData.profiles?.full_name || 'Unknown'}`;
+    document.getElementById('proj-client').textContent = `CLIENT: ${projectData.client?.full_name || 'Unknown Client'}`;
     document.getElementById('proj-budget').textContent = projectData.budget ? `$${Number(projectData.budget).toLocaleString()}` : '—';
-    document.getElementById('proj-expert').textContent = projectData.experts?.name || 'Unassigned';
+    document.getElementById('proj-expert').textContent = projectData.expert?.name || 'Unassigned Expert';
     document.getElementById('proj-status').textContent = projectData.status.toUpperCase().replace('_', ' ');
     
     if (projectData.status === 'delivered' || projectData.status === 'completed') {
@@ -161,6 +184,9 @@ function startCountdown(deadline) {
         document.getElementById('countdown').textContent = 'NO DEADLINE';
         return;
     }
+    
+    // Safety check: Don't start if already finished
+    if (projectData.status === 'delivered' || projectData.status === 'completed') return;
 
     const update = () => {
         const now = new Date().getTime();
