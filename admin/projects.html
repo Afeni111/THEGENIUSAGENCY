@@ -202,15 +202,19 @@ async function init(){
 
     // 5. Map everything together
     projects = rawProjects.map(proj => {
+      const clientProfile = profiles?.find(prof => prof.id === proj.client_id) || null;
+      const assignedExpert = experts?.find(exp => exp.id === proj.expert_id) || null;
+      const linkedConvos = convos?.filter(conv => conv.project_id === proj.id) || [];
+      
       return {
         ...proj,
-        profiles: profiles?.find(prof => prof.id === proj.client_id) || null,
-        experts: experts?.find(exp => exp.id === proj.expert_id) || null,
-        conversations: convos?.filter(conv => conv.project_id === proj.id) || []
+        client: clientProfile,
+        expert: assignedExpert,
+        conversations: linkedConvos
       };
     });
 
-    console.log(`Successfully mapped ${projects.length} projects.`);
+    console.log('Project Mapping Sample:', projects[0]);
 
   } catch (err) {
     console.error('Fatal data load error:', err);
@@ -229,7 +233,7 @@ function render(){
   const q=document.getElementById('search').value.toLowerCase();
   const filtered=projects.filter(p=>{
     if(filter!=='all'&&p.status!==filter)return false;
-    if(q&&!(p.title||'').toLowerCase().includes(q)&&!(p.profiles?.full_name||'').toLowerCase().includes(q))return false;
+    if(q&&!(p.title||'').toLowerCase().includes(q)&&!(p.client?.full_name||'').toLowerCase().includes(q))return false;
     return true;
   });
   const g=document.getElementById('grid');
@@ -243,8 +247,8 @@ function render(){
         <span class="status-pill" style="background:${col}22;color:${col};">${sl(p.status)}</span>
       </div>
       <div class="pc-meta">
-        <span>👤 ${p.profiles?.full_name||'Unknown Client'}</span>
-        ${p.experts?`<span>🎯 ${p.experts.name}</span>`:'<span style="color:#555;">No expert assigned</span>'}
+        <span>👤 ${p.client?.full_name||'Unknown Client'}</span>
+        ${p.expert?`<span>🎯 ${p.expert.name}</span>`:'<span style="color:#555;">No expert assigned</span>'}
         ${p.deadline?`<span>📅 Deadline: ${new Date(p.deadline).toLocaleDateString()}</span>`:''}
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:${p.progress||0}%;"></div></div>
