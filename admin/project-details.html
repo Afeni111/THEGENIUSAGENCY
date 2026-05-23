@@ -210,68 +210,103 @@ async function submitDelivery() {
     if (!file) { alert('Please upload the project files first.'); return; }
     if (!confirm('Are you sure you want to submit this delivery?')) return;
 
+    const originalHtml = btn.innerHTML;
     btn.disabled = true;
-    btn.innerHTML = '<div class="spinner" style="width:20px; height:20px; margin:0;"></div> Uploading...';
+    btn.innerHTML = '<div class="spinner" style="width:20px; height:20px; margin:0; display:inline-block; vertical-align:middle;"></div> Uploading...';
 
     try {
+        console.log('--- Starting Delivery ---');
+        
         // 1. Upload to storage
-        const path = `deliveries/${projId}/${Date.now()}_${file.name}`;
+        const path = `deliveries/${projId}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+        console.log('Uploading to:', path);
+        
         const { data: up, error: upErr } = await sb.storage.from('uploads').upload(path, file);
         if (upErr) throw upErr;
+        
         const { data: urlData } = sb.storage.from('uploads').getPublicUrl(path);
         const fileUrl = urlData.publicUrl;
+        console.log('File uploaded:', fileUrl);
 
-        // 2. Find conversation to send message
-        const { data: conv } = await sb.from('conversations').select('id').eq('project_id', projId).single();
+        // 2. Find conversation
+        console.log('Finding conversation for project:', projId);
+        let { data: conv, error: convErr } = await sb.from('conversations')
+            .select('id')
+            .eq('project_id', projId)
+            .maybeSingle();
         
+        // Fallback: If project_id link isn't set, try searching by client_id and expert_id
+        if (!conv) {
+            console.log('No direct project_id link, trying fallback lookup...');
+            const { data: fallbackConv } = await sb.from('conversations')
+                .select('id')
+                .eq('client_id', projectData.client_id)
+                .eq('expert_id', projectData.expert_id)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+            conv = fallbackConv;
+        }
+
         if (conv) {
+            console.log('Conversation found:', conv.id);
+            
             // 3. Create Delivery record
-            const { data: deliv } = await sb.from('deliveries').insert({
+            const { data: deliv, error: delivErr } = await sb.from('deliveries').insert({
                 conversation_id: conv.id,
                 content: note || 'Project files delivered.',
                 file_url: fileUrl,
                 status: 'pending'
             }).select().single();
+            if (delivErr) console.warn('Delivery record error:', delivErr);
 
             // 4. Send message to client
-            await sb.from('messages').insert({
+            const { data: { user } } = await sb.auth.getUser();
+            const { error: msgErr } = await sb.from('messages').insert({
                 conversation_id: conv.id,
-                sender_id: (await sb.auth.getUser()).data.user.id,
+                sender_id: user.id,
                 sender_role: 'admin',
                 content: note || 'Final work delivered!',
                 message_type: 'delivery',
                 metadata: { file_url: fileUrl, file_name: file.name, delivery_id: deliv?.id }
             });
+            if (msgErr) console.warn('Message insert error:', msgErr);
+        } else {
+            console.warn('Could not find a conversation to post the delivery message.');
         }
 
         // 5. Update Project Status
-        await sb.from('projects').update({ 
+        console.log('Updating project status...');
+        const { error: finalErr } = await sb.from('projects').update({ 
             status: 'delivered', 
             delivered_at: new Date().toISOString() 
         }).eq('id', projId);
+        if (finalErr) throw finalErr;
 
         // 6. Notify Client via Email
+        console.log('Sending email notification...');
         fetch('/api/notifications/notify-admin', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 type: 'project_delivered',
                 data: {
-                    client_name: projectData.profiles?.full_name,
+                    client_name: projectData.profiles?.full_name || 'Client',
                     client_email: projectData.profiles?.email,
-                    project_title: projectData.title
+                    project_title: projectData.title || 'Your Project'
                 }
             })
-        });
+        }).catch(e => console.error('Email notify failed:', e));
 
         alert('Project delivered successfully!');
         window.location.href = 'projects.html';
 
     } catch (err) {
-        console.error(err);
-        alert('Delivery failed: ' + err.message);
+        console.error('Delivery Error:', err);
+        alert('Delivery failed: ' + (err.message || 'An unexpected error occurred.'));
+    } finally {
         btn.disabled = false;
-        btn.innerHTML = 'Submit Final Delivery';
+        btn.innerHTML = originalHtml;
     }
 }
 
