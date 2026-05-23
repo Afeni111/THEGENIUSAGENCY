@@ -182,8 +182,27 @@ async function init(){
   document.getElementById('admin-name').textContent=p.full_name||'Admin';
   document.getElementById('admin-avatar').textContent=(p.full_name||'A').split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);
   
-  const{data}=await sb.from('projects').select('*,profiles!projects_client_id_fkey(full_name,email),experts(name,image_url),conversations(id)').order('updated_at',{ascending:false});
-  projects=data||[];
+  // Resilient Fetch: Try complex join first, then fallback to simple if needed
+  let {data, error} = await sb.from('projects')
+    .select('*, profiles(full_name,email), experts(name,image_url), conversations(id)')
+    .order('updated_at',{ascending:false});
+  
+  if (error) {
+    console.warn('Complex join failed, falling back to simple fetch:', error.message);
+    const {data: simpleData, error: simpleError} = await sb.from('projects')
+      .select('*')
+      .order('updated_at',{ascending:false});
+    
+    if (simpleError) {
+      console.error('Final fetch error:', simpleError);
+      projects = [];
+    } else {
+      projects = simpleData || [];
+    }
+  } else {
+    projects=data||[];
+  }
+
   buildFilters();render();
 }
 async function doSignOut(){await sb.auth.signOut();window.location.href='../login.html';}
