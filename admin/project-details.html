@@ -148,9 +148,11 @@ function renderDetails() {
     document.getElementById('proj-status').textContent = projectData.status.toUpperCase().replace('_', ' ');
     
     if (projectData.status === 'delivered' || projectData.status === 'completed') {
+        if (timerInterval) clearInterval(timerInterval);
         document.getElementById('delivery-box').style.display = 'none';
         document.getElementById('status-text').textContent = 'Project Status';
         document.getElementById('countdown').textContent = projectData.status.toUpperCase();
+        document.getElementById('countdown').className = 'timer-clock timer-green';
     }
 }
 
