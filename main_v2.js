@@ -50,12 +50,12 @@ let experts = [
         skills: ["Pitch Decks", "3D Animation", "Video Editing"],
         portfolio: ["portfolios/PITCH DECK AND PRESENTATION/Business Case v1.pdf", "portfolios/PITCH DECK AND PRESENTATION/Dequity Capital v1.pdf", "portfolios/PITCH DECK AND PRESENTATION/E Profile Flex Logistics_.pdf", "portfolios/PITCH DECK AND PRESENTATION/Media Outpost v2.pdf"],
         testimonials: [
-            { name: "David L.", flag: flag("NG"), time: "2 weeks ago", text: "Marvel delivered an incredible pitch deck that secured our funding round. Top tier work!", rating: "5.0" },
-            { name: "Sarah K.", flag: flag("NG"), time: "1 month ago", text: "Extremely fast execution and perfect attention to brand detail. Highly recommended.", rating: "5.0" },
-            { name: "Tom B.", flag: flag("NG"), time: "2 months ago", text: "Outstanding quality and professional approach. The design exceeded all expectations.", rating: "5.0" },
-            { name: "Grace A.", flag: flag("NG"), time: "3 months ago", text: "The presentation design was beyond what I expected. Truly impressive work and very fast delivery.", rating: "5.0" },
-            { name: "James O.", flag: flag("NG"), time: "4 months ago", text: "Very creative and talented. My pitch deck looked like it was made by a top agency. Will hire again.", rating: "5.0" },
-            { name: "Priya M.", flag: flag("NG"), time: "5 months ago", text: "Fantastic attention to detail and brand consistency. The slides were polished and professional.", rating: "5.0" }
+            { name: "David L.", flag: flag("US"), time: "2 weeks ago", text: "Marvel delivered an incredible pitch deck that secured our funding round. Top tier work!", rating: "5.0" },
+            { name: "Sarah K.", flag: flag("GB"), time: "1 month ago", text: "Extremely fast execution and perfect attention to brand detail. Highly recommended.", rating: "5.0" },
+            { name: "Tom B.", flag: flag("CA"), time: "2 months ago", text: "Outstanding quality and professional approach. The design exceeded all expectations.", rating: "5.0" },
+            { name: "Grace A.", flag: flag("US"), time: "3 months ago", text: "The presentation design was beyond what I expected. Truly impressive work and very fast delivery.", rating: "5.0" },
+            { name: "James O.", flag: flag("AU"), time: "4 months ago", text: "Very creative and talented. My pitch deck looked like it was made by a top agency. Will hire again.", rating: "5.0" },
+            { name: "Priya M.", flag: flag("SG"), time: "5 months ago", text: "Fantastic attention to detail and brand consistency. The slides were polished and professional.", rating: "5.0" }
         ]
     },
     {
@@ -70,12 +70,12 @@ let experts = [
         testimonials: [
             { name: "Golddenplus", flag: flag("GB"), time: "Just now", text: "This is amazing and top notch. I would highly recommend this seller because of her problem solving skills.", rating: "5.0" },
             { name: "pearl_23e", flag: flag("US"), time: "Just now", text: "She is amazing and professional. One thing special about her is calmness and very polite. Thank you for your service!", rating: "5.0" },
-            { name: "John D.", flag: flag("NG"), time: "3 weeks ago", text: "Cecilia did an amazing job! The website looks stunning and performs perfectly. Highly recommended!", rating: "5.0" },
-            { name: "Elena R.", flag: flag("NG"), time: "1 month ago", text: "Great communication, fast delivery and excellent quality. Will work with her again!", rating: "5.0" },
-            { name: "Mark S.", flag: flag("NG"), time: "2 months ago", text: "She transformed our Shopify store completely. Sales improved immediately after launch.", rating: "4.9" },
-            { name: "Temi A.", flag: flag("NG"), time: "3 months ago", text: "Super professional and creative. My Webflow site looked premium and loaded super fast.", rating: "5.0" },
-            { name: "Rachel K.", flag: flag("NG"), time: "4 months ago", text: "Cecilia is an absolute gem. She built my WordPress site from scratch and it looks flawless.", rating: "5.0" },
-            { name: "Abdul H.", flag: flag("NG"), time: "5 months ago", text: "Delivered exactly what was requested. Clean design, fast turnaround, great communication throughout.", rating: "4.9" }
+            { name: "John D.", flag: flag("CA"), time: "3 weeks ago", text: "Cecilia did an amazing job! The website looks stunning and performs perfectly. Highly recommended!", rating: "5.0" },
+            { name: "Elena R.", flag: flag("DE"), time: "1 month ago", text: "Great communication, fast delivery and excellent quality. Will work with her again!", rating: "5.0" },
+            { name: "Mark S.", flag: flag("US"), time: "2 months ago", text: "She transformed our Shopify store completely. Sales improved immediately after launch.", rating: "4.9" },
+            { name: "Temi A.", flag: flag("GB"), time: "3 months ago", text: "Super professional and creative. My Webflow site looked premium and loaded super fast.", rating: "5.0" },
+            { name: "Rachel K.", flag: flag("AU"), time: "4 months ago", text: "Cecilia is an absolute gem. She built my WordPress site from scratch and it looks flawless.", rating: "5.0" },
+            { name: "Abdul H.", flag: flag("FR"), time: "5 months ago", text: "Delivered exactly what was requested. Clean design, fast turnaround, great communication throughout.", rating: "4.9" }
         ]
     },
     {
@@ -88,12 +88,12 @@ let experts = [
         skills: ["Web Applications", "Web & App Development", "Bug Fixing"],
         portfolio: ["portfolios/WORDPRESS WEDSITE/screencapture-marketing-mavericks-org-2025-07-24-18_27_06.png", "portfolios/WORDPRESS WEDSITE/screencapture-paxtans-2025-07-24-18_25_13.png", "portfolios/WORDPRESS WEDSITE/screencapture-damashiidigital-2025-07-24-18_26_36.png", "portfolios/WORDPRESS WEDSITE/screencapture-goldenrod-dog-322237-hostingersite-2025-07-24-18_27_50.png"],
         testimonials: [
-            { name: "Michael B.", flag: flag("NG"), time: "2 weeks ago", text: "Timil completely restructured our database routing. The app is 10x faster now.", rating: "5.0" },
-            { name: "Anna C.", flag: flag("NG"), time: "1 month ago", text: "Flawless API integration. Very professional and communicative throughout.", rating: "5.0" },
-            { name: "Paul W.", flag: flag("NG"), time: "2 months ago", text: "Delivered a complex backend system on time and perfectly documented. Exceptional.", rating: "5.0" },
-            { name: "Kofi A.", flag: flag("NG"), time: "3 months ago", text: "Built our entire Node.js backend from scratch. Clean architecture and zero bugs on delivery.", rating: "5.0" },
-            { name: "Lena P.", flag: flag("NG"), time: "4 months ago", text: "Incredible technical skill. He solved our AWS configuration issues within hours. Very reliable.", rating: "5.0" },
-            { name: "David N.", flag: flag("NG"), time: "5 months ago", text: "Timil is the definition of a senior engineer. Thoughtful, precise and highly efficient.", rating: "5.0" }
+            { name: "Michael B.", flag: flag("US"), time: "2 weeks ago", text: "Timil completely restructured our database routing. The app is 10x faster now.", rating: "5.0" },
+            { name: "Anna C.", flag: flag("GB"), time: "1 month ago", text: "Flawless API integration. Very professional and communicative throughout.", rating: "5.0" },
+            { name: "Paul W.", flag: flag("NL"), time: "2 months ago", text: "Delivered a complex backend system on time and perfectly documented. Exceptional.", rating: "5.0" },
+            { name: "Kofi A.", flag: flag("CA"), time: "3 months ago", text: "Built our entire Node.js backend from scratch. Clean architecture and zero bugs on delivery.", rating: "5.0" },
+            { name: "Lena P.", flag: flag("DE"), time: "4 months ago", text: "Incredible technical skill. He solved our AWS configuration issues within hours. Very reliable.", rating: "5.0" },
+            { name: "David N.", flag: flag("US"), time: "5 months ago", text: "Timil is the definition of a senior engineer. Thoughtful, precise and highly efficient.", rating: "5.0" }
         ]
     },
     {
@@ -106,12 +106,12 @@ let experts = [
         skills: ["Android App", "IOS App", "App Design"],
         portfolio: ["portfolios/WORDPRESS WEDSITE/screencapture-marketing-mavericks-org-2025-07-24-18_27_06.png", "portfolios/SHOPIFY DESIGN/screencapture-peggyskiddycorral-2025-07-23-18_37_52.png", "portfolios/SHOPIFY DESIGN/screencapture-planetgreenhouse-2025-07-23-18_37_28.png", "portfolios/WORDPRESS WEDSITE/screencapture-damashiidigital-2025-07-24-18_26_36.png"],
         testimonials: [
-            { name: "James W.", flag: flag("NG"), time: "1 week ago", text: "Our iOS app launched flawlessly. T. Dre understood the vision immediately.", rating: "5.0" },
-            { name: "Sophia T.", flag: flag("NG"), time: "3 weeks ago", text: "The UI design for our MVP was stunning. Excellent development partner.", rating: "4.8" },
-            { name: "Remi A.", flag: flag("NG"), time: "2 months ago", text: "Clean, well-structured code and great attention to UX detail. Would hire again.", rating: "5.0" },
-            { name: "Yuki T.", flag: flag("NG"), time: "3 months ago", text: "Our Flutter app works perfectly on both iOS and Android. T. Dre is extremely skilled and reliable.", rating: "5.0" },
-            { name: "Ben O.", flag: flag("NG"), time: "4 months ago", text: "He delivered a complete React Native app with Firebase integration. Exceptional quality and speed.", rating: "5.0" },
-            { name: "Zara M.", flag: flag("NG"), time: "5 months ago", text: "Very talented mobile developer. My app looked exactly like the Figma designs. Great job!", rating: "4.9" }
+            { name: "James W.", flag: flag("US"), time: "1 week ago", text: "Our iOS app launched flawlessly. T. Dre understood the vision immediately.", rating: "5.0" },
+            { name: "Sophia T.", flag: flag("GB"), time: "3 weeks ago", text: "The UI design for our MVP was stunning. Excellent development partner.", rating: "4.8" },
+            { name: "Remi A.", flag: flag("CA"), time: "2 months ago", text: "Clean, well-structured code and great attention to UX detail. Would hire again.", rating: "5.0" },
+            { name: "Yuki T.", flag: flag("AU"), time: "3 months ago", text: "Our Flutter app works perfectly on both iOS and Android. T. Dre is extremely skilled and reliable.", rating: "5.0" },
+            { name: "Ben O.", flag: flag("DE"), time: "4 months ago", text: "He delivered a complete React Native app with Firebase integration. Exceptional quality and speed.", rating: "5.0" },
+            { name: "Zara M.", flag: flag("IE"), time: "5 months ago", text: "Very talented mobile developer. My app looked exactly like the Figma designs. Great job!", rating: "4.9" }
         ]
     },
     {
@@ -124,12 +124,12 @@ let experts = [
         skills: ["Etsy & eBay SEO", "eBay & Etsy Listings", "Amazon KDP Ads"],
         portfolio: ["portfolios/SHOPIFY SALES/sale 10.png", "portfolios/SHOPIFY SALES/sales 1.png", "portfolios/SHOPIFY SALES/recording.mkv", "portfolios/SHOPIFY SALES/sales 2.png", "portfolios/SHOPIFY SALES/sales 3.png"],
         testimonials: [
-            { name: "Oliver P.", flag: flag("NG"), time: "2 weeks ago", text: "My Etsy store traffic tripled within 2 weeks of Beatrice optimizing my listings.", rating: "5.0" },
-            { name: "Emma H.", flag: flag("NG"), time: "1 month ago", text: "Detailed, accurate, and extremely effective marketplace strategy.", rating: "4.9" },
-            { name: "Karen L.", flag: flag("NG"), time: "2 months ago", text: "She completely turned around our eBay store performance. Highly recommended!", rating: "4.8" },
-            { name: "Tunde F.", flag: flag("NG"), time: "3 months ago", text: "Beatrice optimized my Amazon KDP listings and my book sales doubled. Very knowledgeable expert.", rating: "5.0" },
-            { name: "Marie C.", flag: flag("NG"), time: "4 months ago", text: "Professional and thorough with her product research. Helped me find three winning products.", rating: "4.9" },
-            { name: "Sam R.", flag: flag("NG"), time: "5 months ago", text: "Excellent competitor analysis. My store is now ranking much higher in search. Great work!", rating: "4.8" }
+            { name: "Oliver P.", flag: flag("GB"), time: "2 weeks ago", text: "My Etsy store traffic tripled within 2 weeks of Beatrice optimizing my listings.", rating: "5.0" },
+            { name: "Emma H.", flag: flag("US"), time: "1 month ago", text: "Detailed, accurate, and extremely effective marketplace strategy.", rating: "4.9" },
+            { name: "Karen L.", flag: flag("CA"), time: "2 months ago", text: "She completely turned around our eBay store performance. Highly recommended!", rating: "4.8" },
+            { name: "Tunde F.", flag: flag("AU"), time: "3 months ago", text: "Beatrice optimized my Amazon KDP listings and my book sales doubled. Very knowledgeable expert.", rating: "5.0" },
+            { name: "Marie C.", flag: flag("FR"), time: "4 months ago", text: "Professional and thorough with her product research. Helped me find three winning products.", rating: "4.9" },
+            { name: "Sam R.", flag: flag("US"), time: "5 months ago", text: "Excellent competitor analysis. My store is now ranking much higher in search. Great work!", rating: "4.8" }
         ]
     },
     {
@@ -144,12 +144,12 @@ let experts = [
         testimonials: [
             { name: "Juryosamab", flag: flag("SA"), time: "Just now", text: "I had a great experience working with him. He was very cooperative, responsive, and delivered the work on time. The quality of the research was solid, and he was open to feedback and revisions whenever needed. Overall, a reliable and professional person to work with. Highly recommended.", rating: "5.0" },
             { name: "Pearl_23e", flag: flag("US"), time: "Just now", text: "Very amazing service render by Becky, Thank for the effort. God bless,", rating: "5.0" },
-            { name: "Chris M.", flag: flag("NG"), time: "1 week ago", text: "Bukola formatted and published my eBook flawlessly. She is a true professional.", rating: "5.0" },
-            { name: "Diana L.", flag: flag("NG"), time: "3 weeks ago", text: "The blog articles are engaging and rank incredibly well on Google.", rating: "5.0" },
-            { name: "Fiona G.", flag: flag("NG"), time: "2 months ago", text: "Incredible writing quality. She delivered my ghostwriting project ahead of schedule.", rating: "5.0" },
-            { name: "Leo B.", flag: flag("NG"), time: "3 months ago", text: "Bukola wrote a full 60-page eBook for me and it reads brilliantly. Very impressed.", rating: "5.0" },
-            { name: "Aisha K.", flag: flag("NG"), time: "4 months ago", text: "Excellent SEO writing skills. My blog traffic increased significantly after her articles.", rating: "5.0" },
-            { name: "Henry P.", flag: flag("NG"), time: "5 months ago", text: "She formatted and uploaded my KDP book perfectly. Professional and reliable every step of the way.", rating: "5.0" }
+            { name: "Chris M.", flag: flag("CA"), time: "1 week ago", text: "Bukola formatted and published my eBook flawlessly. She is a true professional.", rating: "5.0" },
+            { name: "Diana L.", flag: flag("GB"), time: "3 weeks ago", text: "The blog articles are engaging and rank incredibly well on Google.", rating: "5.0" },
+            { name: "Fiona G.", flag: flag("DE"), time: "2 months ago", text: "Incredible writing quality. She delivered my ghostwriting project ahead of schedule.", rating: "5.0" },
+            { name: "Leo B.", flag: flag("US"), time: "3 months ago", text: "Bukola wrote a full 60-page eBook for me and it reads brilliantly. Very impressed.", rating: "5.0" },
+            { name: "Aisha K.", flag: flag("AU"), time: "4 months ago", text: "Excellent SEO writing skills. My blog traffic increased significantly after her articles.", rating: "5.0" },
+            { name: "Henry P.", flag: flag("CH"), time: "5 months ago", text: "She formatted and uploaded my KDP book perfectly. Professional and reliable every step of the way.", rating: "5.0" }
         ]
     },
     {
@@ -162,12 +162,12 @@ let experts = [
         skills: ["Digital Marketing", "Web & APP Development", "IOS & Android App"],
         portfolio: ["portfolios/WORDPRESS WEDSITE/screencapture-playasurparadise-2025-07-24-18_26_51.png", "portfolios/WORDPRESS WEDSITE/screencapture-sprixo-scentara-2025-07-24-18_26_23.png", "portfolios/SHOPIFY SALES/recording (1).mkv", "portfolios/SHOPIFY SALES/recording (2).mkv", "portfolios/WORDPRESS WEDSITE/screencapture-the-european-way-eu-2025-07-24-18_28_08.png", "portfolios/WORDPRESS WEDSITE/screencapture-defaren-org-2025-07-24-18_27_35.png"],
         testimonials: [
-            { name: "Richard V.", flag: flag("NG"), time: "1 week ago", text: "Jeremiah built our entire SaaS dashboard from scratch. Phenomenal talent.", rating: "5.0" },
-            { name: "Kevin T.", flag: flag("NG"), time: "3 weeks ago", text: "Incredibly fast bug resolution and highly scalable clean code.", rating: "5.0" },
-            { name: "Amara N.", flag: flag("NG"), time: "1 month ago", text: "Super professional, quick turnaround, and the codebase is very clean. Would absolutely hire again.", rating: "5.0" },
-            { name: "Daniel S.", flag: flag("NG"), time: "2 months ago", text: "Excellent communication and strong engineering judgment. He shipped a complex integration without issues.", rating: "5.0" },
-            { name: "Lucy P.", flag: flag("NG"), time: "3 months ago", text: "He improved our performance dramatically and fixed bugs we couldn't track down. Reliable and fast.", rating: "5.0" },
-            { name: "Omar A.", flag: flag("NG"), time: "4 months ago", text: "Delivered exactly what we needed and suggested better approaches along the way. Great partner.", rating: "5.0" }
+            { name: "Richard V.", flag: flag("US"), time: "1 week ago", text: "Jeremiah built our entire SaaS dashboard from scratch. Phenomenal talent.", rating: "5.0" },
+            { name: "Kevin T.", flag: flag("GB"), time: "3 weeks ago", text: "Incredibly fast bug resolution and highly scalable clean code.", rating: "5.0" },
+            { name: "Amara N.", flag: flag("CA"), time: "1 month ago", text: "Super professional, quick turnaround, and the codebase is very clean. Would absolutely hire again.", rating: "5.0" },
+            { name: "Daniel S.", flag: flag("DE"), time: "2 months ago", text: "Excellent communication and strong engineering judgment. He shipped a complex integration without issues.", rating: "5.0" },
+            { name: "Lucy P.", flag: flag("AU"), time: "3 months ago", text: "He improved our performance dramatically and fixed bugs we couldn't track down. Reliable and fast.", rating: "5.0" },
+            { name: "Omar A.", flag: flag("FR"), time: "4 months ago", text: "Delivered exactly what we needed and suggested better approaches along the way. Great partner.", rating: "5.0" }
         ]
     }
 ];
