@@ -161,6 +161,63 @@ if (googleBtn) {
     });
 }
 
+// ── Forgot Password ──────────────────────────────────────────
+const forgotPasswordLink = document.getElementById('forgot-password-link');
+if (forgotPasswordLink) {
+    forgotPasswordLink.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const email = authEmail.value.trim();
+        
+        if (!email) {
+            alert('Please enter your email address first.');
+            authEmail.focus();
+            return;
+        }
+
+        const confirmReset = confirm(`Send password reset link to ${email}?`);
+        if (!confirmReset) return;
+
+        forgotPasswordLink.textContent = 'Sending...';
+        forgotPasswordLink.style.pointerEvents = 'none';
+
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + window.location.pathname,
+        });
+
+        if (error) {
+            alert('Error: ' + error.message);
+        } else {
+            alert('Password reset link sent! Please check your email inbox.');
+        }
+
+        forgotPasswordLink.textContent = 'Forgot Password?';
+        forgotPasswordLink.style.pointerEvents = 'auto';
+    });
+}
+
+// ── Handle Password Reset Callback ──────────────────────────
+const handleResetCallback = async () => {
+    // Supabase sends a 'type=recovery' parameter in the URL fragment/hash
+    const hash = window.location.hash;
+    if (hash && hash.includes('type=recovery')) {
+        const newPassword = prompt('Enter your new password:');
+        if (!newPassword || newPassword.length < 6) {
+            alert('Password must be at least 6 characters.');
+            return;
+        }
+
+        const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+        if (error) {
+            alert('Error updating password: ' + error.message);
+        } else {
+            alert('Password updated successfully! You can now log in.');
+            // Clear hash
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }
+};
+handleResetCallback();
+
 // ── Debug: Check URL for error parameters ──────────────────
 const params = new URLSearchParams(window.location.search);
 if (params.has('error_description')) {
