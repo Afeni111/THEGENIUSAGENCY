@@ -200,20 +200,34 @@ const handleResetCallback = async () => {
     // Supabase sends a 'type=recovery' parameter in the URL fragment/hash
     const hash = window.location.hash;
     if (hash && hash.includes('type=recovery')) {
-        const newPassword = prompt('Enter your new password:');
-        if (!newPassword || newPassword.length < 6) {
-            alert('Password must be at least 6 characters.');
-            return;
-        }
+        // Delay slightly to ensure session is initialized if auto-detected
+        setTimeout(async () => {
+            const newPassword = prompt('Set your NEW password:');
+            if (!newPassword) {
+                alert('Password reset cancelled. You will need to request a new link.');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                alert('Password must be at least 6 characters.');
+                return;
+            }
 
-        const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
-        if (error) {
-            alert('Error updating password: ' + error.message);
-        } else {
-            alert('Password updated successfully! You can now log in.');
-            // Clear hash
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
+            const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+            
+            if (error) {
+                alert('Error updating password: ' + error.message);
+            } else {
+                alert('Success! Your password has been updated. For security, please log in now with your new password.');
+                
+                // Explicitly sign out to clear the temporary recovery session
+                await supabaseClient.auth.signOut();
+                
+                // Clear hash and refresh to clean state
+                window.history.replaceState({}, document.title, window.location.pathname);
+                window.location.reload(); 
+            }
+        }, 500);
     }
 };
 handleResetCallback();
